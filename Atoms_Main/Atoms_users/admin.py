@@ -15,6 +15,7 @@ class IOList_Admin(admin.ModelAdmin):
 @admin.register(Nested_Table)
 class Nested_Table_Admin(admin.ModelAdmin):
     list_display = ['id','Node_Id','Node_Left','Node_Right','Property']
+    search_fields = Nested_Table.SearchableFields
 
 
 @admin.register(Layers)
