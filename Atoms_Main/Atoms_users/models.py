@@ -109,6 +109,7 @@ class Nested_Table(models.Model):
     Node_Left=models.IntegerField()
     Node_Right=models.IntegerField()
     Property = models.CharField(max_length=200)
+    SearchableFields = ["Node_Id", "Property"]
 
     class Meta:
         app_label = 'Atoms_users'
