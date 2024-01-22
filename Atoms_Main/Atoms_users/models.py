@@ -17,7 +17,7 @@ class Layers(models.Model):  # for companies,partnerships,customers ,plant and l
         db_table = 'Users_Schema"."Layers'
 
     def __str__(self):
-        return self.Layer_Type
+        return self.Layer_Name
 
 
 class Modules(models.Model):  #  page names
