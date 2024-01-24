@@ -29,3 +29,4 @@ class machine_details_serializer_machine_id_machine_name (serializers.ModelSeria
     class Meta:
         model = MachineDetails
         fields =[ "node_id","Machine_Name","Model_No"]
+
