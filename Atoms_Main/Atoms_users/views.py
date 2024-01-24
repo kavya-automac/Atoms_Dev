@@ -41,7 +41,8 @@ def login_view(request):
             immediate_prt=get_immediate_parent(node_lr['data']['left'],node_lr['data']['right'])
             print('immediate_prt',immediate_prt)
             pages=get_descendent(immediate_prt['immediate_parent']['immediate_left'], immediate_prt['immediate_parent']['immediate_right'], "Page")
-            print('pages',pages)
+            page_ids=[node['node_id'] for node in pages['descendents']]
+            print('page_ids',page_ids)
             # access=[]
             # page_access = {}
             # for i in range(len(pages['Page'])):
@@ -57,7 +58,7 @@ def login_view(request):
             #
             # print(page_access)
             return JsonResponse({"status": "user_validated","first_name":request.user.first_name,
-                             "user_id":user_id_serializer_data['user_id'],"Company_logo":user_id.Company_id.Company_Logo,"pages":pages['Page'],"status_code":200})
+                             "user_id":user_id_serializer_data['user_id'],"Company_logo":user_id.Company_id.Company_Logo,"pages":page_ids,"status_code":200})
 
         else:
             # print("none")
@@ -77,3 +78,30 @@ def logout_view(request):
 
 
 
+@api_view(['GET'])
+def Machines_List(request):
+
+    user_id = User_details.objects.get(user_id__username="user1")
+    # user_id_serializer = user_details_serializer_all(user_id)
+    # user_id_serializer_data = user_id_serializer.data
+    # print('user_id_serializer_data', user_id_serializer.data)
+    node_lr = get_node_LR(user_id.pk, "User")
+    print("node_lr", node_lr)
+    grandparent_lr=get_grandparent(node_lr['data']['left'],node_lr['data']['right'])
+    print('grandparent_lr',grandparent_lr)
+    get_machines=get_descendent(grandparent_lr['grandparent']['grandparent_l'], grandparent_lr['grandparent']['grandparent_r'], "Machine")
+    print('get_machines',get_machines)
+    machines = [node['node_id'] for node in get_machines['descendents']]
+    print(machines)
+    # Querying MachineDetails model to get machine details
+    machine_names_query = MachineDetails.objects.filter(id__in=machines)
+    print('machines_query',machine_names_query)
+    machine_details_serializer_data=machine_details_serializer_machine_id_machine_name(machine_names_query,many=True).data
+    print('machine_details_serializer_all_data',machine_details_serializer_data)
+    # Creating a list of dictionaries with 'Machine_id' and 'Machine_Name'
+    machines_list = [{'Machine_id': machine.id, 'Machine_Name': machine.Machine_Name} for machine in
+                     machine_names_query]
+
+    print(machines_list)
+
+    return JsonResponse({"machines":machine_details_serializer_data})

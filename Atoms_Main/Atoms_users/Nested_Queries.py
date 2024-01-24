@@ -47,9 +47,9 @@ def get_descendent(parent_left,parent_right,property):
 
     ).order_by('Node_Id')
 
-    descendant_names = [descendant.Node_Id for descendant in descendants]
+    descendant_names = [{"node_id":descendant.Node_Id,"node_left":descendant.Node_Left,"node_right":descendant.Node_Right} for descendant in descendants]
 
-    return {property:descendant_names}
+    return {"descendents":descendant_names,"property":property}
 
 
 
