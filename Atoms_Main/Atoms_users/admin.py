@@ -74,3 +74,5 @@ class UserDetailsAdmin(AuthUserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User,UserDetailsAdmin)
+admin.site.register(User_details)
+
