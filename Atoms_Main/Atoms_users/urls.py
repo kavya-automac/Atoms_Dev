@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', login_view),
     path('logout/', logout_view, name='logout'),
     path('Machines_List/', Machines_List, name='logout'),
+    path('Machine_module/', Machine_module),
 
 ]
 

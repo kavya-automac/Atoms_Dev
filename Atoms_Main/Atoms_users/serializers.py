@@ -30,3 +30,8 @@ class machine_details_serializer_machine_id_machine_name (serializers.ModelSeria
         model = MachineDetails
         fields =[ "node_id","Machine_Name","Model_No"]
 
+class layerSerializer(serializers.ModelSerializer):#dropdown
+    class Meta:
+        model = Layers
+        fields = ["Layer_Name","Layer_Type"]
+

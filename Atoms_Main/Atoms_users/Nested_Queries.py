@@ -10,8 +10,7 @@ def get_node_LR(node,pro):#user
     left_v=node_left_right.Node_Left
     right_v=node_left_right.Node_Right
     data={'left':left_v,"right":right_v}
-    return {"data":data}
-
+    return data
 
 def get_immediate_parent(left_value, right_value):
 
@@ -41,15 +40,24 @@ def get_grandparent(left_value, right_value):
     return {"grandparent":{"grandparent_l":grandparent_l,"grandparent_r":grandparent_r}}
 
 
-def get_descendent(parent_left,parent_right,property):
+def get_descendent(parent_left,parent_right,property,type):
     descendants = Nested_Table.objects.filter(
         Node_Left__range=(parent_left, parent_right),Property=property
 
     ).order_by('Node_Id')
+    if type =="node_lr":
 
-    descendant_names = [{"node_id":descendant.Node_Id,"node_left":descendant.Node_Left,"node_right":descendant.Node_Right} for descendant in descendants]
+        descendant_names = [{"node_id":descendant.Node_Id,"node_left":descendant.Node_Left,"node_right":descendant.Node_Right} for descendant in descendants]
 
-    return {"descendents":descendant_names,"property":property}
+        return {"descendents":descendant_names,"property":property}
+    elif type == "node":
+        descendant_names = [descendant.Node_Id for descendant in descendants]
+
+        return {"descendents": descendant_names, "property": property}
+    else:
+        pass
+
+
 
 
 
@@ -67,5 +75,3 @@ def Parent_nodes(left_value,right_value,root_left_value,root_right_value):
 
 
     return ascendants_names
-
-
