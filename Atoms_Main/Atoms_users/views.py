@@ -22,7 +22,7 @@ def login_view(request):
         # user = User.objects.get(username=username)
         # print(user)
         user  = authenticate(username=username, password=password)
-        # print('authenticate_user:', user)
+        print('authenticate_user:', type(user))
 
         if  user is not None:
             # print("not none")
@@ -31,18 +31,18 @@ def login_view(request):
             print("logged in:", request.user.username)
             print('request_user',request.user)
             print('request_user_username',request.user.id)
-            user_id=User_details.objects.get(user_id__username="user1")
+            user_id=User_details.objects.get(user_id__username=request.user)
             user_id_serializer=user_details_serializer_all(user_id)
             user_id_serializer_data=user_id_serializer.data
             print('user_id_serializer_data',user_id_serializer.data)
             print(user_id,user_id.Company_id,user_id.Company_id.Company_Logo)
             node_lr=get_node_LR(user_id.pk,"User")
             print("node_lr",node_lr)
-            immediate_prt=get_immediate_parent(node_lr['data']['left'],node_lr['data']['right'])
+            immediate_prt=get_immediate_parent(node_lr['left'],node_lr['right'])
             print('immediate_prt',immediate_prt)
-            pages=get_descendent(immediate_prt['immediate_parent']['immediate_left'], immediate_prt['immediate_parent']['immediate_right'], "Page")
-            page_ids=[node['node_id'] for node in pages['descendents']]
-            print('page_ids',page_ids)
+            pages=get_descendent(immediate_prt['immediate_parent']['immediate_left'], immediate_prt['immediate_parent']['immediate_right'], "Page","node")
+            # page_ids=[node['node_id'] for node in pages['descendents']]
+            # print('page_ids',page_ids)
             # access=[]
             # page_access = {}
             # for i in range(len(pages['Page'])):
@@ -58,7 +58,7 @@ def login_view(request):
             #
             # print(page_access)
             return JsonResponse({"status": "user_validated","first_name":request.user.first_name,
-                             "user_id":user_id_serializer_data['user_id'],"Company_logo":user_id.Company_id.Company_Logo,"pages":page_ids,"status_code":200})
+                             "user_id":user_id_serializer_data['user_id'],"Company_logo":user_id.Company_id.Company_Logo,"pages":pages['descendents'],"status_code":200})
 
         else:
             # print("none")
@@ -81,17 +81,19 @@ def logout_view(request):
 @api_view(['GET'])
 def Machines_List(request):
 
-    user_id = User_details.objects.get(user_id__username="user1")
+    # user_id = User_details.objects.get(user_id__username="user1")
     # user_id_serializer = user_details_serializer_all(user_id)
     # user_id_serializer_data = user_id_serializer.data
     # print('user_id_serializer_data', user_id_serializer.data)
-    node_lr = get_node_LR(user_id.pk, "User")
+    node_id=request.query_params.get('node_id')
+    node_lr = get_node_LR(node_id, "Layer")
     print("node_lr", node_lr)
-    grandparent_lr=get_grandparent(node_lr['data']['left'],node_lr['data']['right'])
-    print('grandparent_lr',grandparent_lr)
-    get_machines=get_descendent(grandparent_lr['grandparent']['grandparent_l'], grandparent_lr['grandparent']['grandparent_r'], "Machine")
+    # grandparent_lr=get_grandparent(node_lr['left'],node_lr['right'])
+    # print('grandparent_lr',grandparent_lr)
+    get_machines=get_descendent(node_lr['left'],node_lr['right'],"Machine","node")
     print('get_machines',get_machines)
-    machines = [node['node_id'] for node in get_machines['descendents']]
+    # machines = [node['node_id'] for node in get_machines['descendents']]
+    machines = get_machines['descendents']
     print(machines)
     # Querying MachineDetails model to get machine details
     machine_names_query = MachineDetails.objects.filter(id__in=machines)
