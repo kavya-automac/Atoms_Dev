@@ -8,7 +8,11 @@ urlpatterns = [
     path('login/', login_view),
     path('logout/', logout_view, name='logout'),
     path('Machines_List/', Machines_List, name='logout'),
-    path('Machine_module/', Machine_module),
+    path('Machine_module/', Machine_module),#dropdown
+    path('Trail_List/', Machines_List, name='Trail_List'),
+    path('Trail_module/', Machine_module, name='Trails_dropdown'),#trails dropdown
+    path('Machines_sub_details/', Machines_sub_details),#trails dropdown
+    path('Trail_details/', Trail_details),#trails dropdown
 
 ]
 

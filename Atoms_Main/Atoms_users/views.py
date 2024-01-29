@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from .Nested_Queries import *
+from .conversions import *
+from .api_functions import *
 
 @api_view(['POST'])
 def login_view(request):
@@ -107,43 +109,10 @@ def Machines_List(request):
     return JsonResponse({"machines":machine_details_serializer_data})
 
 
-def dropdown(user_id):
-
-    # user_id=6
-    user_lr=get_node_LR(user_id, "User")
-    print('user_lr',user_lr)
-    # data = {'left': left_v, "right": right_v}
-
-    data = get_grandparent(user_lr['left'], user_lr['right'])
-    grand_left=data['grandparent']['grandparent_l']
-    grand_right=data['grandparent']['grandparent_r']
-    print('left',data['grandparent']['grandparent_l'])
-    print('right',data['grandparent']['grandparent_r'])
-
-    des = get_descendent(grand_left, grand_right, "Layer","node_lr")
-    print('des',des)
-    result=[]
-    for i in des['descendents']:
-        layer_parents= Parent_nodes(i["node_left"],i["node_right"],grand_left,grand_right)
-        print('p...........',layer_parents)
-        # get_layer_details=Layers.objects.filter(id__in=layer_parents).values_list('Layer_Name',flat=True)
-        get_layer_details=Layers.objects.filter(id__in=layer_parents).values('Layer_Name','Layer_Type')
-        print('get_layer_details',get_layer_details)
-        serializer=layerSerializer(get_layer_details,many=True)
-        print('.............',serializer.data)
-        node_name=serializer.data[-1]["Layer_Name"]
-        # node_name=i["node_id"]
-        parent= [name["Layer_Name"] for name in serializer.data]
-        Type=serializer.data[-1]["Layer_Type"]
-        result_data={"node":node_name,"type":Type,"parent":parent}
-        result.append(result_data)
-    return result
-
-
 @api_view(['GET'])
 
-def Machine_module(request):
-    user_id=5#from frontend
+def Machine_module(request):#dropdown
+    user_id=12#from frontend
     drop_down=dropdown(user_id)
 
 
@@ -154,3 +123,69 @@ def Machine_module(request):
     print('sub_pages',sub_pages)
 
     return JsonResponse({"drop_down":drop_down,"sub_pages":sub_pages["descendents"]})
+
+
+@api_view(['GET'])
+
+def Machines_sub_details(request):#node_id= machine_id
+    if "node_id" in request.GET and "module" in request.GET:
+        module = request.GET.get('module')
+        node_id = request.GET.get('node_id')
+
+        switch_dict = {
+            "5": lambda: JsonResponse(Details(node_id)),
+            "6": lambda: JsonResponse({"status": 'kpi under development'}),
+            "7": lambda: JsonResponse(Machine_Iostatus(node_id)),
+            "8": lambda: JsonResponse(Machine_Control(node_id)),
+            "9": lambda: JsonResponse({"status": 'Settings under development'}),
+            'default': lambda: JsonResponse({"status": 'please give correct module'}),
+        }
+
+        # Execute the corresponding function from the switch_dict or the default function
+        result = switch_dict.get(module, switch_dict['default'])()
+
+        return result
+    else:
+        resultant = {"status": 'enter_correct__node_id_and_module'}
+        return JsonResponse(resultant)
+
+@api_view(['GET'])
+
+def Trail_details(request):#node_id,date
+
+
+    selected_date= request.GET.get('date')
+    node_id=request.GET.get('node_id')#node_id = 1,2 seleted machine_id
+
+    try:
+        node = MachineDetails.objects.get(pk=node_id)
+    except MachineDetails.DoesNotExist:
+        error_message = "Please enter a valid node_machine_id."
+        return JsonResponse({"status": error_message}, status=400)
+    machine_id = node.Machine_id
+    machine_name = node.Machine_Name
+    if node_id:
+        io_key_data = io_list_data(node_id)
+        io_value_data = io_values(machine_id, "Trails",selected_date)
+        trail_result=[]
+        for trail in io_value_data:
+            Trails_data = key_value_merge(node_id, io_key_data, trail)
+
+            trail_result_output={
+                "data":Trails_data,
+                "timestamp":trail["Timestamp"]
+
+            }
+            trail_result.append(trail_result_output)
+        print('length...................',len(trail_result))
+
+        return JsonResponse({"machine_details": {
+                "node_id":node_id,
+                "machine_name": machine_name,
+                "machine_id":machine_id
+
+            },"Trail_Details":trail_result})
+
+    else:
+        return {"status": "please enter valid node_id"}
+

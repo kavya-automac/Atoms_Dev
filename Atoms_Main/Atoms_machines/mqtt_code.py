@@ -1,0 +1,67 @@
+import os
+import paho.mqtt.client as mqtt
+from django.conf import settings
+# from . import multi_topic_file
+import ssl
+from .Multi_topic_file import *
+# ------------------------hive broker----------------------------
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+       print('Connected successfully on hive')
+       client.subscribe('machine_data_dev')
+       client.subscribe('websocket_data_dev')
+
+    else:
+       print('Bad connection. Code:', rc)
+
+
+def on_message(client, userdata, msg):
+    connected_machine_data = msg.payload.decode()  # Assuming the payload is a string
+    topic = msg.topic
+    if topic == "machine_data_dev":
+        all_topics(connected_machine_data,topic)
+
+
+
+
+
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+client.connect(
+   host=settings.MQTT_SERVER,
+   port=settings.MQTT_PORT,
+   keepalive=settings.MQTT_KEEPALIVE
+)
+
+#
+# # aws connection  MID004-----------------------------------------------
+#
+# def on_connect_1(client_1, userdata, flags, rc):
+#    if rc == 0:
+#        print('Connected successfully on aws')
+#        client_1.subscribe('machine_data_dev')
+#        client_1.subscribe('websocket_data_dev')
+#    else:
+#        print('Bad connection. Code:', rc)
+#
+#
+# def on_message_1(client_1, userdata, msg):
+#     connected_aws_machine = msg.payload.decode()  # Assuming the payload is a string
+#
+# client_1 = mqtt.Client()
+# client_1.on_connect = on_connect_1
+# client_1.on_message = on_message_1
+# # client_1.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+# client_1.tls_set(settings.CAPATH, certfile=settings.CERTPATH, keyfile=settings.KEYPATH,
+#                     cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
+# client_1.connect(
+#
+#    host=settings.AWSHOST,
+#    port=settings.AWSPORT,
+#    keepalive=settings.MQTT_KEEPALIVE
+# )
+#
