@@ -70,7 +70,7 @@ class TechnicalDetails(models.Model):
 
 
 class MachineDetails(models.Model):
-    Machine_id = models.CharField(max_length=300)
+    Machine_id = models.CharField(max_length=300,unique=True)
     Machine_Name = models.CharField(max_length=300)
     Model_No = models.CharField(max_length=300)
     Gateway_Id = models.CharField(max_length=300)

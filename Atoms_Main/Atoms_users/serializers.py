@@ -35,3 +35,39 @@ class layerSerializer(serializers.ModelSerializer):#dropdown
         model = Layers
         fields = ["Layer_Name","Layer_Type"]
 
+
+class ManualsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manuals
+        fields = ['Filename','FileUrl']
+
+class TechnicalDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TechnicalDetails
+        fields = ['Item_Name','Manufacture_Name','Manufacture_Model_No','Expiry_Date']
+
+
+
+
+class Details_serializer(serializers.ModelSerializer):#details mauals and techinedetails
+    Manuals = ManualsSerializer(many=True, read_only=True)
+    Technical_Details = TechnicalDetailsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MachineDetails
+        fields = '__all__'
+
+
+
+class only_details_serailizers(serializers.ModelSerializer):
+    class Meta:
+        model = MachineDetails
+        fields = ['Machine_Name','Model_No','Gateway_Id']
+
+
+class IO_list_serializer(serializers.ModelSerializer): #iostatus api for keys # trail_details # kpis for keys
+    class Meta:
+        model=IOList
+        # fields = '__all__'
+        fields = ('IO_type','IO_name','IO_value','IO_color','IO_Unit','Control')
+
