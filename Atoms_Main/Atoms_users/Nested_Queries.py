@@ -44,7 +44,7 @@ def get_descendent(parent_left,parent_right,property,type):
     descendants = Nested_Table.objects.filter(
         Node_Left__range=(parent_left, parent_right),Property=property
 
-    ).order_by('Node_Id')
+    ).order_by('Node_Left')
     if type =="node_lr":
 
         descendant_names = [{"node_id":descendant.Node_Id,"node_left":descendant.Node_Left,"node_right":descendant.Node_Right} for descendant in descendants]
@@ -72,6 +72,9 @@ def Parent_nodes(left_value,right_value,root_left_value,root_right_value):
 
 
     ascendants_names = [ascendants.Node_Id for ascendants in ascendants]
+    ascendants_left = [[ascendants.Node_Left,ascendants.Node_Right] for ascendants in ascendants]
+    print('ascendants_left/////////',ascendants_left)
+    # ascendants_right = [ascendants.Node_Right for ascendants in ascendants]
 
 
     return ascendants_names

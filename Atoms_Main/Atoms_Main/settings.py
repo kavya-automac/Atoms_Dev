@@ -147,3 +147,22 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+MQTT_SERVER = 'broker.hivemq.com'
+MQTT_PORT = 1883
+MQTT_KEEPALIVE = 60
+MQTT_USER = ''
+MQTT_PASSWORD = ''
+
+
+#
+#
+# AWSHOST = "a2vvzyfxrtj9zw-ats.iot.ap-south-1.amazonaws.com"
+# AWSPORT = 8883
+# CLIENTID = "maithri_client"
+# THINGNAME = "maithri_client"
+# CAPATH = "Automac_machines_app/certificates/AmazonRootCA1.pem"
+# CERTPATH = "Automac_machines_app/certificates/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-certificate.pem.crt"
+# KEYPATH = "Automac_machines_app/certificates/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-private.pem.key"
+#
