@@ -1,7 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.dispatch import receiver
 
 # Create your models here.
+from django.db.models.signals import post_save
 
 
 class MachineRawData(models.Model):
@@ -42,3 +44,24 @@ class CardsRawData(models.Model):
 
     def __str__(self):
         return "%s %s %s" % (self.Title, self.Timestamp, self.Machine_Id)
+
+
+
+@receiver(post_save,sender=MachineRawData)
+def signal(sender,instance,created,**kwargs):
+    if created:
+
+        # print("new data arrived")
+        # machine=instance.machine_id
+        # print('instanceee',instance)
+        # print('machine......',machine)
+        from Atoms_users import Kpi_Conversions
+        #todo : import files
+
+        Kpi_Conversions.get_kpi_conversion_fun(instance)
+        # time.sleep(5)
+
+
+
+
+

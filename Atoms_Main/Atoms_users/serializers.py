@@ -28,7 +28,7 @@ class machine_details_serializer_machine_id_machine_name (serializers.ModelSeria
     node_id = serializers.IntegerField(source='id', read_only=True)
     class Meta:
         model = MachineDetails
-        fields =[ "node_id","Machine_Name","Model_No"]
+        fields =[ "node_id","Machine_Name","Machine_id","Model_No"]
 
 class layerSerializer(serializers.ModelSerializer):#dropdown
     class Meta:
