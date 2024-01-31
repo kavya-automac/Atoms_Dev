@@ -12,7 +12,9 @@ urlpatterns = [
     path('Trail_List/', Machines_List, name='Trail_List'),
     path('Trail_module/', Machine_module, name='Trails_dropdown'),#trails dropdown
     path('Machines_sub_details/', Machines_sub_details),#trails dropdown
-    path('Trail_details/', Trail_details),#trails dropdown
+    path('Trail_details/', Trail_details,name=Trail_details),#trails dropdown
+    path('Reports_details/', Reports_details,name='Reports_details'),
+    path('Reports_module/', Machine_module,name='Reports_module'),
 
 ]
 

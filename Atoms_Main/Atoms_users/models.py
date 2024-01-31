@@ -142,7 +142,9 @@ class MachineCardsList(models.Model):  # datapoints for particular kpi
     X_Label = models.CharField(max_length=100,blank=True)
     Y_Label = models.CharField(max_length=100,blank=True)
     Ledger = ArrayField(models.CharField(max_length=200, blank=True))
-
+    Title = models.CharField(max_length=100,blank=True)
+    Card_type = models.ForeignKey(CardInventory,null=True,blank=True,on_delete=models.CASCADE)
+    Unit = ArrayField(models.CharField(max_length=200, blank=True),default=list)
     class Meta:
         app_label = 'Atoms_users'
         db_table = 'Users_Schema"."MachineCardsList'
