@@ -134,7 +134,7 @@ def machine_kpis(node_id):
         switch_dict = {
             "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
-            "Text": lambda: text_card(i,entire_result_data,kpi_result),
+            "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Pie": lambda: "under dev",
 
             'default': lambda: {"status": ""},
@@ -146,10 +146,10 @@ def machine_kpis(node_id):
     return result
 
 
-def Reports_data(node_id,start_datetime,end_datetime1,report_type):
-    print('node_id in reports_data',node_id)
+def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
+    print('node_id in reports_data',user_id)
     todays_date = datetime.datetime.now().date()
-    m_l_r = get_node_LR(node_id, "Machine")
+    m_l_r = get_node_LR(user_id, "User")
     p_l_r = get_immediate_parent(m_l_r['left'], m_l_r['right'])
 
     child_kpi = get_descendent(p_l_r['immediate_parent']['immediate_left'],
@@ -173,9 +173,9 @@ def Reports_data(node_id,start_datetime,end_datetime1,report_type):
             print('i',i)
             print('i..........',i['Card_type__Card_Type'])
             switch_dict = {
-                "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
-                "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
-                "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
+                "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
+                "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
+                "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Pie": lambda: "under dev",
 
                 'default': lambda: {"status": ""},
@@ -207,7 +207,7 @@ def Reports_data(node_id,start_datetime,end_datetime1,report_type):
 
 
 
-def Line_bar_graph(data,entire_result_data,kpi_result,method,start_datetime=None,end_datetime=None,report_type=None):
+def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machine_id=None,start_datetime=None,end_datetime=None,report_type=None):
     todays_date = datetime.datetime.now().date()
     if method == "kpis":
 
@@ -219,8 +219,8 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,start_datetime=None
     elif method =="reports":
 
         kpirawdata = CardsRawData.objects.filter(
-            Machine_Id=[data['Machine_Id__Machine_id']],
-            Title=data['Title'],  # Assuming there's a field for KPI ID in the Machine_KPI_Data model
+            Machine_Id=[machine_id],
+            Title=report_type,  # Assuming there's a field for KPI ID in the Machine_KPI_Data model
             Timestamp__range=[start_datetime, end_datetime],
         ).order_by('Timestamp')
         print('kpirawdata',kpirawdata)
@@ -260,8 +260,10 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,start_datetime=None
 
 def text_card(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):
     todays_date = datetime.datetime.now().date()
+    kpi_result_data = []
 
     if method == "kpis":
+
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
@@ -275,7 +277,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Timestamp__range=[start_datetime, end_datetime],
         ).order_by('Timestamp')
 
-        kpi_result_data = []
+        # kpi_result_data = []
         for record in kpirawdata:
             # Process each record and create a dictionary
             record_data = {"name": record.Name, "value": record.Value, "unit": data['Unit'],"timestamp":record.Timestamp}
@@ -364,5 +366,5 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 #     print('kpi_entry', kpi_entry)
 #
 #     return kpi_entry
-#
-#
+
+

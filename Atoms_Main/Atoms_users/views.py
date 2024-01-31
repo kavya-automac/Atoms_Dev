@@ -130,6 +130,51 @@ def Machine_module(request):#dropdown
 
     return JsonResponse({"drop_down":drop_down,"sub_pages":sub_pages["descendents"]})
 
+def Trail_module(request):#dropdown
+    # user_id=10#from frontend
+    print('request.headers',request.headers)
+    print('request.headers',request.headers['user-id'])
+    user_id=request.headers['user-id']
+    print("user_id||||||||||||||||",user_id)
+    drop_down=dropdown(user_id)
+
+
+    user_left_right=get_node_LR(user_id,"User")
+    # im_lr=get_immediate_parent(user_left_right['left'], user_left_right['right'])
+
+    # sub_pages=get_descendent(im_lr['immediate_parent']['immediate_left'],im_lr['immediate_parent']['immediate_right'],"Subpage","node")
+    # print('sub_pages',sub_pages)
+
+    return JsonResponse({"drop_down":drop_down})
+
+def Report_module(request):#dropdown
+    # user_id=10#from frontend
+    print('request.headers',request.headers)
+    print('request.headers',request.headers['user-id'])
+    user_id=request.headers['user-id']
+    print("user_id||||||||||||||||",user_id)
+    drop_down=dropdown(user_id)
+
+
+    user_left_right=get_node_LR(user_id,"User")
+    im_lr=get_immediate_parent(user_left_right['left'], user_left_right['right'])
+
+    Reports_Type=get_descendent(im_lr['immediate_parent']['immediate_left'],im_lr['immediate_parent']['immediate_right'],"Report","node")
+    print('sub_pages',Reports_Type)
+    report_des = Reports_Type['descendents']
+    # report_title_names = MachineCardsList.objects.filter(id__in=report_des)
+    report=[]
+    report_title_names = MachineCardsList.objects.filter(id__in=report_des).values('Title')
+    print('report_title_names',report_title_names)
+    for i in report_title_names:
+        print('i',i)
+        report.append(i['Title'])
+
+
+    return JsonResponse({"drop_down":drop_down,"report_titles":report})
+
+
+
 
 @api_view(['GET'])
 
@@ -141,8 +186,8 @@ def Machines_sub_details(request):#node_id= machine_id
         switch_dict = {
             "5": lambda: JsonResponse(Details(node_id)),
             "6": lambda: JsonResponse(machine_kpis(node_id)),
-            "7": lambda: JsonResponse({"iostatus":Machine_Iostatus(node_id)}),
-            "8": lambda: JsonResponse({"control":Machine_Control(node_id)}),
+            "7": lambda: JsonResponse({"iostatus": Machine_Iostatus(node_id)}),
+            "8": lambda: JsonResponse({"control": Machine_Control(node_id)}),
             "9": lambda: JsonResponse({"status": 'Settings under development'}),
             'default': lambda: JsonResponse({"status": 'please give correct module'}),
         }
@@ -200,8 +245,8 @@ def Trail_details(request):#node_id,date
 @api_view(['POST'])
 def Reports_details(request):
     report_type = request.data.get('report_type')
-    # machine_id = request.data.get('machine_id')
-    node_id = request.data.get('node_id')#machine_id
+    machine_id = request.data.get('machine_id')
+    user_id = request.data.get('user_id')
     start_datetime = request.data.get('start_datetime')
     end_datetime1 = request.data.get('end_datetime')
     try:
@@ -225,7 +270,7 @@ def Reports_details(request):
     #     error_message = "Please enter a valid node_machine_id."
     #     return JsonResponse({"status": error_message}, status=400)
 
-    report_frontend_data=Reports_data(node_id,start_datetime,end_datetime,report_type)
+    report_frontend_data=Reports_data(user_id,machine_id,start_datetime,end_datetime,report_type)
 
     return JsonResponse({"report_details":report_frontend_data})
 
