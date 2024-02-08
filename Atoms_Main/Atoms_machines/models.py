@@ -58,7 +58,8 @@ def signal(sender,instance,created,**kwargs):
         from Atoms_users import Kpi_Conversions
         #todo : import files
 
-        Kpi_Conversions.get_kpi_conversion_fun(instance)
+        Kpi_Conversions.get_kpi_conversion_fun1(instance)
+        # Kpi_Conversions.test(instance)
         # time.sleep(5)
 
 

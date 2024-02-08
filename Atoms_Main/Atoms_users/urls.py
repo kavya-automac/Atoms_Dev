@@ -16,6 +16,8 @@ urlpatterns = [
     path('Reports_details/', Reports_details, name='Reports_details'),
     path('Reports_module/', Report_module, name='Reports_module'),
     path('Report_List/', Machines_List, name='Report_List'),
+    path('machine_control/', machine_control, name='machine_control'),
+    path('dashboard/', dashboard, name='dashboard'),
 
 ]
 
