@@ -124,6 +124,8 @@ def machine_kpis(node_id):
     kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"]).values('Machine_Id__Machine_id',
                                     'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit')
     print('kpinode_data',kpinode_data)
+
+
     entire_result_data=[]
     # x_axis=[]
     # y_axis=[]
@@ -208,7 +210,8 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
 
 
 def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machine_id=None,start_datetime=None,end_datetime=None,report_type=None):
-    todays_date = datetime.datetime.now().date()
+    formatted_datetime = datetime.datetime.now().date()
+    todays_date = formatted_datetime.strftime("%Y-%m-%d")
     if method == "kpis":
 
         kpirawdata = CardsRawData.objects.filter(
@@ -216,6 +219,13 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Title=data['Title'],
             Timestamp__date=todays_date
         ).order_by('-Timestamp')[:10]
+    elif method == "kpiweb":
+        kpirawdata = CardsRawData.objects.filter(
+            Machine_Id__contains=[data['Machine_Id__Machine_id']],
+            Title=data['Title'],
+            Timestamp__date=todays_date
+        ).order_by('-Timestamp')[::12]
+
     elif method =="reports":
 
         kpirawdata = CardsRawData.objects.filter(
@@ -230,7 +240,8 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
     card_data = []
     for j in kpirawdata:
         print('jjjj', j)
-        kpi_result_data = {"x_axis_data": j.Timestamp, "y_axis_data": j.Value}
+        timestamp_str = str(j.Timestamp)
+        kpi_result_data = {"x_axis_data": timestamp_str, "y_axis_data": j.Value}
         card_data.append(kpi_result_data)
         # x_axis.append(j.Timestamp)
         # y_axis.append(j.Value)
@@ -259,7 +270,9 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
 
 
 def text_card(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):
-    todays_date = datetime.datetime.now().date()
+    formatted_datetime = datetime.datetime.now().date()
+    todays_date = formatted_datetime.strftime("%Y-%m-%d")
+
     kpi_result_data = []
 
     if method == "kpis":
@@ -269,7 +282,12 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Title=data['Title'],
             Timestamp__date=todays_date
         ).order_by('-Timestamp').first()
-
+    elif method == "kpiweb":
+        kpirawdata = CardsRawData.objects.filter(
+            Machine_Id__contains=[data['Machine_Id__Machine_id']],
+            Title=data['Title'],
+            Timestamp__date=todays_date
+        ).order_by('-Timestamp')[::12]
     elif method == "reports":
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id=[data['Machine_Id__Machine_id']],

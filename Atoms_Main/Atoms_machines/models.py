@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
+
 class MachineRawData(models.Model):
     objects = models.Manager()
     Db_Timestamp = models.DateTimeField(auto_now_add=True)
@@ -59,6 +60,9 @@ def signal(sender,instance,created,**kwargs):
         #todo : import files
 
         Kpi_Conversions.get_kpi_conversion_fun(instance)
+        from . import kpi_websocket
+
+        kpi_websocket.kpi_socket(instance.Machine_Id)
         # time.sleep(5)
 
 

@@ -11,7 +11,7 @@ def get_kpi_conversion_fun(instance):
     # print('get_data',get_data)
     for data in get_data:
         # print('???????????',data.DataPoints[0])
-        get_convserion_fun = data.Conversion_Fun
+        get_convserion_fun = data.Conversion_Fun[0]
         datapoint=data.DataPoints
         print('datapoint',datapoint)
 

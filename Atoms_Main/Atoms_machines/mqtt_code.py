@@ -4,6 +4,7 @@ from django.conf import settings
 # from . import multi_topic_file
 import ssl
 from .Multi_topic_file import *
+from .import io_status_websocket
 # ------------------------hive broker----------------------------
 
 
@@ -22,6 +23,11 @@ def on_message(client, userdata, msg):
     topic = msg.topic
     if topic == "machine_data_dev":
         all_topics(connected_machine_data,topic)
+        from . import io_status_websocket
+
+        io_status_websocket.io_websocket(connected_machine_data)
+        io_status_websocket.control_websocket(connected_machine_data)
+
 
 
 

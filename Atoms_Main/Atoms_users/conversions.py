@@ -189,6 +189,7 @@ def io_list_data(node_id):#machine_id 1 ,2....
         "machine_id": machine_id
     }
 
+
 def io_values(node_id,type,date=None):#machine_id="MAC_06"
     if type == "iostatus" or type == "control":
         machine_values_data = MachineRawData.objects.filter(Machine_Id=node_id).order_by('-Timestamp').first()
@@ -235,6 +236,7 @@ def key_value_merge(node_id,keys,io_value_data):
     # io_value_data=io_values(node_id)
     # keys=io_list_data(node_id)
     print('keys',keys)
+    print('io_value_data',io_value_data)
     digital_input_result = []
     digital_output_result = []
     analog_input_result = []
