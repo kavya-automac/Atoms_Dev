@@ -25,11 +25,12 @@ SECRET_KEY = 'django-insecure-)re%h1ix@vmx0o3!z16ko^_tj$cm*50sqsv1q0kt7h%9!ohupb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220']
+ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',"65.0.154.172"]
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'Atoms_users',
     'Atoms_machines',
+
+    'channels',
 
 ]
 
@@ -66,16 +69,17 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS=True
 
+CORS_ALLOW_HEADERS = [ 'Access-Control-Allow-Headers',
+    'Access-Control-Allow-Methods',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Credentials',
+
+    'Content-Type',
+    'Authorization',
+    'X-CSRFToken',
+    'user-id'  ]
 # CORS_ALLOW_HEADERS = ["*"]
-CORS_ALLOW_HEADERS = (
-    "accept",
-    "authorization",
-    "content-type",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-    "user-id"
-)
+
 
 
 
@@ -99,6 +103,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Atoms_Main.wsgi.application'
+ASGI_APPLICATION = 'Atoms_Main.asgi.application'
+
 
 
 # Database
@@ -175,3 +181,11 @@ MQTT_PASSWORD = ''
 # CERTPATH = "Automac_machines_app/certificates/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-certificate.pem.crt"
 # KEYPATH = "Automac_machines_app/certificates/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-private.pem.key"
 #
+CHANNEL_LAYERS={
+    "default":{
+        'BACKEND':"channels_redis.core.RedisChannelLayer",
+        "CONFIG":{
+            "hosts":['redis://65.0.154.172'],
+        }
+    }
+}

@@ -5,6 +5,8 @@ from django.apps import apps
 def Machine_data_to_db(mqtt_machines_data):
     payload = json.loads(mqtt_machines_data)
 
+<<<<<<< HEAD
+=======
     # timestamp = payload['timestamp'].split('.')[0]
     # machine_id = payload['machine_id']
     # machine_location = payload['machine_location']
@@ -13,6 +15,7 @@ def Machine_data_to_db(mqtt_machines_data):
     # analog_input = payload.get('analog_inputs')
     # analog_output = payload.get('analog_outputs')
     # other=payload.get('other')
+>>>>>>> main
     timestamp = payload['Timestamp'].split('.')[0]
     machine_id = payload['Machine_Id']
     machine_location = payload['Machine_Location']
@@ -33,6 +36,7 @@ def Machine_data_to_db(mqtt_machines_data):
 
         machine_data_storing = MachineRawData(
             # timestamp=timezone.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f'),
+
             Timestamp=timestamp,
             Machine_Id=machine_id,
             Machine_Location=machine_location,
