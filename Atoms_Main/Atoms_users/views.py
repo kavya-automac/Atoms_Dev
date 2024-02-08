@@ -8,6 +8,8 @@ from .serializers import *
 from .Nested_Queries import *
 from .conversions import *
 from .api_functions import *
+from Atoms_machines.mqtt_code import client
+import json
 
 @api_view(['POST'])
 def login_view(request):
@@ -221,9 +223,15 @@ def Trail_details(request):#node_id,date
         trail_result=[]
         for trail in io_value_data:
             Trails_data = key_value_merge(node_id, io_key_data, trail)
+            # digital_input
+            # digital_output
+            # analog_input
+            # analog_output
+            # others
 
             trail_result_output={
-                "data":Trails_data,
+                "data":Trails_data['digital_input']+Trails_data['digital_output']+Trails_data['analog_input']+
+                Trails_data['analog_output']+Trails_data['others'],
                 "timestamp":trail["Timestamp"]
 
             }
@@ -286,6 +294,58 @@ def Reports_details(request):
     #                                  "Report", "node")
     # print('get_report_list',get_report_list['descendents'])
     pass
+
+
+@api_view(['PUT'])
+def machine_control(request):
+    # print('******',request.data)
+
+    machine_id=request.data.get('machine_id')
+    name=request.data.get('name')
+    value=request.data.get('value')
+    Type=request.data.get('type')
+    machine = MachineDetails.objects.get(pk=machine_id)
+    print('pk',machine.Machine_id)
+    input_output_data = IOList.objects.filter(IO_Group=machine.IO_Group_Id,IO_type=Type).order_by('id').values_list('IO_name',flat=True)
+    output = list(input_output_data).index(name)
+    # print('index***********',list(input_output_data).index(name))
+    print('input_output_data----------',input_output_data)
+    print('output----------',output)
+    # print('machine_id,name,value', machine_id,name,value)
+
+    control_json = {"mid":machine.Machine_id,"parameter_type":Type, "data":{"output":output, "value":value}}
+    # client.publish("websocket_data", json.dumps(control_json))
+    client.publish("controls", json.dumps(control_json))
+    # return JsonResponse({"status":list(input_output_data).index(name)})
+    return JsonResponse({"status":"data has been sent"})
+
+@api_view(['GET'])
+
+def dashboard(request):
+    user_id = 10
+    # user_id = request.headers['user-id']
+
+    user_lr = get_node_LR(user_id, "User")
+    layer = get_grandparent(user_lr['left'], user_lr['right'])
+    department = get_immediate_parent(user_lr['left'], user_lr['right'])
+    get_dashboard = get_descendent(department['immediate_parent']['immediate_left'],
+                                   department['immediate_parent']['immediate_right'],'Dashboard','node')
+    get_machines = get_descendent(layer['grandparent']['grandparent_l'],layer['grandparent']['grandparent_r'],
+                                  'Machine','node')
+    machines = get_machines['descendents']
+    dash = get_dashboard['descendents']
+    print(machines)
+    print('dash',dash)
+    # Querying MachineDetails model to get machine details
+    total_count_result=count_machines(machines)
+    dashboard_cards = dashboard_data(dash)
+    print('dashboard_cards',dashboard_cards)
+
+
+
+    return JsonResponse(total_count_result)
+
+
 
 
 

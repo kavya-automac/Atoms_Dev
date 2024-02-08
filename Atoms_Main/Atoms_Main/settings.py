@@ -78,6 +78,8 @@ CORS_ALLOW_HEADERS = [ 'Access-Control-Allow-Headers',
     'Authorization',
     'X-CSRFToken',
     'user-id'  ]
+# CORS_ALLOW_HEADERS = ["*"]
+
 
 
 

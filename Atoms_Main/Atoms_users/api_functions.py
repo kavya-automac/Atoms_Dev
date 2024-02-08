@@ -9,7 +9,7 @@ from .models import *
 from .serializers import *
 from .Nested_Queries import *
 from .conversions import *
-from Atoms_machines.models import CardsRawData
+from Atoms_machines.models import CardsRawData,MachineRawData
 from django.db.models import F, CharField, Value
 from django.db.models.functions import Cast
 
@@ -191,22 +191,7 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
     else:
         return "no data available"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#  graphs ,text card and any calculation functions from here
 
 
 def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machine_id=None,start_datetime=None,end_datetime=None,report_type=None):
@@ -242,6 +227,8 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
         print('jjjj', j)
         timestamp_str = str(j.Timestamp)
         kpi_result_data = {"x_axis_data": timestamp_str, "y_axis_data": j.Value}
+        kpi_result_data = {"x_axis_data": j.Timestamp, "y_axis_data": j.Value}
+        print('kpi_result_data',kpi_result_data)
         card_data.append(kpi_result_data)
         # x_axis.append(j.Timestamp)
         # y_axis.append(j.Value)
@@ -386,3 +373,66 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 #     return kpi_entry
 
 
+def count_machines(machines):
+    current_time = datetime.datetime.now()
+    machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id')
+    print('machines_query', machine_names_query)
+    # result = []
+    machine_count = 0
+    inactive_count = 0
+    active_count = 0
+    for machine_data in machine_names_query:
+        print('machine_data', machine_data)
+
+        machines = machine_data['Machine_id']
+        machine_count += 1
+
+        if MachineRawData.objects.filter(Machine_Id=machines).exists():
+
+            # to_fetch_lastrecord_data = MachineDetails.objects.filter(machine_id=machines).values('machine_id','timestamp').latest('timestamp')
+            to_fetch_lastrecord_data = MachineRawData.objects.filter(Machine_Id=machines).values('Machine_Id',
+                                                                                                 'Timestamp')
+            fetch_latest = to_fetch_lastrecord_data.latest('Timestamp')
+
+            print('to_fetch_lastrecord_data', fetch_latest)
+            # print('fetch_latest', fetch_latest)
+            last_record_time1 = fetch_latest['Timestamp']
+            print('last_record_time1', last_record_time1)
+
+            last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
+            last_record_time = datetime.datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
+
+            # print('last_record_time', last_record_time)
+            # print('current_time', current_time)
+
+            time_difference = abs((current_time - last_record_time).total_seconds())
+            # time_difference = current_time - last_record_time
+            print('time_difference', time_difference)
+            # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
+
+            if time_difference > 60:
+                # machine_status = "inactive"
+                inactive_count += 1
+                # print('inactive if', inactive_count)
+            else:
+                # machine_status = "active"
+                active_count += 1
+                # print('active else', active_count)
+        else:
+            inactive_count += 1
+            # print('inactive else', inactive_count)
+        count_card_data = {
+            "title": "count_card",
+            "machine_count": str(machine_count),
+            "inactive_count": str(inactive_count),
+            "active_count": str(active_count)
+        }
+    return count_card_data
+
+def dashboard_data(dash):
+    for k in dash:
+        get_id_data = MachineCardsList.objects.get(pk=k)
+        print('get_id_data',get_id_data)
+        # get_query_dashboard = CardsRawData.objects.filter(Machine_Id =[get_id_data.Machine_Id])
+
+    pass

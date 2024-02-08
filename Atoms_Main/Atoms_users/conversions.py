@@ -114,7 +114,8 @@ def io_list_data(node_id):#machine_id 1 ,2....
                 "unit": di['IO_Unit'],
                 "control": di['Control'],
                 "color": di['IO_color'],
-                "iovalue": di['IO_value']
+                "iovalue": di['IO_value'],
+                "type": di['IO_type']
             })
             input_output_data_serializer_data.remove(di)
     print(
@@ -129,7 +130,8 @@ def io_list_data(node_id):#machine_id 1 ,2....
                 "unit": do['IO_Unit'],
                 "control": do['Control'],
                 "color": do['IO_color'],
-                "iovalue": do['IO_value']
+                "iovalue": do['IO_value'],
+                "type": do['IO_type']
             })
             input_output_data_serializer_data.remove(do)
 
@@ -146,7 +148,8 @@ def io_list_data(node_id):#machine_id 1 ,2....
                 "unit": ai['IO_Unit'],
                 "control": ai['Control'],
                 "color": ai['IO_color'],
-                "iovalue": ai['IO_value']
+                "iovalue": ai['IO_value'],
+                "type": ai['IO_type']
             })
             # input_output_data_serializer_data.remove(ai)
 
@@ -160,7 +163,8 @@ def io_list_data(node_id):#machine_id 1 ,2....
                 "unit": ao['IO_Unit'],
                 "control": ao['Control'],
                 "color": ao['IO_color'],
-                "iovalue": ao['IO_value']
+                "iovalue": ao['IO_value'],
+                "type": ao['IO_type']
             })
             input_output_data_serializer_data.remove(ao)
     # print(
@@ -176,7 +180,8 @@ def io_list_data(node_id):#machine_id 1 ,2....
                 "unit": p['IO_Unit'],
                 "control": p['Control'],
                 "color": p['IO_color'],
-                "iovalue": p['IO_value']
+                "iovalue": p['IO_value'],
+                "type": p['IO_type']
             })
             input_output_data_serializer_data.remove(p)
 
@@ -258,13 +263,14 @@ def key_value_merge(node_id,keys,io_value_data):
         io_value_range= keys['digital_input_keys'][di]['iovalue']
         # print("----------------------",io_value_range.index(io_value))
         io_color= keys['digital_input_keys'][di]['color'][io_value_range.index(io_value)]
-
+        io_type = keys['digital_input_keys'][di]['type']
         data={
             "name":io_name,
             "value":io_value,
             "color":io_color,
             "unit":io_unit,
-            "control": io_control
+            "control": io_control,
+            "type": io_type
         }
         digital_input_result.append(data)
     print('digital_input_keys',digital_input_result)
@@ -274,6 +280,8 @@ def key_value_merge(node_id,keys,io_value_data):
         io_name = keys['digital_output_keys'][do]['name']
         io_unit =  keys['digital_output_keys'][do]['unit']
         io_control =  keys['digital_output_keys'][do]['control']
+        io_type = keys['digital_output_keys'][do]['type']
+
 
 
         io_value_range = keys['digital_input_keys'][do]['iovalue']
@@ -284,7 +292,8 @@ def key_value_merge(node_id,keys,io_value_data):
             "value": io_value,
             "color": io_color,
             "unit":io_unit,
-            "control": io_control
+            "control": io_control,
+            "other":io_type
         }
         digital_output_result.append(data)
     print('digital_input_keys', digital_output_result)
@@ -297,6 +306,8 @@ def key_value_merge(node_id,keys,io_value_data):
         print('iooooooooooooooonameeeeee',io_name)
         io_unit = keys['analog_input_keys'][ai]['unit']
         io_control = keys['analog_input_keys'][ai]['control']
+        io_type = keys['analog_input_keys'][ai]['type']
+
 
     # io_value_range = io_key_data["input_output_data_serializer_data"][ai]['IO_value']
         io_color = keys['analog_input_keys'][ai]['color'][0]
@@ -305,7 +316,8 @@ def key_value_merge(node_id,keys,io_value_data):
             "value": io_value,
             "color": io_color,
             "unit":io_unit,
-            "control": io_control
+            "control": io_control,
+            "type": io_type
         }
         analog_input_result.append(data)
     print('analog_input_result', analog_input_result)
@@ -315,6 +327,8 @@ def key_value_merge(node_id,keys,io_value_data):
         io_name = keys['analog_output_keys'][ao]['name']
         io_unit =  keys['analog_output_keys'][ao]['unit']
         io_control =  keys['analog_output_keys'][ao]['control']
+        io_type = keys['analog_output_keys'][ao]['type']
+
 
 
         # io_value_range = io_key_data["input_output_data_serializer_data"][ai]['IO_value']
@@ -324,7 +338,8 @@ def key_value_merge(node_id,keys,io_value_data):
             "value": io_value,
             "color": io_color,
             "unit":io_unit,
-            "control": io_control
+            "control": io_control,
+            "type": io_type
         }
         analog_output_result.append(data)
     print('analog_output_result', analog_output_result)
@@ -336,12 +351,15 @@ def key_value_merge(node_id,keys,io_value_data):
         io_control = keys['others_keys'][param]['control']
         # io_value_range = io_key_data["input_output_data_serializer_data"][ai]['IO_value']
         io_color = keys['others_keys'][param]['color'][0]
+        io_type = keys['others_keys'][param]['type']
+
         data = {
             "name": io_name,
             "value": io_value,
             "color": io_color,
             "unit":io_unit,
-            "control":io_control
+            "control":io_control,
+            "type": io_type
         }
         other_result.append(data)
     print('other_result', other_result)
