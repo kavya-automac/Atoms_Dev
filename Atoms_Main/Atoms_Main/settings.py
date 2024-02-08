@@ -66,7 +66,16 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS=True
 
-CORS_ALLOW_HEADERS = ["*"]
+# CORS_ALLOW_HEADERS = ["*"]
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "user-id"
+)
 
 
 
