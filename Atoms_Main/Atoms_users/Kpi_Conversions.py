@@ -11,13 +11,10 @@ def get_kpi_conversion_fun(instance):
     # print('get_data',get_data)
     for data in get_data:
         # print('???????????',data.DataPoints[0])
-<<<<<<< HEAD
-=======
 
->>>>>>> main
         get_convserion_fun = data.Conversion_Fun[0]
         datapoint=data.DataPoints
-        print('datapoint',datapoint)
+        # print('datapoint',datapoint)
 
         datapoint_value=[]
         for i in range(len(datapoint)):
@@ -26,9 +23,9 @@ def get_kpi_conversion_fun(instance):
                 d_i_o = "On"
             elif str(d_i_o).lower() == "false":
                 d_i_o = "Off"
-            print('d_i_o',d_i_o)
+            # print('d_i_o',d_i_o)
             datapoint_value.append(d_i_o)
-        print('d',datapoint_value)
+        # print('d',datapoint_value)
 
         # print('datapoint_value1',datapoint_value1)
         # datapoint_value = eval(f'instance.{datapoint}')
@@ -56,8 +53,6 @@ def get_kpi_conversion_fun(instance):
             "Live": lambda: Live(data_dict),
             "Average": lambda: Average(),
             "High_Low": lambda: High_Low(),
-            "Cummulative": lambda: Cummulative(),
-            "Energy_card": lambda: Energy_card(data_dict),
 
             'default': lambda: {"status": 'please give correct module'},
         }
@@ -71,13 +66,13 @@ def get_kpi_conversion_fun(instance):
 def get_kpi_conversion_fun1(instance):
     machine_id = instance.Machine_Id
     time_stamp = instance.Timestamp
-    print('machine_id',machine_id)
+    # print('machine_id',machine_id)
     get_data = MachineCardsList.objects.filter(Machine_Id__Machine_id=machine_id)
-    print('get_data',get_data)
+    # print('get_data',get_data)
     if get_data.exists():
         for data in get_data:
-            print('dataaaaaaaaaaa',data)
-            print('dataaaaaaaaaaa',data.Machine_Id)
+            # print('dataaaaaaaaaaa',data)
+            # print('dataaaaaaaaaaa',data.Machine_Id)
 
             get_convserion_fun = data.Conversion_Fun
             datapoint = data.DataPoints
@@ -85,7 +80,7 @@ def get_kpi_conversion_fun1(instance):
             get_title = data.Title
             get_mode = data.mode
             # print('???????????',data.DataPoints[0])
-            print('datapoint', datapoint)
+            # print('datapoint', datapoint)
             data_dict = {
                 "time_stamp": time_stamp,
                 "machine_id": machine_id,
@@ -100,27 +95,29 @@ def get_kpi_conversion_fun1(instance):
             value_list = []
 
             for i in range(len(datapoint)):
-                print('except')
+                # print('except')
                 d_i_o = eval(f'instance.{datapoint[i]}')
                 if str(d_i_o).lower() == "true":
                     d_i_o = "On"
                 elif str(d_i_o).lower() == "false":
                     d_i_o = "Off"
-                print('d_i_o', d_i_o)
+                # print('d_i_o', d_i_o)
                 datapoint_value.append(d_i_o)
                 try:
                     conversion_fun = get_convserion_fun[i]
                 except:
                     conversion_fun = get_convserion_fun[0]
 
-                data_dict['get_value']=datapoint_value
-            switch_dict = {
-                "Live": lambda: value_list.append(Live(data_dict)),
-                "Average": lambda: value_list.append(Average(data_dict)),
-                "High_Low": lambda: value_list.append(High_Low(data_dict)),
-                'default': lambda: {"status": 'please give correct module'},
-            }
-            result = switch_dict.get(conversion_fun, switch_dict['default'])()
+                data_dict['get_value']=d_i_o
+                # data_dict['get_value']=datapoint_value
+                # print('datapoint_value',datapoint_value)
+                switch_dict = {
+                    "Live": lambda: value_list.append(Live(data_dict)),
+                    "Average": lambda: value_list.append(Average(data_dict)),
+                    "High_Low": lambda: value_list.append(High_Low(data_dict)),
+                    'default': lambda: {"status": 'please give correct module'},
+                }
+                result = switch_dict.get(conversion_fun, switch_dict['default'])()
             data_dict['get_value'] = value_list
             for mode_data in get_mode:
                 # print('data',data)
@@ -173,7 +170,7 @@ def get_kpi_conversion_fun1(instance):
         # conversions_list(data_dict,"kpi")
 
 
-        print('d', datapoint_value)
+        # print('d', datapoint_value)
 #
 #
 # def test(instance):

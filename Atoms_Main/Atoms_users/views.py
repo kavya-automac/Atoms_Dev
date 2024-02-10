@@ -10,6 +10,7 @@ from .conversions import *
 from .api_functions import *
 from Atoms_machines.mqtt_code import client
 import json
+import datetime
 
 @api_view(['POST'])
 def login_view(request):
@@ -17,7 +18,7 @@ def login_view(request):
     # print('serializer:', serializer)
     # print('serializer_type:', type(serializer))
     if serializer.is_valid():
-        print('serializer:', serializer)
+        # print('serializer:', serializer)
         username = serializer.data.get('username')
         # print('serializer_username:', username)
         # print('type_serializer_username:', type(username))
@@ -26,24 +27,24 @@ def login_view(request):
         # user = User.objects.get(username=username)
         # print(user)
         user  = authenticate(username=username, password=password)
-        print('authenticate_user:', type(user))
+        # print('authenticate_user:', type(user))
 
         if  user is not None:
             # print("not none")
 
             login(request, user)
-            print("logged in:", request.user.username)
-            print('request_user',request.user)
-            print('request_user_username',request.user.id)
+            # print("logged in:", request.user.username)
+            # print('request_user',request.user)
+            # print('request_user_username',request.user.id)
             user_id=User_details.objects.get(user_id__username=request.user)
             user_id_serializer=user_details_serializer_all(user_id)
             user_id_serializer_data=user_id_serializer.data
-            print('user_id_serializer_data',user_id_serializer.data)
-            print(user_id,user_id.Company_id,user_id.Company_id.Company_Logo)
+            # print('user_id_serializer_data',user_id_serializer.data)
+            # print(user_id,user_id.Company_id,user_id.Company_id.Company_Logo)
             node_lr=get_node_LR(user_id.pk,"User")
-            print("node_lr",node_lr)
+            # print("node_lr",node_lr)
             immediate_prt=get_immediate_parent(node_lr['left'],node_lr['right'])
-            print('immediate_prt',immediate_prt)
+            # print('immediate_prt',immediate_prt)
             pages=get_descendent(immediate_prt['immediate_parent']['immediate_left'], immediate_prt['immediate_parent']['immediate_right'], "Page","node")
             # page_ids=[node['node_id'] for node in pages['descendents']]
             # print('page_ids',page_ids)
@@ -91,24 +92,24 @@ def Machines_List(request):
     # print('user_id_serializer_data', user_id_serializer.data)
     node_id=request.query_params.get('node_id')
     node_lr = get_node_LR(node_id, "Layer")
-    print("node_lr", node_lr)
+    # print("node_lr", node_lr)
     # grandparent_lr=get_grandparent(node_lr['left'],node_lr['right'])
     # print('grandparent_lr',grandparent_lr)
     get_machines=get_descendent(node_lr['left'],node_lr['right'],"Machine","node")
-    print('get_machines',get_machines)
+    # print('get_machines',get_machines)
     # machines = [node['node_id'] for node in get_machines['descendents']]
     machines = get_machines['descendents']
-    print(machines)
+    # print(machines)
     # Querying MachineDetails model to get machine details
     machine_names_query = MachineDetails.objects.filter(id__in=machines)
-    print('machines_query',machine_names_query)
+    # print('machines_query',machine_names_query)
     machine_details_serializer_data=machine_details_serializer_machine_id_machine_name(machine_names_query,many=True).data
-    print('machine_details_serializer_all_data',machine_details_serializer_data)
+    # print('machine_details_serializer_all_data',machine_details_serializer_data)
     # Creating a list of dictionaries with 'Machine_id' and 'Machine_Name'
     machines_list = [{'Machine_id': machine.id, 'Machine_Name': machine.Machine_Name} for machine in
                      machine_names_query]
 
-    print(machines_list)
+    # print(machines_list)
 
     return JsonResponse({"machines":machine_details_serializer_data})
 
@@ -117,10 +118,10 @@ def Machines_List(request):
 
 def Machine_module(request):#dropdown
     # user_id=10#from frontend
-    print('request.headers',request.headers)
-    print('request.headers',request.headers['user-id'])
+    # print('request.headers',request.headers)
+    # print('request.headers',request.headers['user-id'])
     user_id=request.headers['user-id']
-    print("user_id||||||||||||||||",user_id)
+    # print("user_id||||||||||||||||",user_id)
     drop_down=dropdown(user_id)
 
 
@@ -128,16 +129,16 @@ def Machine_module(request):#dropdown
     im_lr=get_immediate_parent(user_left_right['left'], user_left_right['right'])
 
     sub_pages=get_descendent(im_lr['immediate_parent']['immediate_left'],im_lr['immediate_parent']['immediate_right'],"Subpage","node")
-    print('sub_pages',sub_pages)
+    # print('sub_pages',sub_pages)
 
     return JsonResponse({"drop_down":drop_down,"sub_pages":sub_pages["descendents"]})
 
 def Trail_module(request):#dropdown
     # user_id=10#from frontend
-    print('request.headers',request.headers)
-    print('request.headers',request.headers['user-id'])
+    # print('request.headers',request.headers)
+    # print('request.headers',request.headers['user-id'])
     user_id=request.headers['user-id']
-    print("user_id||||||||||||||||",user_id)
+    # print("user_id||||||||||||||||",user_id)
     drop_down=dropdown(user_id)
 
 
@@ -151,10 +152,10 @@ def Trail_module(request):#dropdown
 
 def Report_module(request):#dropdown
     # user_id=10#from frontend
-    print('request.headers',request.headers)
-    print('request.headers',request.headers['user-id'])
+    # print('request.headers',request.headers)
+    # print('request.headers',request.headers['user-id'])
     user_id=request.headers['user-id']
-    print("user_id||||||||||||||||",user_id)
+    # print("user_id||||||||||||||||",user_id)
     drop_down=dropdown(user_id)
 
 
@@ -162,14 +163,14 @@ def Report_module(request):#dropdown
     im_lr=get_immediate_parent(user_left_right['left'], user_left_right['right'])
 
     Reports_Type=get_descendent(im_lr['immediate_parent']['immediate_left'],im_lr['immediate_parent']['immediate_right'],"Report","node")
-    print('sub_pages',Reports_Type)
+    # print('sub_pages',Reports_Type)
     report_des = Reports_Type['descendents']
     # report_title_names = MachineCardsList.objects.filter(id__in=report_des)
     report=[]
     report_title_names = MachineCardsList.objects.filter(id__in=report_des).values('Title')
-    print('report_title_names',report_title_names)
+    # print('report_title_names',report_title_names)
     for i in report_title_names:
-        print('i',i)
+        # print('i',i)
         report.append(i['Title'])
 
 
@@ -236,7 +237,7 @@ def Trail_details(request):#node_id,date
 
             }
             trail_result.append(trail_result_output)
-        print('length...................',len(trail_result))
+        # print('length...................',len(trail_result))
 
         return JsonResponse({"machine_details": {
                 "node_id":node_id,
@@ -267,7 +268,7 @@ def Reports_details(request):
         end_datetime = end_datetime2 + datetime.timedelta(days=1)
         # print('after increment end_datetime',end_datetime)
 
-    except ValueError:
+    except :
         return JsonResponse({"error": "Invalid date format. Use 'YYYY-MM-DD HH:MM:SS' format."},
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -305,12 +306,12 @@ def machine_control(request):
     value=request.data.get('value')
     Type=request.data.get('type')
     machine = MachineDetails.objects.get(pk=machine_id)
-    print('pk',machine.Machine_id)
+    # print('pk',machine.Machine_id)
     input_output_data = IOList.objects.filter(IO_Group=machine.IO_Group_Id,IO_type=Type).order_by('id').values_list('IO_name',flat=True)
     output = list(input_output_data).index(name)
     # print('index***********',list(input_output_data).index(name))
-    print('input_output_data----------',input_output_data)
-    print('output----------',output)
+    # print('input_output_data----------',input_output_data)
+    # print('output----------',output)
     # print('machine_id,name,value', machine_id,name,value)
 
     control_json = {"mid":machine.Machine_id,"parameter_type":Type, "data":{"output":output, "value":value}}
@@ -322,8 +323,8 @@ def machine_control(request):
 @api_view(['GET'])
 
 def dashboard(request):
-    user_id = 10
-    # user_id = request.headers['user-id']
+    # user_id = 10
+    user_id = request.headers['user-id']
 
     user_lr = get_node_LR(user_id, "User")
     layer = get_grandparent(user_lr['left'], user_lr['right'])
@@ -334,16 +335,16 @@ def dashboard(request):
                                   'Machine','node')
     machines = get_machines['descendents']
     dash = get_dashboard['descendents']
-    print(machines)
-    print('dash',dash)
+    # print(machines)
+    # print('dash',dash)
     # Querying MachineDetails model to get machine details
     total_count_result=count_machines(machines)
     dashboard_cards = dashboard_data(dash)
-    print('dashboard_cards',dashboard_cards)
+    # print('dashboard_cards',dashboard_cards)
 
 
-
-    return JsonResponse(total_count_result)
+    return JsonResponse({'total_count_result':total_count_result,
+                         'dashboard_cards':dashboard_cards})
 
 
 

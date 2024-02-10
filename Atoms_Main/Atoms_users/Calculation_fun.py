@@ -27,8 +27,8 @@ def High_Low(data_dict):
 
 def New_Record(data_dict):
 
-    print('data_dict......................',data_dict)
-    print('time_stamp......................',data_dict['time_stamp'])
+    # print('data_dict......................',data_dict)
+    # print('time_stamp......................',data_dict['time_stamp'])
     kp_raw_data_storing = CardsRawData.objects.create(
         Timestamp=data_dict['time_stamp'],
         # Timestamp=datetime.now().isoformat().split('.')[0],
@@ -45,9 +45,9 @@ def Day(data_dict):
     today = datetime.now().date()
     kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']], Title=data_dict['get_title'],
                                                         Timestamp__date=today,Mode=data_dict['get_mode'])
-    print('kpi_data_queryset', kpi_data_queryset)
+    # print('kpi_data_queryset', kpi_data_queryset)
     # result_get_values=str_list_rawvalue(data_dict)
-    print('data_dict',data_dict['get_value'])
+    # print('data_dict',data_dict['get_value'])
 
     if kpi_data_queryset.exists():
         pass
@@ -81,9 +81,9 @@ def Month(data_dict):
     kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']],
                                                     Title=data_dict['get_title'],
                                                     Timestamp__date=today,Mode=data_dict['get_mode'])
-    print('kpi_data_queryset', kpi_data_queryset)
+    # print('kpi_data_queryset', kpi_data_queryset)
     # result_get_values=str_list_rawvalue(data_dict)
-    print('data_dict', data_dict['get_value'])
+    # print('data_dict', data_dict['get_value'])
 
     if kpi_data_queryset.exists():
         # Update the existing record(s) for cumulative data

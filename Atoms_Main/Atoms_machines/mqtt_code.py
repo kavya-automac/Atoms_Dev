@@ -10,7 +10,7 @@ from .import io_status_websocket
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-       print('Connected successfully on hive')
+       # print('Connected successfully on hive')
        client.subscribe('machine_data_dev')
        client.subscribe('websocket_data_dev')
 

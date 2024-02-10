@@ -1,4 +1,5 @@
-import datetime
+# import datetime
+from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
@@ -18,26 +19,26 @@ def dropdown(user_id):
 
     # user_id=6
     user_lr=get_node_LR(user_id, "User")
-    print('user_lr',user_lr)
+    # print('user_lr',user_lr)
     # data = {'left': left_v, "right": right_v}
 
     data = get_grandparent(user_lr['left'], user_lr['right'])
     grand_left=data['grandparent']['grandparent_l']
     grand_right=data['grandparent']['grandparent_r']
-    print('left',data['grandparent']['grandparent_l'])
-    print('right',data['grandparent']['grandparent_r'])
+    # print('left',data['grandparent']['grandparent_l'])
+    # print('right',data['grandparent']['grandparent_r'])
 
     des = get_descendent(grand_left, grand_right, "Layer","node_lr")
-    print('des',des)
+    # print('des',des)
     result=[]
     for i in des['descendents']:
         layer_parents= Parent_nodes(i["node_left"],i["node_right"],grand_left,grand_right)
-        print('p...........',layer_parents)
+        # print('p...........',layer_parents)
         # get_layer_details=Layers.objects.filter(id__in=layer_parents).values_list('Layer_Name',flat=True)
         get_layer_details=Layers.objects.filter(id__in=layer_parents).values('Layer_Name','Layer_Type').order_by('id')
-        print('get_layer_details',get_layer_details)
+        # print('get_layer_details',get_layer_details)
         serializer=layerSerializer(get_layer_details,many=True)
-        print('.............',serializer.data)
+        # print('.............',serializer.data)
         node_name=serializer.data[-1]["Layer_Name"]
         # todo: "change node_id and layer(type) from using serializer instead of [-1]"
         # node_name=i["node_id"]
@@ -56,16 +57,16 @@ def Details(node_id):
     if node_id:
         get_machine_details=MachineDetails.objects.get(pk=node_id)
         detail_serializer=Details_serializer(get_machine_details)
-        print('detail_serializer',dict(detail_serializer.data))
+        # print('detail_serializer',dict(detail_serializer.data))
         # print('detail_serializer manuals',detail_serializer.data['Manuals'])
         manuals_data=[dict(item) for item in detail_serializer.data['Manuals']]
         techincal_data=[dict(item) for item in detail_serializer.data['Technical_Details']]
         details=only_details_serailizers(get_machine_details)
-        print('details',details.data)
+        # print('details',details.data)
 
         general_data = {"general_details":details.data ,"Manuals_and_Docs":manuals_data,
                              "Techincal_Details_data":techincal_data}
-        print('dataaaa',general_data)
+        # print('dataaaa',general_data)
 
         return general_data
     else:
@@ -89,7 +90,7 @@ def Machine_Iostatus(node_id):#machine_id
         iostatus_data["time_stamp"] = io_value_data['Timestamp']
 
 
-        print('iostatus_data', iostatus_data)
+        # print('iostatus_data', iostatus_data)
         return iostatus_data
 
     else:
@@ -108,22 +109,23 @@ def Machine_Control(node_id):
         control_data["machine_id"] = node_id
         control_data["machine_name"] = machine_name
         control_data["time_stamp"] = io_value_data['Timestamp']
-        print('control_data',control_data)
+        # print('control_data',control_data)
         return control_data
     else:
         return {"status": "please enter valid node_id"}
 
 
 def machine_kpis(node_id):
-    todays_date = datetime.datetime.now().date()
+    # # todays_date = datetime.now().date()
+    # todays_date = "2024-02-08"
     lrvalues=get_node_LR(node_id,"Machine")
     left=lrvalues['left']
     right=lrvalues['right']
     child_kpi=get_descendent(left,right,"Kpi","node")
-    print('child_kpi',child_kpi["descendents"])
+    # print('child_kpi',child_kpi["descendents"])
     kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"]).values('Machine_Id__Machine_id',
-                                    'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit')
-    print('kpinode_data',kpinode_data)
+                                    'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
+    # print('kpinode_data',kpinode_data)
 
 
     entire_result_data=[]
@@ -132,7 +134,7 @@ def machine_kpis(node_id):
 
     for i in kpinode_data:
         kpi_result = {}
-        print('i',i)
+        # print('i',i)
         switch_dict = {
             "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
@@ -149,8 +151,8 @@ def machine_kpis(node_id):
 
 
 def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
-    print('node_id in reports_data',user_id)
-    todays_date = datetime.datetime.now().date()
+    # print('node_id in reports_data',user_id)
+    # todays_date = datetime.now().date()
     m_l_r = get_node_LR(user_id, "User")
     p_l_r = get_immediate_parent(m_l_r['left'], m_l_r['right'])
 
@@ -162,18 +164,18 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
     # right=lrvalues['right']
     # get_immediate_parent(left, right)
     # child_kpi=get_descendent(left,right,"Report","node")
-    print('child_kpi',child_kpi["descendents"])
+    # print('child_kpi',child_kpi["descendents"])
     kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"],Title=report_type).values('Machine_Id__Machine_id',
                                     'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit')
-    print('kpinode_data',kpinode_data)
+    # print('kpinode_data',kpinode_data)
     entire_result_data=[]
     # x_axis=[]
     # y_axis=[]
     if kpinode_data:
         for i in kpinode_data:
             kpi_result = {}
-            print('i',i)
-            print('i..........',i['Card_type__Card_Type'])
+            # print('i',i)
+            # print('i..........',i['Card_type__Card_Type'])
             switch_dict = {
                 "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
@@ -195,7 +197,7 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
 
 
 def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machine_id=None,start_datetime=None,end_datetime=None,report_type=None):
-    formatted_datetime = datetime.datetime.now().date()
+    formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
     if method == "kpis":
 
@@ -203,13 +205,14 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp')[:10]
+        ).order_by('-Timestamp').distinct('Timestamp')
+        # print('lennnnnnnnnnn',len(kpirawdata))
     elif method == "kpiweb":
-        kpirawdata = CardsRawData.objects.filter(
+        kpirawdata = [CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp')[::12]
+        ).order_by('-Timestamp').latest('-Timestamp')]# we will get only one record here due to for loop below kept query in list
 
     elif method =="reports":
 
@@ -218,17 +221,67 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Title=report_type,  # Assuming there's a field for KPI ID in the Machine_KPI_Data model
             Timestamp__range=[start_datetime, end_datetime],
         ).order_by('Timestamp')
-        print('kpirawdata',kpirawdata)
+        # print('kpirawdata',kpirawdata)
+    elif method == "dashboard":
+        dashrawdata = CardsRawData.objects.filter(
+            Machine_Id__contains=[data['Machine_Id__Machine_id']],
+            Title=data['Title'],
+            Timestamp__date=todays_date,
+            Mode=data['mode'][0]
+        ).distinct('Timestamp','Mode')
+
+        for d in dashrawdata:
+            machine_id = d.Machine_Id  # Get the machine ID
+            # Check if the card already exists in entire_result_data
+            card_exists = False
+            for card_data in entire_result_data:
+                if card_data['title'] == data['Title'] and card_data['ledger'] == data['Ledger']:
+                    card_exists = True
+                    # Append data to existing card
+                    card_data['data'].append({
+                        "x_axis_data": d.Machine_Id,
+                        "y_axis_data": d.Value
+                    })
+                    break
+
+            if not card_exists:
+                # Create a new card entry
+                new_card = {
+                    "card": data['Card_type__Card_Type'],
+                    "title": data['Title'],
+                    "ledger": data['Ledger'],
+                    "labels": {
+                        "x_label": data['X_Label'],
+                        "y_label": data['Unit']
+                    },
+                    "data": [{
+                        "x_axis_data": d.Machine_Id,
+                        "y_axis_data": d.Value
+                    }]
+                }
+                entire_result_data.append(new_card)
+
+        kpi_entry = {
+            'resultant_data': entire_result_data,
+        }
+        # print('kpi_entry', kpi_entry)
+
+        return kpi_entry
 
 
-    # print('kpirawdata', kpirawdata[0].Value)
     card_data = []
     for j in kpirawdata:
-        print('jjjj', j)
+        timestamp = j.Timestamp
+        timestamp_str = timestamp.strftime('%Y-%m-%d')  # Convert datetime object to string if needed
+
+        # print('timestamp typeeee',type(timestamp_str))
+        # print('try  start_datetime',start_datetime)
+
+        # print('jjjj', j)
         timestamp_str = str(j.Timestamp)
+        # kpi_result_data = {"x_axis_data": timestamp_str, "y_axis_data": j.Value}
         kpi_result_data = {"x_axis_data": timestamp_str, "y_axis_data": j.Value}
-        kpi_result_data = {"x_axis_data": j.Timestamp, "y_axis_data": j.Value}
-        print('kpi_result_data',kpi_result_data)
+        # print('kpi_result_data',kpi_result_data)
         card_data.append(kpi_result_data)
         # x_axis.append(j.Timestamp)
         # y_axis.append(j.Value)
@@ -249,15 +302,15 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
 
     kpi_entry = {
 
-        'data': entire_result_data,
+        'resultant_data': entire_result_data,
     }
-    print('kpi_entry', kpi_entry)
+    # print('kpi_entry', kpi_entry)
 
     return kpi_entry
 
 
 def text_card(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):
-    formatted_datetime = datetime.datetime.now().date()
+    formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
 
     kpi_result_data = []
@@ -268,13 +321,13 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp').first()
+        ).order_by('-Timestamp')
     elif method == "kpiweb":
-        kpirawdata = CardsRawData.objects.filter(
+        kpirawdata =[CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp')[::12]
+        ).order_by('-Timestamp').latest('-Timestamp')]
     elif method == "reports":
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id=[data['Machine_Id__Machine_id']],
@@ -289,10 +342,51 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             kpi_result_data.append(record_data)
 
         # print('kpirawdata', kpirawdata)
+    elif method == "dashboard":
+        dashrawdata = CardsRawData.objects.filter(
+            Machine_Id__contains=[data['Machine_Id__Machine_id']],
+            Title=data['Title'],
+            Timestamp__date=todays_date,
+            Mode=data['mode'][0]
+        ).distinct('Timestamp', 'Mode')
 
-    else:
-        # Handle other cases if needed
-        pass
+        for d in dashrawdata:
+            machine_id = d.Machine_Id  # Get the machine ID
+            # Check if the card already exists in entire_result_data
+            card_exists = False
+            for card_data in entire_result_data:
+                if card_data['title'] == data['Title'] and card_data['ledger'] == data['Ledger']:
+                    card_exists = True
+                    # Append data to existing card
+                    card_data['data'].append({
+                        "x_axis_data": d.Machine_Id,
+                        "y_axis_data": d.Value
+                    })
+                    break
+
+            if not card_exists:
+                # Create a new card entry
+                new_card = {
+                    "card": data['Card_type__Card_Type'],
+                    "title": data['Title'],
+                    "ledger": data['Ledger'],
+                    "labels": {
+                        "x_label": data['X_Label'],
+                        "y_label": data['Y_Label']
+                    },
+                    "data": [{
+                        "x_axis_data": d.Machine_Id,
+                        "y_axis_data": d.Value
+                    }]
+                }
+                entire_result_data.append(new_card)
+
+        kpi_entry = {
+            'resultant_data': entire_result_data,
+        }
+        # print('kpi_entry', kpi_entry)
+
+        return kpi_entry
 
     # Process kpirawdata only if it's not None
     if kpirawdata:
@@ -308,7 +402,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         entire_result_data.append(kpi_result)
 
         kpi_entry = {'kpidata': entire_result_data}
-        print('kpi_entry', kpi_entry)
+        # print('kpi_entry', kpi_entry)
         return kpi_entry
     else:
         # Handle the case when kpirawdata is None (no records found)
@@ -374,15 +468,15 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
 
 def count_machines(machines):
-    current_time = datetime.datetime.now()
+    current_time = datetime.now()
     machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id')
-    print('machines_query', machine_names_query)
+    # print('machines_query', machine_names_query)
     # result = []
     machine_count = 0
     inactive_count = 0
     active_count = 0
     for machine_data in machine_names_query:
-        print('machine_data', machine_data)
+        # print('machine_data', machine_data)
 
         machines = machine_data['Machine_id']
         machine_count += 1
@@ -394,20 +488,20 @@ def count_machines(machines):
                                                                                                  'Timestamp')
             fetch_latest = to_fetch_lastrecord_data.latest('Timestamp')
 
-            print('to_fetch_lastrecord_data', fetch_latest)
+            # print('to_fetch_lastrecord_data', fetch_latest)
             # print('fetch_latest', fetch_latest)
             last_record_time1 = fetch_latest['Timestamp']
-            print('last_record_time1', last_record_time1)
+            # print('last_record_time1', last_record_time1)
 
             last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
-            last_record_time = datetime.datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
+            last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
 
             # print('last_record_time', last_record_time)
             # print('current_time', current_time)
 
             time_difference = abs((current_time - last_record_time).total_seconds())
             # time_difference = current_time - last_record_time
-            print('time_difference', time_difference)
+            # print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
             if time_difference > 60:
@@ -430,9 +524,28 @@ def count_machines(machines):
     return count_card_data
 
 def dashboard_data(dash):
-    for k in dash:
-        get_id_data = MachineCardsList.objects.get(pk=k)
-        print('get_id_data',get_id_data)
-        # get_query_dashboard = CardsRawData.objects.filter(Machine_Id =[get_id_data.Machine_Id])
+    dash_node = MachineCardsList.objects.filter(id__in=dash).values('Machine_Id__Machine_id',
+                                    'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
 
-    pass
+    entire_result_data = []
+    for k in dash_node:
+
+        dash_result = {}
+        # print('k', k['Card_type__Card_Type'])
+        switch_dict = {
+            "Line": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
+            "Bar": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
+            "Text": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
+            "Pie": lambda: "under dev",
+
+            'default': lambda: {"status": ""},
+        }
+
+        # Execute the corresponding function from the switch_dict or the default function
+        result = switch_dict.get(k['Card_type__Card_Type'], switch_dict['default'])()
+    return result
+
+
+
+
+

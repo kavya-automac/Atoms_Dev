@@ -17,10 +17,10 @@ def io_keys(node_id):
         error_message = "Please enter a valid machine_id."
         return JsonResponse({"status": error_message}, status=400)  # Return an error response
 
-    print('node_group', node_group)
+    # print('node_group', node_group)
     group_data = node_group.IO_Group_Id
     machine_id=node_id.Machine_id
-    print('group_data', group_data)
+    # print('group_data', group_data)
     input_output_data = IOList.objects.filter(IO_Group=group_data).order_by('id')
 
     input_output_data_serializer = IO_list_serializer(input_output_data, many=True)
@@ -60,10 +60,10 @@ def io_list_data(node_id):#machine_id 1 ,2....
         error_message = "Please enter a valid machine_id."
         return JsonResponse({"status": error_message}, status=400)  # Return an error response
 
-    print('node_group', node_group)
+    # print('node_group', node_group)
     group_data = node_group.IO_Group_Id
     machine_id=node_group.Machine_id
-    print('group_data', group_data)
+    # print('group_data', group_data)
     input_output_data = IOList.objects.filter(IO_Group=group_data).order_by('id')
 
     input_output_data_serializer = IO_list_serializer(input_output_data, many=True)
@@ -106,7 +106,7 @@ def io_list_data(node_id):#machine_id 1 ,2....
       """
 
     for di in modified_list:
-        print('di>>>>>>>>>>>>>>>>>>>>>>>',di)
+        # print('di>>>>>>>>>>>>>>>>>>>>>>>',di)
         # time.sleep(1)
         if di['IO_type'] == "digital_input":
             digital_input_keys.append({
@@ -118,9 +118,9 @@ def io_list_data(node_id):#machine_id 1 ,2....
                 "type": di['IO_type']
             })
             input_output_data_serializer_data.remove(di)
-    print(
-        'after d i',input_output_data_serializer_data
-    )
+    # print(
+    #     'after d i',input_output_data_serializer_data
+    # )
     # modified_list = input_output_data_serializer_data[:]
 
     for do in modified_list:
@@ -206,10 +206,10 @@ def io_values(node_id,type,date=None):#machine_id="MAC_06"
 
         last_valies_data_1 = machineValues_serializer(machine_values_data,many=True)
 
-    print('machine_values_data', machine_values_data)
+    # print('machine_values_data', machine_values_data)
 
     last_valies_data = last_valies_data_1.data
-    print("last_valies_data",last_valies_data)
+    # print("last_valies_data",last_valies_data)
     return last_valies_data
 
 
@@ -240,8 +240,8 @@ def key_value_merge(node_id,keys,io_value_data):
     # io_key_data=io_list_data(node_id)#should call this  2 functions in key_value_merge
     # io_value_data=io_values(node_id)
     # keys=io_list_data(node_id)
-    print('keys',keys)
-    print('io_value_data',io_value_data)
+    # print('keys',keys)
+    # print('io_value_data',io_value_data)
     digital_input_result = []
     digital_output_result = []
     analog_input_result = []
@@ -253,12 +253,12 @@ def key_value_merge(node_id,keys,io_value_data):
     # print('digital_input_keys listtt',digital_input_keys)
     # print('analog_input_keys listtt',analog_input_keys)
     for di in range(len(io_value_data['Digital_Input'])):
-        print("????????????????",di)
+        # print("????????????????",di)
 
         io_value= "On" if io_value_data['Digital_Input'][di] else "Off"
         io_name= keys['digital_input_keys'][di]['name']
         io_unit = keys['digital_input_keys'][di]['unit']
-        io_control = keys['digital_input_keys'][di]['control']
+        io_control = str(keys['digital_input_keys'][di]['control'])
 
         io_value_range= keys['digital_input_keys'][di]['iovalue']
         # print("----------------------",io_value_range.index(io_value))
@@ -273,13 +273,13 @@ def key_value_merge(node_id,keys,io_value_data):
             "type": io_type
         }
         digital_input_result.append(data)
-    print('digital_input_keys',digital_input_result)
+    # print('digital_input_keys',digital_input_result)
 
     for do in range(len(io_value_data['Digital_Output'])):
         io_value = "On" if io_value_data['Digital_Output'][do] else "Off"
         io_name = keys['digital_output_keys'][do]['name']
         io_unit =  keys['digital_output_keys'][do]['unit']
-        io_control =  keys['digital_output_keys'][do]['control']
+        io_control =  str(keys['digital_output_keys'][do]['control'])
         io_type = keys['digital_output_keys'][do]['type']
 
 
@@ -296,16 +296,16 @@ def key_value_merge(node_id,keys,io_value_data):
             "other":io_type
         }
         digital_output_result.append(data)
-    print('digital_input_keys', digital_output_result)
+    # print('digital_input_keys', digital_output_result)
 
     for ai in range(len(io_value_data['Analog_Input'])):
-        io_value = io_value_data['Analog_Input'][ai]
+        io_value = str(io_value_data['Analog_Input'][ai])
 
 
         io_name = keys['analog_input_keys'][ai]['name']
-        print('iooooooooooooooonameeeeee',io_name)
+        # print('iooooooooooooooonameeeeee',io_name)
         io_unit = keys['analog_input_keys'][ai]['unit']
-        io_control = keys['analog_input_keys'][ai]['control']
+        io_control = str(keys['analog_input_keys'][ai]['control'])
         io_type = keys['analog_input_keys'][ai]['type']
 
 
@@ -320,13 +320,13 @@ def key_value_merge(node_id,keys,io_value_data):
             "type": io_type
         }
         analog_input_result.append(data)
-    print('analog_input_result', analog_input_result)
+    # print('analog_input_result', analog_input_result)
 
     for ao in range(len(io_value_data['Analog_Output'])):
-        io_value = io_value_data['Analog_Output'][ao]
+        io_value = str(io_value_data['Analog_Output'][ao])
         io_name = keys['analog_output_keys'][ao]['name']
         io_unit =  keys['analog_output_keys'][ao]['unit']
-        io_control =  keys['analog_output_keys'][ao]['control']
+        io_control =  str(keys['analog_output_keys'][ao]['control'])
         io_type = keys['analog_output_keys'][ao]['type']
 
 
@@ -342,13 +342,13 @@ def key_value_merge(node_id,keys,io_value_data):
             "type": io_type
         }
         analog_output_result.append(data)
-    print('analog_output_result', analog_output_result)
+    # print('analog_output_result', analog_output_result)
 
     for param in range(len(io_value_data['Other'])):
-        io_value = io_value_data['Other'][param]
+        io_value = str(io_value_data['Other'][param])
         io_name = keys['others_keys'][param]['name']
         io_unit = keys['others_keys'][param]['unit']
-        io_control = keys['others_keys'][param]['control']
+        io_control = str(keys['others_keys'][param]['control'])
         # io_value_range = io_key_data["input_output_data_serializer_data"][ai]['IO_value']
         io_color = keys['others_keys'][param]['color'][0]
         io_type = keys['others_keys'][param]['type']
@@ -362,7 +362,8 @@ def key_value_merge(node_id,keys,io_value_data):
             "type": io_type
         }
         other_result.append(data)
-    print('other_result', other_result)
+    # print('other_result', other_result)
+
 
     return {
         "digital_input": digital_input_result,
