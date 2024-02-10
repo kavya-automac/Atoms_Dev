@@ -1,11 +1,12 @@
 from django.db.models import Q
 
 from .models import *
+from asgiref.sync import sync_to_async
 
 
 
 def get_node_LR(node,pro):#user
-    print('..........',node)
+    # print('..........',node)
     node_left_right=Nested_Table.objects.get(Node_Id=node,Property=pro)
     left_v=node_left_right.Node_Left
     right_v=node_left_right.Node_Right
@@ -73,8 +74,22 @@ def Parent_nodes(left_value,right_value,root_left_value,root_right_value):
 
     ascendants_names = [ascendants.Node_Id for ascendants in ascendants]
     ascendants_left = [[ascendants.Node_Left,ascendants.Node_Right] for ascendants in ascendants]
-    print('ascendants_left/////////',ascendants_left)
+    # print('ascendants_left/////////',ascendants_left)
     # ascendants_right = [ascendants.Node_Right for ascendants in ascendants]
 
 
     return ascendants_names
+
+
+@sync_to_async
+def user_department(user_id):
+    user_lr = get_node_LR(user_id, "User")
+    department = get_immediate_parent(user_lr['left'], user_lr['right'])
+    get_department_node =Nested_Table.objects.get(Node_Left=department['immediate_parent']['immediate_left'],
+    Node_Right=department['immediate_parent']['immediate_right'])
+
+    # print('get_department_node',get_department_node)
+
+    layerdata=Layers.objects.get(id=get_department_node.Node_Id)
+    dept_name = layerdata.Layer_Name
+    return dept_name
