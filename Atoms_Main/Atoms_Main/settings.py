@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)re%h1ix@vmx0o3!z16ko^_tj$cm*50sqsv1q0kt7h%9!ohupb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',"65.0.154.172"]
+ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',"65.0.154.172","43.204.19.66"]
 
 # Application definition
 
@@ -110,13 +110,23 @@ ASGI_APPLICATION = 'Atoms_Main.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#      'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'Atoms_Nested_db',
+#         'USER': 'postgres',
+#         'PASSWORD':'1357',
+#         'HOST':'192.168.29.144',
+#         'PORT':'5432',
+#     }
+# }
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Atoms_Nested_db',
-        'USER': 'postgres',
-        'PASSWORD':'1357',
-        'HOST':'192.168.29.144',
+        'NAME': 'postgres',
+        'USER': 'AtomsDev',
+        'PASSWORD':'Atoms150221',
+        'HOST':'atomsdev.c9y8cmwqcg28.ap-south-1.rds.amazonaws.com',
         'PORT':'5432',
     }
 }
