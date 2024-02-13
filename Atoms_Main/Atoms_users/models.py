@@ -7,6 +7,7 @@ from django.db import models
 
 class Layers(models.Model):  # for companies,partnerships,customers ,plant and lines
     objects = models.Manager()
+    id = models.AutoField(primary_key = True)
     Layer_Type = models.CharField(max_length=200)
     Layer_Name = models.CharField(max_length=200)
     Company_Logo = models.URLField(blank=True,null=True)
