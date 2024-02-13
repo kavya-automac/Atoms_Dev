@@ -45,7 +45,7 @@ def Day(data_dict):
     today = datetime.now().date()
     kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']], Title=data_dict['get_title'],
                                                         Timestamp__date=today,Mode=data_dict['get_mode'])
-    # print('kpi_data_queryset', kpi_data_queryset)
+    print('kpi_data_queryset', kpi_data_queryset)
     # result_get_values=str_list_rawvalue(data_dict)
     # print('data_dict',data_dict['get_value'])
 
