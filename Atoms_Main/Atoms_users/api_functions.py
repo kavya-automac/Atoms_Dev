@@ -413,7 +413,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         # print('entire_result_data',entire_result_data)
         # print('kpi_result_data',kpi_result_data)
 
-        kpi_entry = {'kpidata': entire_result_data}
+        kpi_entry = {'resultant_data': entire_result_data}
         # print('kpi_entry', kpi_entry)
         return kpi_entry
     else:
