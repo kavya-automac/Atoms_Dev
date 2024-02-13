@@ -106,7 +106,8 @@ def Machine_Control(node_id):
         io_key_data=io_list_data(node_id)
         io_value_data=io_values(machine_id,"control")
         control_data = key_value_merge(node_id, io_key_data, io_value_data)
-        control_data["machine_id"] = node_id
+        control_data["node_id"] = node_id
+        control_data["machine_id"] = machine_id
         control_data["machine_name"] = machine_name
         control_data["time_stamp"] = io_value_data['Timestamp']
         # print('control_data',control_data)

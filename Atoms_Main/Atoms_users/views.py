@@ -133,6 +133,8 @@ def Machine_module(request):#dropdown
 
     return JsonResponse({"drop_down":drop_down,"sub_pages":sub_pages["descendents"]})
 
+@api_view(['GET'])
+
 def Trail_module(request):#dropdown
     # user_id=10#from frontend
     # print('request.headers',request.headers)
@@ -149,6 +151,8 @@ def Trail_module(request):#dropdown
     # print('sub_pages',sub_pages)
 
     return JsonResponse({"drop_down":drop_down})
+
+@api_view(['GET'])
 
 def Report_module(request):#dropdown
     # user_id=10#from frontend
