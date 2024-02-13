@@ -392,12 +392,12 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
     # Process kpirawdata only if it's not None
     if kpirawdata:
 
-        print('kpirawdata',kpirawdata)
+        # print('kpirawdata',kpirawdata)
         kpi_result['card'] = data['Card_type__Card_Type']
         kpi_result['title'] = data['Title']
         kpi_result['ledger'] = data['Ledger']
         labels = {
-            # "unit": data['Unit'],
+            "units": data['Unit'],
             # "y_label": data['Y_Label']
         }
         kpi_result["labels"] = labels
@@ -414,7 +414,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         # print('kpi_result_data',kpi_result_data)
 
         kpi_entry = {'kpidata': entire_result_data}
-        print('kpi_entry', kpi_entry)
+        # print('kpi_entry', kpi_entry)
         return kpi_entry
     else:
         # Handle the case when kpirawdata is None (no records found)
