@@ -19,6 +19,8 @@ urlpatterns = [
     path('machine_control/', machine_control, name='machine_control'),
     path('dashboard/', dashboard, name='dashboard'),
     path('get_primary_key/', get_primary_key),
+    path('add_new_node/', add_new_node),
+    path('delete_node/', delete_node_and_uplift_the_descendants),
 
 ]
 
