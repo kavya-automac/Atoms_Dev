@@ -140,7 +140,7 @@ def machine_kpis(node_id):
             "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
-            "Pie": lambda: "under dev",
+            "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
 
             'default': lambda: {"status": ""},
         }
@@ -391,6 +391,8 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
     # Process kpirawdata only if it's not None
     if kpirawdata:
+
+        print('kpirawdata',kpirawdata)
         kpi_result['card'] = data['Card_type__Card_Type']
         kpi_result['title'] = data['Title']
         kpi_result['ledger'] = data['Ledger']
@@ -399,11 +401,20 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             # "y_label": data['Y_Label']
         }
         kpi_result["labels"] = labels
+        for res in kpirawdata:
+            # print('res',res.Value)
+            text_res_data = {"value": res.Value}
+            # val=res.Value
+            kpi_result_data.append(text_res_data)
+
+
         kpi_result['data'] = kpi_result_data
         entire_result_data.append(kpi_result)
+        # print('entire_result_data',entire_result_data)
+        # print('kpi_result_data',kpi_result_data)
 
         kpi_entry = {'kpidata': entire_result_data}
-        # print('kpi_entry', kpi_entry)
+        print('kpi_entry', kpi_entry)
         return kpi_entry
     else:
         # Handle the case when kpirawdata is None (no records found)

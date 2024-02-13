@@ -351,10 +351,53 @@ def dashboard(request):
                          'dashboard_cards':dashboard_cards})
 
 
+# new data added to nested sets using api's starts from here ..............................
 
 
+def add_new_node(request):  # add child node
+    parent_id = request.query_params.get('parent_id')
+    node_name = request.query_params.get('node_name')
+    pro_name = request.query_params.get('property')
+
+    parent = Nested_Table.objects.get(id=parent_id)
+
+    parent_left = parent.Node_Left
+
+    Nested_Table.objects.filter(Node_Right__gt=parent_left).update(Node_Right=models.F('Node_Right') + 2)
+    Nested_Table.objects.filter(Node_Left__gt=parent_left).update(Node_Left=models.F('Node_Left') + 2)
+
+    Nested_Table.objects.create(Node_Id=node_name, Node_Left=parent_left + 1,
+                                Node_Right=parent_left + 2, Property=pro_name)
+
+    return Response({"message": "new Child node added successfully"})
 
 
+def delete_node_and_uplift_the_descendants(request):
+    node_id = request.query_params.get('node_id')  # pk of node_id
 
+    node = Nested_Table.objects.get(id=node_id)
+    node_left = node.Node_Left
+    node_right = node.Node_Right
+    # pro_name = node.Property
+
+    Nested_Table.objects.filter(id=node_id).delete()
+    Nested_Table.objects.filter(Node_Left__range=(node_left, node_right)).update(
+        Node_Left=models.F('Node_Left') - 1,
+        Node_Right=models.F('Node_Right') - 1
+    )
+    Nested_Table.objects.filter(Node_Right__gt=node_right).update(Node_Right=models.F('Node_Right') - 2)
+    Nested_Table.objects.filter(Node_Left__gt=node_right).update(Node_Left=models.F('Node_Left') - 2)
+
+    return Response({"message": "Node deleted and descendants uplifted successfully"})
+
+@api_view(['GET'])
+
+def get_primary_key(request):
+    node_id = request.query_params.get('node_id')
+    pro_name=request.query_params.get('property')
+    node = Nested_Table.objects.get(Node_Id=node_id,Property=pro_name)
+    print('node',node.id)
+
+    return Response({"primary_key_id":node.id })
 
 

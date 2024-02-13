@@ -106,6 +106,7 @@ class IOList(models.Model):
 
 
 class Nested_Table(models.Model):
+    objects = models.Manager()
     Node_Id = models.IntegerField()
     Node_Left=models.IntegerField()
     Node_Right=models.IntegerField()
