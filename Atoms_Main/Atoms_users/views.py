@@ -353,6 +353,8 @@ def dashboard(request):
 
 # new data added to nested sets using api's starts from here ..............................
 
+@api_view(['GET'])
+
 
 def add_new_node(request):  # add child node
     parent_id = request.query_params.get('parent_id')
@@ -371,6 +373,7 @@ def add_new_node(request):  # add child node
 
     return Response({"message": "new Child node added successfully"})
 
+@api_view(['GET'])
 
 def delete_node_and_uplift_the_descendants(request):
     node_id = request.query_params.get('node_id')  # pk of node_id
