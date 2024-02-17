@@ -41,6 +41,8 @@ def get_grandparent(left_value, right_value):
 
 
 def get_descendent(parent_left,parent_right,property,type):
+    #type-(node,node left right values)
+    #property-(layer,user,machine etc)
     descendants = Nested_Table.objects.filter(
         Node_Left__range=(parent_left, parent_right),Property=property
 

@@ -5,17 +5,7 @@ from django.apps import apps
 def Machine_data_to_db(mqtt_machines_data):
     payload = json.loads(mqtt_machines_data)
 
-<<<<<<< HEAD
-=======
-    # timestamp = payload['timestamp'].split('.')[0]
-    # machine_id = payload['machine_id']
-    # machine_location = payload['machine_location']
-    # digital_input = payload.get('digital_inputs')
-    # digital_output = payload.get('digital_outputs')
-    # analog_input = payload.get('analog_inputs')
-    # analog_output = payload.get('analog_outputs')
-    # other=payload.get('other')
->>>>>>> main
+
     timestamp = payload['Timestamp'].split('.')[0]
     machine_id = payload['Machine_Id']
     machine_location = payload['Machine_Location']
