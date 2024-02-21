@@ -7,6 +7,11 @@ import time
 from asgiref.sync import sync_to_async
 from .mqtt_code import client
 from Atoms_users.Nested_Queries import user_department
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from asgiref.sync import sync_to_async
+
+channel_layer = get_channel_layer()
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -15,6 +20,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         query_string=self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1].split('&')[0]
+
         # print('machine_id connect ',machine_id)
         client.publish("ws_con", json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
 
@@ -22,6 +28,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # group_name=self.scope["url_route"]["kwargs"]["group_name"]
         # print('group_name',group_name)
         await self.accept()
+        from Atoms_users.api_functions import Machine_Iostatus_web2
+        from Atoms_users.models import MachineDetails
+        try:
+            md = await sync_to_async(MachineDetails.objects.get)(Machine_id=machine_id)
+            node_id = md.pk
+            print('node_id connect', node_id)
+            test = await Machine_Iostatus_web2(node_id)
+            test_res = json.dumps({"iostatus":test})
+
+            channel_layer = get_channel_layer()
+            await channel_layer.group_send(str(machine_id)+'_io',
+                                           {"type": "chat.message", "text": test_res})
+        except Exception as e:
+            status = json.dumps({"status": e})
+
+            channel_layer = get_channel_layer()
+            await channel_layer.group_send(str(machine_id)+'_io',
+                                           {"type": "chat.message", "text": status})
+
+        # md = MachineDetails.objects.get(Machine_id=machine_id)
+        # node_id = md.pk
+        # print('node_id connect', node_id)
+        # test = Machine_Iostatus(node_id)
+        # try:
+        #     sync_to_async(channel_layer.group_send)(str(machine_id)+'_io',
+        #                                             {"type": "chat.message", "text": test})
+        # except Exception as e:
+        #     print("io error - ", e)
 
     async def disconnect(self, close_code):
         connected_status = False
@@ -73,6 +107,25 @@ class KpiConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(str(machine_id)+'_kpi', self.channel_name)
 
             await self.accept()
+            from Atoms_users.api_functions import machine_kpis_web2
+            from Atoms_users.models import MachineDetails
+            try:
+                md = await sync_to_async(MachineDetails.objects.get)(Machine_id=machine_id)
+                node_id = md.pk
+                print('node_id connect', node_id)
+                test = await machine_kpis_web2(node_id)
+                test_res = json.dumps(test)
+
+                channel_layer = get_channel_layer()
+                await channel_layer.group_send(str(machine_id)+'_kpi',
+                                               {"type": "kpiweb", "text": test_res})
+
+            except Exception as e:
+                status = json.dumps({"status": e})
+
+                channel_layer = get_channel_layer()
+                await channel_layer.group_send(str(machine_id)+'_kpi',
+                                               {"type": "kpiweb", "text": status})
 
             # Start calling kpi_socket function periodically
             self.machine_id = machine_id
@@ -128,6 +181,24 @@ class ControlSocket(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(str(machine_id)+'_control', self.channel_name)
         await self.accept()
+        from Atoms_users.api_functions import Machine_Control_web2
+        from Atoms_users.models import MachineDetails
+        try:
+            md = await sync_to_async(MachineDetails.objects.get)(Machine_id=machine_id)
+            node_id = md.pk
+            print('node_id connect', node_id)
+            test = await Machine_Control_web2(node_id)
+            test_res = json.dumps({"control": test})
+
+            channel_layer = get_channel_layer()
+            await channel_layer.group_send(str(machine_id)+'_control',
+                                           {"type": "control.message", "text": test_res})
+        except Exception as e:
+            status = json.dumps({"status": e})
+
+            channel_layer = get_channel_layer()
+            await channel_layer.group_send(str(machine_id)+'_control',
+                                           {"type": "control.message", "text": status})
 
 
     async def disconnect(self, close_code):

@@ -13,6 +13,7 @@ from .conversions import *
 from Atoms_machines.models import CardsRawData,MachineRawData
 from django.db.models import F, CharField, Value
 from django.db.models.functions import Cast
+from asgiref.sync import sync_to_async
 
 
 def dropdown(user_id):
@@ -97,6 +98,32 @@ def Machine_Iostatus(node_id):#machine_id
         return {"status": "please enter valid node_id"}
 
 
+@sync_to_async
+def Machine_Iostatus_web2(node_id):#machine_id
+    node=MachineDetails.objects.get(pk=node_id)
+    machine_name=node.Machine_Name
+    machine_id=node.Machine_id
+    # print('machine_name iostatus',machine_name)
+
+
+    if node_id:
+        io_key_data=io_list_data(node_id)
+        io_value_data=io_values(machine_id,"iostatus")
+        iostatus_data = key_value_merge(machine_id, io_key_data, io_value_data)
+        iostatus_data["node_id"] = node_id
+        iostatus_data["machine_id"] = machine_id
+        iostatus_data["machine_name"] = machine_name
+        iostatus_data["time_stamp"] = io_value_data['Timestamp']
+
+
+        # print('iostatus_data', iostatus_data)
+        return iostatus_data
+
+    else:
+        return {"status": "please enter valid node_id"}
+
+
+
 def Machine_Control(node_id):
     node = MachineDetails.objects.get(pk=node_id)
     machine_name = node.Machine_Name
@@ -114,6 +141,28 @@ def Machine_Control(node_id):
         return control_data
     else:
         return {"status": "please enter valid node_id"}
+
+
+@sync_to_async
+
+def Machine_Control_web2(node_id):
+    node = MachineDetails.objects.get(pk=node_id)
+    machine_name = node.Machine_Name
+    machine_id = node.Machine_id
+
+    if node_id:
+        io_key_data=io_list_data(node_id)
+        io_value_data=io_values(machine_id,"control")
+        control_data = key_value_merge(node_id, io_key_data, io_value_data)
+        control_data["node_id"] = node_id
+        control_data["machine_id"] = machine_id
+        control_data["machine_name"] = machine_name
+        control_data["time_stamp"] = io_value_data['Timestamp']
+        # print('control_data',control_data)
+        return control_data
+    else:
+        return {"status": "please enter valid node_id"}
+
 
 
 def machine_kpis(node_id):
@@ -150,6 +199,41 @@ def machine_kpis(node_id):
 
     return result
 
+@sync_to_async
+
+def machine_kpis_web2(node_id):
+    # # todays_date = datetime.now().date()
+    # todays_date = "2024-02-08"
+    lrvalues=get_node_LR(node_id,"Machine")
+    left=lrvalues['left']
+    right=lrvalues['right']
+    child_kpi=get_descendent(left,right,"Kpi","node")
+    # print('child_kpi',child_kpi["descendents"])
+    kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"]).values('Machine_Id__Machine_id',
+                                    'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
+    # print('kpinode_data',kpinode_data)
+
+
+    entire_result_data=[]
+    # x_axis=[]
+    # y_axis=[]
+
+    for i in kpinode_data:
+        kpi_result = {}
+        # print('i',i)
+        switch_dict = {
+            "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
+            "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
+            "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
+            "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
+
+            'default': lambda: {"status": ""},
+        }
+
+        # Execute the corresponding function from the switch_dict or the default function
+        result = switch_dict.get(i['Card_type__Card_Type'], switch_dict['default'])()
+
+    return result
 
 def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
     # print('node_id in reports_data',user_id)
