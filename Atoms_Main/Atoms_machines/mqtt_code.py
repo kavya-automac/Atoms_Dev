@@ -4,7 +4,7 @@ from django.conf import settings
 # from . import multi_topic_file
 import ssl
 from .Multi_topic_file import *
-from .import io_status_websocket
+# from .import io_status_websocket
 # ------------------------hive broker----------------------------
 
 
@@ -42,6 +42,16 @@ client.connect(
    port=settings.MQTT_PORT,
    keepalive=settings.MQTT_KEEPALIVE
 )
+
+# client.loop_start()
+
+# def mqtt_loop():
+#     client.loop_forever()
+#
+# mqtt_thread = threading.Thread(target=mqtt_loop)
+# mqtt_thread.daemon = True
+# mqtt_thread.start()
+
 
 #
 # # aws connection  MID004-----------------------------------------------

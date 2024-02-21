@@ -11,6 +11,12 @@ from .api_functions import *
 from Atoms_machines.mqtt_code import client
 import json
 import datetime
+# import logging
+# from Atoms_Main.settings import logger
+
+# logger.debug('machine_list...!')
+# logger = logging.getLogger("django")
+
 
 @api_view(['POST'])
 def login_view(request):
@@ -85,6 +91,7 @@ def logout_view(request):
 
 @api_view(['GET'])
 def Machines_List(request):
+    logger.info('machine_list...!')
 
     # user_id = User_details.objects.get(user_id__username="user1")
     # user_id_serializer = user_details_serializer_all(user_id)
