@@ -1,5 +1,5 @@
 # import datetime
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
@@ -406,19 +406,19 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp')
+        ).distinct('Timestamp').order_by('-Timestamp')
     elif method == "kpiweb":
         kpirawdata =[CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp').latest('-Timestamp')]
+        ).distinct('Timestamp').order_by('-Timestamp').latest('-Timestamp')]
     elif method == "reports":
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id=[data['Machine_Id__Machine_id']],
             Title=report_type,
             Timestamp__range=[start_datetime, end_datetime],
-        ).order_by('Timestamp')
+        ).distinct('Timestamp').order_by('Timestamp')
 
         # kpi_result_data = []
         for record in kpirawdata:
@@ -564,7 +564,9 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
 
 def count_machines(machines):
-    current_time = datetime.now()
+    current_time_Ist = datetime.now()
+    current_time = current_time_Ist.astimezone(timezone.utc)
+
     machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id')
     # print('machines_query', machine_names_query)
     # result = []
@@ -591,11 +593,11 @@ def count_machines(machines):
 
             last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
             last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
-
+            utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
             # print('last_record_time', last_record_time)
             # print('current_time', current_time)
 
-            time_difference = abs((current_time - last_record_time).total_seconds())
+            time_difference = abs((current_time - utc_timestamp_latest).total_seconds())
             # time_difference = current_time - last_record_time
             # print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
@@ -612,10 +614,11 @@ def count_machines(machines):
             inactive_count += 1
             # print('inactive else', inactive_count)
         count_card_data = {
-            "title": "count_card",
-            "machine_count": str(machine_count),
-            "inactive_count": str(inactive_count),
-            "active_count": str(active_count)
+            # "title": "count_card",
+            "Total Machines": str(machine_count),
+            "Active Machines": str(active_count),
+            "Inactive Machines": str(inactive_count)
+
         }
     return count_card_data
 

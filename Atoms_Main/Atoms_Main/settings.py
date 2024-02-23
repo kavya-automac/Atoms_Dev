@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'Atoms_machines',
 
     'channels',
+    # 'django_celery_results',
+    # 'django_celery_beat',
 
 ]
 
@@ -100,7 +102,9 @@ ROOT_URLCONF = 'Atoms_Main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR,'build')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -178,6 +182,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS=[
+    os.path.join(BASE_DIR,'build/static')
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -246,278 +253,16 @@ LOGGING = {
 
 }
 
-
-
-
-
-
-
-
-
 #
-# AWS_ACCESS_KEY_ID = 'AKIAU6GDZMPJEGLBYVW2'
-# AWS_SECRET_ACCESS_KEY = 'yKDpoHAwB2duXWTd4Rjcs2ldA30uIzLHa22kRG6z'
-# AWS_REGION_NAME = 'ap-south-1'
-# AWS_LOG_GROUP = ' AtomsDevLogs', # your log group
-# AWS_LOG_STREAM = ' AtomsDevStream', # your stream
-# AWS_LOGGER_NAME = 'watchtower-logger' # your logger
+# #celery----------
+# CELERY_BROKER_URL = 'redis://65.0.154.172:6379'  # Replace with your broker URL
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 'Asia/Kolkata'
+# # CELERY_RESULT_BACKEND = 'redis://65.0.154.172:6379/15'  # Replace with your result backend URL
+# CELERY_RESULT_BACKEND = 'django-db'
 #
+# #celery beat-------------
 #
-# # logger
-# boto3_session = Session(
-#   aws_access_key_id=AWS_ACCESS_KEY_ID,
-#   aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-#   region_name=AWS_REGION_NAME
-# )
-#
-#
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "aws": {
-#             "format": "%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
-#             "datefmt": "%Y-%m-%d %H:%M:%S",
-#         },
-#     },
-#     "handlers": {
-#         "watchtower": {
-#             "level": "INFO",
-#             "class": "watchtower.CloudWatchLogHandler",
-#             "log_group": "YOUR_LOG_GROUP",
-#             "stream_name": "YOUR_STREAM_NAME",
-#             "formatter": "aws",
-#         },
-#         "console": {"class": "logging.StreamHandler", "formatter": "aws",},
-#     },
-#     "loggers": {
-#         "django": {"handlers": ["watchtower"], "level": "INFO"},
-#         "root": {"handlers": ["watchtower"], "level": "INFO"},
-#         "watchtower": {"level": "DEBUG"},  # Set higher level for more details
-#     },
-# }
-
-
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "aws": {
-#             "format": "%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
-#             "datefmt": "%Y-%m-%d %H:%M:%S",
-#         },
-#     },
-#     "handlers": {
-#         "watchtower": {
-#             "level": "INFO",
-#             "class": "watchtower.CloudWatchLogHandler",
-#             "region_name": AWS_REGION_NAME,  # Added region_name
-#             "log_group": AWS_LOG_GROUP,
-#             "stream_name": AWS_LOG_STREAM,
-#             "formatter": "aws",
-#         },
-#         "console": {"class": "logging.StreamHandler", "formatter": "aws",},
-#     },
-#     "loggers": {
-#         # Use this logger to send data just to Cloudwatch
-#         "watchtower": {"level": "INFO", "handlers": ["watchtower"], "propogate": False,}
-#     },
-# }
-
-
-
-# settings.py
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {module} {process:d} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'watchtower': {
-#             'level': 'DEBUG',
-#             'class': 'watchtower.CloudWatchLogHandler',
-#             'log_group': AWS_LOG_GROUP,  # Enter your log group name
-#             'stream_name': AWS_LOG_STREAM,  # Enter your log stream name
-#             'formatter': 'verbose',
-#             # 'aws_region':AWS_REGION_NAME
-#             # 'boto3_session': boto3.Session(
-#             #   aws_access_key_id=AWS_ACCESS_KEY_ID,
-#             #   aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-#
-#             # ),
-#         },
-#     },
-#     'loggers': {
-#         AWS_LOGGER_NAME: {
-#             'handlers': ['watchtower'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
-# logger = logging.getLogger("handlers")
-
-
-
-
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'aws': {
-#             # you can add specific format for aws here
-#             # if you want to change format, you can read:
-#             #    https://stackoverflow.com/questions/533048/how-to-log-source-file-name-and-line-number-in-python/44401529
-#             'format': u"%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
-#             'datefmt': "%Y-%m-%d %H:%M:%S"
-#         },
-#     },
-#     'handlers': {
-#         'watchtower': {
-#             'level': 'DEBUG',
-#             'class': 'watchtower.CloudWatchLogHandler',
-#                      'boto3_session': boto3_session,
-#                      'log_group': AWS_LOG_GROUP,
-#                      'stream_name': AWS_LOG_STREAM,
-#             'formatter': 'aws', # use custom format
-#         },
-#     },
-#     'loggers': {
-#         AWS_LOGGER_NAME: {
-#             'level': 'DEBUG',
-#             'handlers': ['watchtower'],
-#             'propagate': True,
-#         },
-#         # add your other loggers here...
-#     },
-# }
-
-# cloudwatch_handler = watchtower.CloudWatchLogHandler(
-#     log_group=AWS_LOG_GROUP,
-#     stream_name=AWS_LOG_STREAM,
-#     send_interval=5,  # Adjust send interval as needed
-# )
-#
-# # Configure logging
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(AWS_LOGGER_NAME)
-# logger.addHandler(cloudwatch_handler)
-#
-# # Test the logger
-# logger.debug("Testing logging with watchtower")
-
-#
-# # Configure logging
-# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]')
-#
-# # Create a handler for CloudWatch
-# cloudwatch_handler = watchtower.CloudWatchLogHandler(
-#     boto3_session=boto3_session,
-#     log_group=AWS_LOG_GROUP,
-#     stream_name=AWS_LOG_STREAM
-# )
-#
-# # Set the formatter for the handler
-# cloudwatch_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]'))
-#
-# # Get the logger
-# logger = logging.getLogger(AWS_LOGGER_NAME)
-# logger.setLevel(logging.DEBUG)
-#
-# # Add the CloudWatch handler to the logger
-# logger.addHandler(cloudwatch_handler)
-
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'aws': {
-#             'format': u"%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
-#             'datefmt': "%Y-%m-%d %H:%M:%S"
-#         },
-#     },
-#     'handlers': {
-#         'watchtower': {
-#             'level': 'DEBUG',
-#             'class': 'watchtower.CloudWatchLogHandler',
-#             'boto3_session': boto3_session,  # Passing the boto3 session
-#             'log_group': AWS_LOG_GROUP,
-#             'stream_name': AWS_LOG_STREAM,
-#             'formatter': 'aws',  # use custom format
-#         },
-#     },
-#     'loggers': {
-#         AWS_LOGGER_NAME: {
-#             'level': 'DEBUG',
-#             'handlers': ['watchtower'],
-#             'propagate': False,
-#         },
-#         # add your other loggers here...
-#     },
-# }
-#
-# # Apply logging configuration
-# logging.config.dictConfig(LOGGING)
-#
-# # Get logger
-# logger = logging.getLogger(AWS_LOGGER_NAME)
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'aws': {
-#             # you can add specific format for aws here
-#             # if you want to change format, you can read:
-#             #    https://stackoverflow.com/questions/533048/how-to-log-source-file-name-and-line-number-in-python/44401529
-#             'format': u"%(asctime)s [%(levelname)-8s] %(message)s [%(pathname)s:%(lineno)d]",
-#             'datefmt': "%Y-%m-%d %H:%M:%S"
-#         },
-#     },
-#     'handlers': {
-#         'watchtower': {
-#             'level': 'DEBUG',
-#             'class': 'watchtower.CloudWatchLogHandler',
-#                      'boto3_session': boto3_session,
-#                      'log_group': AWS_LOG_GROUP,
-#                      'stream_name': AWS_LOG_STREAM,
-#             'formatter': 'aws', # use custom format
-#         },
-#     },
-#     'loggers': {
-#         AWS_LOGGER_NAME: {
-#             'level': 'DEBUG',
-#             'handlers': ['watchtower'],
-#             'propagate': False,
-#         },
-#         # add your other loggers here...
-#     },
-# }
-
-#
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'watchtower': {
-#             'level': 'DEBUG',
-#             'class': 'django_cloudwatch_logger.log.Handler',
-#             'log_group_name': 'django_logs_group_name',  # customize as needed
-#             'stream_name': 'django_logs_stream_name',    # customize as needed
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['watchtower'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
+# CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'

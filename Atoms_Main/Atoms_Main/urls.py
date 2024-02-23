@@ -16,8 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.views.generic import TemplateView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('Atoms_users.urls')),
+    # path('', include('Atoms_users.urls')),
+    path('backend/', include('Atoms_users.urls')),
+    path('', TemplateView.as_view(template_name='index.html')),
+    path('app', TemplateView.as_view(template_name='index.html')),
+    path('app/dashboard', TemplateView.as_view(template_name='index.html')),
+    path('app/machine', TemplateView.as_view(template_name='index.html')),
+    path('app/trail', TemplateView.as_view(template_name='index.html')),
+    path('app/report', TemplateView.as_view(template_name='index.html')),
+    # path('home/settings', TemplateView.as_view(template_name='index.html')),
+    path('login', TemplateView.as_view(template_name='index.html')),
+    path('about', TemplateView.as_view(template_name='index.html'))
+
 ]
