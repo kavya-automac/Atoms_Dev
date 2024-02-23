@@ -83,7 +83,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=event["text"])
             # print("eventtttttttttttttttttttttttttt",event["text"])
             # await self.send(text_data=json.dumps(event["text"]))
-            await asyncio.sleep(1)
+            # await asyncio.sleep(1)
         except Exception as e:
             print("chat message error - ", e)
 
@@ -231,7 +231,7 @@ class ControlSocket(AsyncWebsocketConsumer):
         try:
             await self.send(text_data=event["text"])
 
-            await asyncio.sleep(1)
+            # await asyncio.sleep(1)
         except Exception as e:
             print("control message error - ", e)
 
@@ -257,7 +257,6 @@ class DashboardSocket(AsyncWebsocketConsumer):
         await self.accept()
 
         self.scheduler_task = asyncio.create_task(self.dashboard_web_socket())
-
 
     async def disconnect(self, close_code):
         # connected_status = False
@@ -316,3 +315,65 @@ class DashboardSocket(AsyncWebsocketConsumer):
             await asyncio.sleep(1)
         except Exception as e:
             print("dashboard message error - ", e)
+
+#
+# class DashboardSocket1(AsyncWebsocketConsumer):
+#     async def connect(self):
+#         query_string = self.scope['query_string'].decode()
+#         user_id = query_string.split('=')[1]
+#
+#         dept = await user_department(user_id)
+#
+#         await self.channel_layer.group_add(dept+'_dashboard', self.channel_name)
+#         await self.accept()
+#         from Atoms_machines import io_status_websocket
+#         await io_status_websocket.dashboard_web(user_id, dept)
+#
+#
+#
+#         # self.scheduler_task = asyncio.create_task(self.schedule_dashboard_web_socket())
+#
+#     async def disconnect(self, close_code):
+#         query_string = self.scope['query_string'].decode()
+#         user_id = query_string.split('=')[1]
+#         dept = await user_department(user_id)
+#
+#         # if hasattr(self, 'scheduler_task'):
+#         #     self.scheduler_task.cancel()
+#
+#         await self.channel_layer.group_discard(dept+'_dashboard', self.channel_name)
+#
+#     async def receive(self, text_data):
+#         query_string = self.scope['query_string'].decode()
+#
+#         user_id = query_string.split('=')[1]
+#         dept = await user_department(user_id)
+#
+#         await self.channel_layer.group_send(dept+"_dashboard", {
+#             "type": "dashboard.message",
+#             "text": text_data  # Send the processed data as the message
+#         })
+#
+#     # async def schedule_dashboard_web_socket(self):
+#     #     try:
+#     #         query_string = self.scope['query_string'].decode()
+#     #         user_id = query_string.split('=')[1]
+#     #         dept = await user_department(user_id)
+#     #         await io_status_websocket.dashboard_web(user_id, dept)
+#     #     except asyncio.CancelledError:
+#     #         return  # Exit if the task is cancelled
+#     #     except Exception as e:
+#     #         print("Error in scheduling dashboard_web_socket:", e)
+#     #
+#     #     # Schedule the next call after 5 seconds
+#     #     # asyncio.get_event_loop().call_later(1, self.schedule_dashboard_web_socket)
+#
+#     async def dashboard_message(self, event):
+#
+#         try:
+#             await self.send(text_data=event["text"])
+#
+#         except Exception as e:
+#             print("dashboard message error - ", e)
+
+# con_fun=dash_obj.connect()
