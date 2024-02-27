@@ -135,6 +135,7 @@ def Machine_Control(node_id):
         control_data = key_value_merge(node_id, io_key_data, io_value_data)
         control_data["node_id"] = node_id
         control_data["machine_id"] = machine_id
+
         control_data["machine_name"] = machine_name
         control_data["time_stamp"] = io_value_data['Timestamp']
         # print('control_data',control_data)
@@ -163,6 +164,26 @@ def Machine_Control_web2(node_id):
     else:
         return {"status": "please enter valid node_id"}
 
+
+@sync_to_async
+
+def Machine_Control_web2(node_id):
+    node = MachineDetails.objects.get(pk=node_id)
+    machine_name = node.Machine_Name
+    machine_id = node.Machine_id
+
+    if node_id:
+        io_key_data=io_list_data(node_id)
+        io_value_data=io_values(machine_id,"control")
+        control_data = key_value_merge(node_id, io_key_data, io_value_data)
+        control_data["node_id"] = node_id
+        control_data["machine_id"] = machine_id
+        control_data["machine_name"] = machine_name
+        control_data["time_stamp"] = io_value_data['Timestamp']
+        # print('control_data',control_data)
+        return control_data
+    else:
+        return {"status": "please enter valid node_id"}
 
 
 def machine_kpis(node_id):

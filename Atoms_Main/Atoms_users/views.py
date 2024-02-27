@@ -91,6 +91,7 @@ def logout_view(request):
 
 @api_view(['GET'])
 def Machines_List(request):
+    logger.info('machine_list...!')
 
     try:
         logger.info('machine_list: %s',request.user)
@@ -162,6 +163,8 @@ def Machine_module(request):#dropdown
 
 @api_view(['GET'])
 
+@api_view(['GET'])
+
 def Trail_module(request):#dropdown
     try:
         logger.info('trail module: %s', request.user)
@@ -188,6 +191,15 @@ def Trail_module(request):#dropdown
 
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)})
+@api_view(['GET'])
+
+def Report_module(request):#dropdown
+    # user_id=10#from frontend
+    # print('request.headers',request.headers)
+    # print('request.headers',request.headers['user-id'])
+    user_id=request.headers['user-id']
+    # print("user_id||||||||||||||||",user_id)
+    drop_down=dropdown(user_id)
 
 
 @api_view(['GET'])
@@ -449,6 +461,8 @@ def dashboard(request):
 
 # new data added to nested sets using api's starts from here ..............................
 
+# new data added to nested sets using api's starts from here ..............................
+
 @api_view(['GET'])
 
 
@@ -456,6 +470,14 @@ def add_new_node(request):  # add child node
     parent_id = request.query_params.get('parent_id')
     node_name = request.query_params.get('node_name')
     pro_name = request.query_params.get('property')
+
+    parent = Nested_Table.objects.get(id=parent_id)
+
+    parent_left = parent.Node_Left
+
+    Nested_Table.objects.filter(Node_Right__gt=parent_left).update(Node_Right=models.F('Node_Right') + 2)
+    Nested_Table.objects.filter(Node_Left__gt=parent_left).update(Node_Left=models.F('Node_Left') + 2)
+
 
     parent = Nested_Table.objects.get(id=parent_id)
 
