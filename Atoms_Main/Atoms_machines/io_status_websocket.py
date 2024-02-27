@@ -10,18 +10,18 @@ channel_layer = get_channel_layer()
 def io_websocket(connected_machine_data):
 
     machine_data = json.loads(connected_machine_data)
-    machine_id=machine_data['Machine_Id']
+    machine_id=machine_data['machine_id']
     from Atoms_users.models import MachineDetails
     from Atoms_users.conversions import io_list_data, key_value_merge
 
     node_id = MachineDetails.objects.get(Machine_id=machine_id)
     # print('node_id',node_id)
     keys = io_list_data(node_id.id)
-    digital_input = machine_data['Digital_Input']
-    digital_output = machine_data['Digital_Output']
-    analog_input = machine_data['Analog_Input']
-    analog_output = machine_data['Analog_Output']
-    other = machine_data['Other']
+    digital_input = machine_data['digital_inputs']
+    digital_output = machine_data['digital_outputs']
+    analog_input = machine_data['analog_inputs']
+    analog_output = machine_data['analog_outputs']
+    other = machine_data['other']
     io_value_result ={
         "Digital_Input":digital_input,
         "Digital_Output":digital_output,
@@ -36,7 +36,7 @@ def io_websocket(connected_machine_data):
         "node_id": str(node_id.id),
         "machine_id": machine_id,
         "machine_name": node_id.Machine_Name,
-        "time_stamp": machine_data['Timestamp']
+        "time_stamp": machine_data['timestamp']
     }
 
     result.update(data)
@@ -57,18 +57,18 @@ def io_websocket(connected_machine_data):
 def control_websocket(connected_machine_data):
 
     machine_data = json.loads(connected_machine_data)
-    machine_id=machine_data['Machine_Id']
+    machine_id=machine_data['machine_id']
     from Atoms_users.models import MachineDetails
     from Atoms_users.conversions import io_list_data, key_value_merge
 
     node_id = MachineDetails.objects.get(Machine_id=machine_id)
     # print('node_id',node_id)
     keys = io_list_data(node_id.id)
-    digital_input = machine_data['Digital_Input']
-    digital_output = machine_data['Digital_Output']
-    analog_input = machine_data['Analog_Input']
-    analog_output = machine_data['Analog_Output']
-    other = machine_data['Other']
+    digital_input = machine_data['digital_inputs']
+    digital_output = machine_data['digital_outputs']
+    analog_input = machine_data['analog_inputs']
+    analog_output = machine_data['analog_outputs']
+    other = machine_data['other']
     control_value_result ={
         "Digital_Input":digital_input,
         "Digital_Output":digital_output,
@@ -83,7 +83,7 @@ def control_websocket(connected_machine_data):
         "node_id": str(node_id.id),
         "machine_id": machine_id,
         "machine_name": node_id.Machine_Name,
-        "time_stamp": machine_data['Timestamp']
+        "time_stamp": machine_data['timestamp']
     }
 
     control_result.update(data)

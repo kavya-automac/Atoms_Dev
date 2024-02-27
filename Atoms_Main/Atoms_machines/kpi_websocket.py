@@ -39,9 +39,9 @@ def kpi_socket(machine_id):
             "Line": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Bar": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Text": lambda: text_card(i, entire_result_data, kpi_result, "kpiweb"),
-            "Pie": lambda: "under dev",
+            "Pie": lambda:text_card(i, entire_result_data, kpi_result, "kpiweb"),
 
-            'default': lambda: {"status": ""},
+            'default': lambda: {"resultant_data": []},
         }
 
         # Execute the corresponding function from the switch_dict or the default function
