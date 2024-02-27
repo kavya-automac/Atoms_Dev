@@ -11,10 +11,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import logging
+
+# import boto3
+# from boto3.session import Session
+# import watchtower
+
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# print('BASE_DIR',BASE_DIR)
+prev_dir = os.path.abspath(os.path.join(BASE_DIR,'..'))
+# log_file_path = BASE_DIR + '/logfiles/newlogfile_' + '.log'
 
+# print('prev_dir',log_file_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -25,7 +36,7 @@ SECRET_KEY = 'django-insecure-)re%h1ix@vmx0o3!z16ko^_tj$cm*50sqsv1q0kt7h%9!ohupb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',"65.0.154.172"]
+ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',"65.0.154.172","43.204.19.66"]
 
 # Application definition
 
@@ -43,6 +54,8 @@ INSTALLED_APPS = [
     'Atoms_machines',
 
     'channels',
+    # 'django_celery_results',
+    # 'django_celery_beat',
 
 ]
 
@@ -89,7 +102,9 @@ ROOT_URLCONF = 'Atoms_Main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR,'build')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,13 +125,23 @@ ASGI_APPLICATION = 'Atoms_Main.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#      'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'Atoms_Nested_db',
+#         'USER': 'postgres',
+#         'PASSWORD':'1357',
+#         'HOST':'192.168.29.144',
+#         'PORT':'5432',
+#     }
+# }
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Atoms_Nested_db',
-        'USER': 'postgres',
-        'PASSWORD':'1357',
-        'HOST':'192.168.29.144',
+        'NAME': 'postgres',
+        'USER': 'AtomsDev',
+        'PASSWORD':'Atoms150221',
+        'HOST':'atomsdev.c9y8cmwqcg28.ap-south-1.rds.amazonaws.com',
         'PORT':'5432',
     }
 }
@@ -157,6 +182,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS=[
+    os.path.join(BASE_DIR,'build/static')
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -189,3 +217,52 @@ CHANNEL_LAYERS={
         }
     }
 }
+
+
+
+LOGS_DIR = os.path.join(BASE_DIR, 'logfiles')  # Define the logs directory
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            # 'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+            # 'format': '%(asctime)s [%(levelname)s] %(name)s: %(funcName)s - %(message)s'
+            'format': '%(asctime)s [%(levelname)s] %(module)s.%(funcName)s: %(message)s'
+
+            # 'style': '{',
+            },
+        },
+    'handlers': {
+        'infofile': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            # 'filename': 'C://mydoc/logs/'+str(datetime.date.today())+'.log',
+            'filename': str(BASE_DIR)+'/logfiles/newlogfile.log',
+            'formatter':'standard',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['infofile'],
+            'propagate': True,
+            'level': 'DEBUG'
+        },
+    },
+
+}
+
+#
+# #celery----------
+# CELERY_BROKER_URL = 'redis://65.0.154.172:6379'  # Replace with your broker URL
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 'Asia/Kolkata'
+# # CELERY_RESULT_BACKEND = 'redis://65.0.154.172:6379/15'  # Replace with your result backend URL
+# CELERY_RESULT_BACKEND = 'django-db'
+#
+# #celery beat-------------
+#
+# CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'

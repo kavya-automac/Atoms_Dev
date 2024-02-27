@@ -2,11 +2,15 @@ from django.db.models import Q
 
 from .models import *
 from asgiref.sync import sync_to_async
+import logging
+
+logger = logging.getLogger("django")
 
 
 
 def get_node_LR(node,pro):#user
     # print('..........',node)
+    logger.info('nested queriess...!')
     node_left_right=Nested_Table.objects.get(Node_Id=node,Property=pro)
     left_v=node_left_right.Node_Left
     right_v=node_left_right.Node_Right

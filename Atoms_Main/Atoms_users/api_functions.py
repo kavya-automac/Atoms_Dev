@@ -1,5 +1,5 @@
 # import datetime
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
@@ -13,6 +13,7 @@ from .conversions import *
 from Atoms_machines.models import CardsRawData,MachineRawData
 from django.db.models import F, CharField, Value
 from django.db.models.functions import Cast
+from asgiref.sync import sync_to_async
 
 
 def dropdown(user_id):
@@ -97,6 +98,32 @@ def Machine_Iostatus(node_id):#machine_id
         return {"status": "please enter valid node_id"}
 
 
+@sync_to_async
+def Machine_Iostatus_web2(node_id):#machine_id
+    node=MachineDetails.objects.get(pk=node_id)
+    machine_name=node.Machine_Name
+    machine_id=node.Machine_id
+    # print('machine_name iostatus',machine_name)
+
+
+    if node_id:
+        io_key_data=io_list_data(node_id)
+        io_value_data=io_values(machine_id,"iostatus")
+        iostatus_data = key_value_merge(machine_id, io_key_data, io_value_data)
+        iostatus_data["node_id"] = node_id
+        iostatus_data["machine_id"] = machine_id
+        iostatus_data["machine_name"] = machine_name
+        iostatus_data["time_stamp"] = io_value_data['Timestamp']
+
+
+        # print('iostatus_data', iostatus_data)
+        return iostatus_data
+
+    else:
+        return {"status": "please enter valid node_id"}
+
+
+
 def Machine_Control(node_id):
     node = MachineDetails.objects.get(pk=node_id)
     machine_name = node.Machine_Name
@@ -106,13 +133,36 @@ def Machine_Control(node_id):
         io_key_data=io_list_data(node_id)
         io_value_data=io_values(machine_id,"control")
         control_data = key_value_merge(node_id, io_key_data, io_value_data)
-        control_data["machine_id"] = node_id
+        control_data["node_id"] = node_id
+        control_data["machine_id"] = machine_id
         control_data["machine_name"] = machine_name
         control_data["time_stamp"] = io_value_data['Timestamp']
         # print('control_data',control_data)
         return control_data
     else:
         return {"status": "please enter valid node_id"}
+
+
+@sync_to_async
+
+def Machine_Control_web2(node_id):
+    node = MachineDetails.objects.get(pk=node_id)
+    machine_name = node.Machine_Name
+    machine_id = node.Machine_id
+
+    if node_id:
+        io_key_data=io_list_data(node_id)
+        io_value_data=io_values(machine_id,"control")
+        control_data = key_value_merge(node_id, io_key_data, io_value_data)
+        control_data["node_id"] = node_id
+        control_data["machine_id"] = machine_id
+        control_data["machine_name"] = machine_name
+        control_data["time_stamp"] = io_value_data['Timestamp']
+        # print('control_data',control_data)
+        return control_data
+    else:
+        return {"status": "please enter valid node_id"}
+
 
 
 def machine_kpis(node_id):
@@ -139,7 +189,7 @@ def machine_kpis(node_id):
             "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
-            "Pie": lambda: "under dev",
+            "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
 
             'default': lambda: {"status": ""},
         }
@@ -149,6 +199,41 @@ def machine_kpis(node_id):
 
     return result
 
+@sync_to_async
+
+def machine_kpis_web2(node_id):
+    # # todays_date = datetime.now().date()
+    # todays_date = "2024-02-08"
+    lrvalues=get_node_LR(node_id,"Machine")
+    left=lrvalues['left']
+    right=lrvalues['right']
+    child_kpi=get_descendent(left,right,"Kpi","node")
+    # print('child_kpi',child_kpi["descendents"])
+    kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"]).values('Machine_Id__Machine_id',
+                                    'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
+    # print('kpinode_data',kpinode_data)
+
+
+    entire_result_data=[]
+    # x_axis=[]
+    # y_axis=[]
+
+    for i in kpinode_data:
+        kpi_result = {}
+        # print('i',i)
+        switch_dict = {
+            "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
+            "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
+            "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
+            "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
+
+            'default': lambda: {"status": ""},
+        }
+
+        # Execute the corresponding function from the switch_dict or the default function
+        result = switch_dict.get(i['Card_type__Card_Type'], switch_dict['default'])()
+
+    return result
 
 def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
     # print('node_id in reports_data',user_id)
@@ -321,19 +406,19 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp')
+        ).distinct('Timestamp').order_by('-Timestamp')
     elif method == "kpiweb":
         kpirawdata =[CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp').latest('-Timestamp')]
+        ).distinct('Timestamp').order_by('-Timestamp').latest('-Timestamp')]
     elif method == "reports":
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id=[data['Machine_Id__Machine_id']],
             Title=report_type,
             Timestamp__range=[start_datetime, end_datetime],
-        ).order_by('Timestamp')
+        ).distinct('Timestamp').order_by('Timestamp')
 
         # kpi_result_data = []
         for record in kpirawdata:
@@ -390,18 +475,29 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
     # Process kpirawdata only if it's not None
     if kpirawdata:
+
+        # print('kpirawdata',kpirawdata)
         kpi_result['card'] = data['Card_type__Card_Type']
         kpi_result['title'] = data['Title']
         kpi_result['ledger'] = data['Ledger']
         labels = {
-            # "unit": data['Unit'],
+            "units": data['Unit'],
             # "y_label": data['Y_Label']
         }
         kpi_result["labels"] = labels
+        for res in kpirawdata:
+            # print('res',res.Value)
+            text_res_data = {"value": res.Value}
+            # val=res.Value
+            kpi_result_data.append(text_res_data)
+
+
         kpi_result['data'] = kpi_result_data
         entire_result_data.append(kpi_result)
+        # print('entire_result_data',entire_result_data)
+        # print('kpi_result_data',kpi_result_data)
 
-        kpi_entry = {'kpidata': entire_result_data}
+        kpi_entry = {'resultant_data': entire_result_data}
         # print('kpi_entry', kpi_entry)
         return kpi_entry
     else:
@@ -468,7 +564,9 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
 
 def count_machines(machines):
-    current_time = datetime.now()
+    current_time_Ist = datetime.now()
+    current_time = current_time_Ist.astimezone(timezone.utc)
+
     machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id')
     # print('machines_query', machine_names_query)
     # result = []
@@ -495,11 +593,11 @@ def count_machines(machines):
 
             last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
             last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
-
+            utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
             # print('last_record_time', last_record_time)
             # print('current_time', current_time)
 
-            time_difference = abs((current_time - last_record_time).total_seconds())
+            time_difference = abs((current_time - utc_timestamp_latest).total_seconds())
             # time_difference = current_time - last_record_time
             # print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
@@ -516,10 +614,11 @@ def count_machines(machines):
             inactive_count += 1
             # print('inactive else', inactive_count)
         count_card_data = {
-            "title": "count_card",
-            "machine_count": str(machine_count),
-            "inactive_count": str(inactive_count),
-            "active_count": str(active_count)
+            # "title": "count_card",
+            "Total Machines": str(machine_count),
+            "Active Machines": str(active_count),
+            "Inactive Machines": str(inactive_count)
+
         }
     return count_card_data
 

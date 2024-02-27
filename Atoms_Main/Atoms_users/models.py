@@ -7,6 +7,7 @@ from django.db import models
 
 class Layers(models.Model):  # for companies,partnerships,customers ,plant and lines
     objects = models.Manager()
+    id = models.AutoField(primary_key = True)
     Layer_Type = models.CharField(max_length=200)
     Layer_Name = models.CharField(max_length=200)
     Company_Logo = models.URLField(blank=True,null=True)
@@ -105,6 +106,7 @@ class IOList(models.Model):
 
 
 class Nested_Table(models.Model):
+    objects = models.Manager()
     Node_Id = models.IntegerField()
     Node_Left=models.IntegerField()
     Node_Right=models.IntegerField()
