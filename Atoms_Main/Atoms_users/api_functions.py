@@ -297,7 +297,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).order_by('-Timestamp').latest('-Timestamp')]# we will get only one record here due to for loop below kept query in list
+        ).order_by('-Timestamp').latest('Timestamp')]# we will get only one record here due to for loop below kept query in list
 
     elif method =="reports":
 
@@ -357,7 +357,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
     card_data = []
     for j in kpirawdata:
         timestamp = j.Timestamp
-        timestamp_str = timestamp.strftime('%Y-%m-%d')  # Convert datetime object to string if needed
+        # timestamp_str = timestamp.strftime('%Y-%m-%d')  # Convert datetime object to string if needed
 
         # print('timestamp typeeee',type(timestamp_str))
         # print('try  start_datetime',start_datetime)
