@@ -35,6 +35,8 @@ def kpi_socket(machine_id):
     for i in kpinode_data:
         kpi_result = {}
         # print('i', i)
+        # print('entire_result_data', entire_result_data)
+        # print('kpi_result', kpi_result)
         switch_dict = {
             "Line": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Bar": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),

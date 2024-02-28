@@ -412,7 +412,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).distinct('Timestamp').order_by('-Timestamp').latest('-Timestamp')]
+        ).distinct('Timestamp').order_by('-Timestamp').latest('Timestamp')]
     elif method == "reports":
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id=[data['Machine_Id__Machine_id']],

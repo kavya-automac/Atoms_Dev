@@ -76,7 +76,7 @@ def on_connect_1(client_1, userdata, flags, rc):
 
 def on_message_1(client_1, userdata, msg):
     connected_machine_data = msg.payload.decode()  # Assuming the payload is a string
-    print('connected_machine_data',connected_machine_data)
+    # print('connected_machine_data',connected_machine_data)
     topic = msg.topic
     if topic == "machine_data_dev":
         all_topics(connected_machine_data, topic)
