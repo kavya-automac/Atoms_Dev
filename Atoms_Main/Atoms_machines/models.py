@@ -65,6 +65,7 @@ def signal(sender,instance,created,**kwargs):
 
         Kpi_Conversions.get_kpi_conversion_fun1(instance)
         # Kpi_Conversions.test(instance)
+        # print('instance.Machine_Id',instance.Machine_Id)
         kpi_websocket.kpi_socket(instance.Machine_Id)
 
         # time.sleep(5)

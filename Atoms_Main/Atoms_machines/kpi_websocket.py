@@ -35,13 +35,15 @@ def kpi_socket(machine_id):
     for i in kpinode_data:
         kpi_result = {}
         # print('i', i)
+        # print('entire_result_data', entire_result_data)
+        # print('kpi_result', kpi_result)
         switch_dict = {
             "Line": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Bar": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Text": lambda: text_card(i, entire_result_data, kpi_result, "kpiweb"),
-            "Pie": lambda: "under dev",
+            "Pie": lambda:text_card(i, entire_result_data, kpi_result, "kpiweb"),
 
-            'default': lambda: {"status": ""},
+            'default': lambda: {"resultant_data": []},
         }
 
         # Execute the corresponding function from the switch_dict or the default function

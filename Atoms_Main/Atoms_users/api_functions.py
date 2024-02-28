@@ -412,7 +412,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
-        ).distinct('Timestamp').order_by('-Timestamp').latest('-Timestamp')]
+        ).distinct('Timestamp').order_by('-Timestamp').latest('Timestamp')]
     elif method == "reports":
         kpirawdata = CardsRawData.objects.filter(
             Machine_Id=[data['Machine_Id__Machine_id']],
@@ -486,9 +486,13 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         }
         kpi_result["labels"] = labels
         for res in kpirawdata:
-            # print('res',res.Value)
-            text_res_data = {"value": res.Value}
-            # val=res.Value
+            print('res', res.Timestamp)
+            timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
+
+            # Format the datetime object
+            formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
+            text_res_data = {"Timestamp": formatted_timestamp_str, "value": res.Value}
+
             kpi_result_data.append(text_res_data)
 
 
@@ -635,9 +639,9 @@ def dashboard_data(dash):
             "Line": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
             "Bar": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
             "Text": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
-            "Pie": lambda: "under dev",
+            "Pie": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
 
-            'default': lambda: {"status": ""},
+            'default': lambda: {"resultant_data": []},
         }
 
         # Execute the corresponding function from the switch_dict or the default function
