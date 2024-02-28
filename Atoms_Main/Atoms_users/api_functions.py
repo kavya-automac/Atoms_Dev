@@ -191,7 +191,7 @@ def machine_kpis(node_id):
             "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
 
-            'default': lambda: {"status": ""},
+            'default': lambda: {"resultant_data": []},
         }
 
         # Execute the corresponding function from the switch_dict or the default function
@@ -227,7 +227,7 @@ def machine_kpis_web2(node_id):
             "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
 
-            'default': lambda: {"status": ""},
+            'default': lambda: {"resultant_data": []},
         }
 
         # Execute the corresponding function from the switch_dict or the default function
@@ -267,7 +267,7 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
                 "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Pie": lambda: "under dev",
 
-                'default': lambda: {"status": ""},
+                'default': lambda: {"resultant_data": []},
             }
 
             # Execute the corresponding function from the switch_dict or the default function
