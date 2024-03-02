@@ -23,6 +23,13 @@ class user_details_serializer_all (serializers.ModelSerializer):#[login api, ]
         model = User_details
         fields = '__all__'
 
+class user_details_serializer_all_2 (serializers.ModelSerializer):#[login api, ]
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+
 
 class machine_details_serializer_machine_id_machine_name (serializers.ModelSerializer):#[machine_list api, ]
     node_id = serializers.IntegerField(source='id', read_only=True)

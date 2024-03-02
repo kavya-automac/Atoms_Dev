@@ -202,13 +202,15 @@ def machine_kpis(node_id):
 @sync_to_async
 
 def machine_kpis_web2(node_id):
+    print('llll')
     # # todays_date = datetime.now().date()
     # todays_date = "2024-02-08"
     lrvalues=get_node_LR(node_id,"Machine")
+    print('....')
     left=lrvalues['left']
     right=lrvalues['right']
     child_kpi=get_descendent(left,right,"Kpi","node")
-    # print('child_kpi',child_kpi["descendents"])
+    print('child_kpi',child_kpi["descendents"])
     kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"]).values('Machine_Id__Machine_id',
                                     'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
     # print('kpinode_data',kpinode_data)
@@ -476,7 +478,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
     # Process kpirawdata only if it's not None
     if kpirawdata:
 
-        # print('kpirawdata',kpirawdata)
+        print('kpirawdata',kpirawdata)
         kpi_result['card'] = data['Card_type__Card_Type']
         kpi_result['title'] = data['Title']
         kpi_result['ledger'] = data['Ledger']
@@ -571,12 +573,13 @@ def count_machines(machines):
     current_time_Ist = datetime.now()
     current_time = current_time_Ist.astimezone(timezone.utc)
 
-    machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id')
-    # print('machines_query', machine_names_query)
+    machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id','Machine_Name')
+    print('machines_query', machine_names_query)
     # result = []
     machine_count = 0
     inactive_count = 0
     active_count = 0
+    all_machines_status=[]
     for machine_data in machine_names_query:
         # print('machine_data', machine_data)
 
@@ -606,16 +609,17 @@ def count_machines(machines):
             # print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
-            if time_difference > 60:
-                # machine_status = "inactive"
+            if time_difference > 6:
+                machine_status = "Inactive"
                 inactive_count += 1
                 # print('inactive if', inactive_count)
             else:
-                # machine_status = "active"
+                machine_status = "Active"
                 active_count += 1
                 # print('active else', active_count)
         else:
             inactive_count += 1
+            machine_status = "Inactive"
             # print('inactive else', inactive_count)
         count_card_data = {
             # "title": "count_card",
@@ -624,7 +628,13 @@ def count_machines(machines):
             "Inactive Machines": str(inactive_count)
 
         }
-    return count_card_data
+        Machines_and_status={
+            "Machine_name":machine_data['Machine_Name'],
+            "Machines_status":machine_status
+        }
+        all_machines_status.append(Machines_and_status)
+
+    return count_card_data,{"Machines_status":all_machines_status}
 
 def dashboard_data(dash):
     dash_node = MachineCardsList.objects.filter(id__in=dash).values('Machine_Id__Machine_id',
