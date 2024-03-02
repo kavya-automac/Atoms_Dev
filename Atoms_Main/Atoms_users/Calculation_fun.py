@@ -50,7 +50,6 @@ def Day(data_dict):
     # print('data_dict',data_dict['get_value'])
 
     if kpi_data_queryset.exists():
-        pass
         # Update the existing record(s) for cumulative data
         kpi_data_queryset.update(Value=data_dict['get_value'], Timestamp=data_dict["time_stamp"])
 

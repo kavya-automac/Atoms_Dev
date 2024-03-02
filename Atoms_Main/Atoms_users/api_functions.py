@@ -267,7 +267,7 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
                 "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
-                "Pie": lambda: "under dev",
+                "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
 
                 'default': lambda: {"resultant_data": []},
             }
@@ -634,7 +634,7 @@ def count_machines(machines):
         }
         all_machines_status.append(Machines_and_status)
 
-    return count_card_data,{"Machines_status":all_machines_status}
+    return count_card_data,all_machines_status
 
 def dashboard_data(dash):
     dash_node = MachineCardsList.objects.filter(id__in=dash).values('Machine_Id__Machine_id',
@@ -644,7 +644,7 @@ def dashboard_data(dash):
     for k in dash_node:
 
         dash_result = {}
-        # print('k', k['Card_type__Card_Type'])
+        print('k', k['Card_type__Card_Type'])
         switch_dict = {
             "Line": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
             "Bar": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
