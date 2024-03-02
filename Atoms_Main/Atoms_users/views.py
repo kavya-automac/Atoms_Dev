@@ -438,10 +438,11 @@ def dashboard(request):
             # Querying MachineDetails model to get machine details
             total_count_result=count_machines(machines)
             dashboard_cards = dashboard_data(dash)
-            # print('dashboard_cards',dashboard_cards)
+            # print('total_count_result',total_count_result)
+            statuss=total_count_result[1]
 
 
-            return JsonResponse({'total_count_result':total_count_result,
+            return JsonResponse({'total_count_result':total_count_result[0],"machine_status":statuss,
                                  'dashboard_cards':dashboard_cards})
         else:
             return JsonResponse({"status": "login_required"})
