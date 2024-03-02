@@ -42,16 +42,20 @@ def login_view(request):
             # print("logged in:", request.user.username)
             # print('request_user',request.user)
             # print('request_user_username',request.user.id)
-            user_id=User_details.objects.get(user_id__username=request.user)
+            uid=User.objects.get(username=request.user)
+            print('uid.......',uid.pk)
+
+            user_id=User_details.objects.get(user_id=uid.pk)
             user_id_serializer=user_details_serializer_all(user_id)
             user_id_serializer_data=user_id_serializer.data
-            # print('user_id_serializer_data',user_id_serializer.data)
+            print('user_id_serializer_data',user_id_serializer.data)
             # print(user_id,user_id.Company_id,user_id.Company_id.Company_Logo)
-            node_lr=get_node_LR(user_id.pk,"User")
+            node_lr=get_node_LR(user_id_serializer_data['user_id'],"User")
             # print("node_lr",node_lr)
             immediate_prt=get_immediate_parent(node_lr['left'],node_lr['right'])
             # print('immediate_prt',immediate_prt)
             pages=get_descendent(immediate_prt['immediate_parent']['immediate_left'], immediate_prt['immediate_parent']['immediate_right'], "Page","node")
+            print('Pagess',pages)
             # page_ids=[node['node_id'] for node in pages['descendents']]
             # print('page_ids',page_ids)
             # access=[]
