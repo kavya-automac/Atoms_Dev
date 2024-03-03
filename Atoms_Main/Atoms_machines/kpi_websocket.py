@@ -1,3 +1,4 @@
+import datetime
 import json
 from Atoms_users .models import User_details
 from asgiref.sync import sync_to_async
@@ -48,6 +49,15 @@ def kpi_socket(machine_id):
 
         # Execute the corresponding function from the switch_dict or the default function
         result = switch_dict.get(i['Card_type__Card_Type'], switch_dict['default'])()
+        # Get current datetime
+        current_time = datetime.datetime.now()
+
+        # Format the datetime object to include only the time (hours, minutes, seconds)
+        time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Create the result data dictionary
+        result_data = {"timetsmap":time_str}
+        result.update(result_data)
 
         kpiresultdata = json.dumps(result)
     # print('kpiresultdata',kpiresultdata)
