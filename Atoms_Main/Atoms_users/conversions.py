@@ -255,7 +255,7 @@ def key_value_merge(node_id,keys,io_value_data):
     for di in range(len(io_value_data['Digital_Input'])):
         # print("????????????????",di)
 
-        io_value= "On" if io_value_data['Digital_Input'][di] else "Off"
+        io_value= "On" if io_value_data['Digital_Input'][di].lower() == "on" else "Off"
         io_name= keys['digital_input_keys'][di]['name']
         io_unit = keys['digital_input_keys'][di]['unit']
         io_control = str(keys['digital_input_keys'][di]['control'])
@@ -276,7 +276,7 @@ def key_value_merge(node_id,keys,io_value_data):
     # print('digital_input_keys',digital_input_result)
 
     for do in range(len(io_value_data['Digital_Output'])):
-        io_value = "On" if io_value_data['Digital_Output'][do] else "Off"
+        io_value = "On" if io_value_data['Digital_Output'][do].lower() == "on" else "Off"
         io_name = keys['digital_output_keys'][do]['name']
         io_unit =  keys['digital_output_keys'][do]['unit']
         io_control =  str(keys['digital_output_keys'][do]['control'])
