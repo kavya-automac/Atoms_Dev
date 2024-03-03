@@ -1,3 +1,4 @@
+import datetime
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
@@ -114,6 +115,15 @@ class KpiConsumer(AsyncWebsocketConsumer):
                 node_id = md.pk
                 print('node_id connect', node_id)
                 test = await machine_kpis_web2(node_id)
+                current_time = datetime.datetime.now()
+
+                # Format the datetime object to include only the time (hours, minutes, seconds)
+                time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+                # Create the result data dictionary
+                result_data = {"timestamp":time_str}
+                test.update(result_data)
+
                 test_res = json.dumps(test)
 
                 channel_layer = get_channel_layer()
@@ -147,7 +157,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
         #     # which is used to check if an object has the given named attribute and return true if present, else false.
         #     self.scheduler_task.cancel()
 
-        await self.channel_layer.group_discard(str(self.machine_id)+'_kpi', self.channel_name)
+        await self.channel_layer.group_discard(str(machine_id)+'_kpi', self.channel_name)
 
     # async def schedule_kpi_socket(self):
     #     while True:
