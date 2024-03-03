@@ -202,15 +202,15 @@ def machine_kpis(node_id):
 @sync_to_async
 
 def machine_kpis_web2(node_id):
-    print('llll')
+    # print('llll')
     # # todays_date = datetime.now().date()
     # todays_date = "2024-02-08"
     lrvalues=get_node_LR(node_id,"Machine")
-    print('....')
+    # print('....')
     left=lrvalues['left']
     right=lrvalues['right']
     child_kpi=get_descendent(left,right,"Kpi","node")
-    print('child_kpi',child_kpi["descendents"])
+    # print('child_kpi',child_kpi["descendents"])
     kpinode_data=MachineCardsList.objects.filter(id__in=child_kpi["descendents"]).values('Machine_Id__Machine_id',
                                     'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
     # print('kpinode_data',kpinode_data)
@@ -478,7 +478,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
     # Process kpirawdata only if it's not None
     if kpirawdata:
 
-        print('kpirawdata',kpirawdata)
+        # print('kpirawdata',kpirawdata)
         kpi_result['card'] = data['Card_type__Card_Type']
         kpi_result['title'] = data['Title']
         kpi_result['ledger'] = data['Ledger']
@@ -606,7 +606,7 @@ def count_machines(machines):
 
             time_difference = abs((current_time - utc_timestamp_latest).total_seconds())
             # time_difference = current_time - last_record_time
-            # print('time_difference', time_difference)
+            print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
             if time_difference > 6:

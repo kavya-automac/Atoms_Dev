@@ -50,7 +50,7 @@ def kpi_socket(machine_id):
         result = switch_dict.get(i['Card_type__Card_Type'], switch_dict['default'])()
 
         kpiresultdata = json.dumps(result)
-    print('kpiresultdata',kpiresultdata)
+    # print('kpiresultdata',kpiresultdata)
     async_to_sync(channel_layer.group_send)(str(machine_id)+'_kpi',
                                                     {"type": "kpiweb", "text": kpiresultdata})
 

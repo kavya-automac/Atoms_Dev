@@ -59,11 +59,12 @@ def signal(sender,instance,created,**kwargs):
         from Atoms_users import Kpi_Conversions
         #todo : import files
 
-        from . import kpi_websocket
+
 
 
 
         Kpi_Conversions.get_kpi_conversion_fun1(instance)
+        from . import kpi_websocket
         # Kpi_Conversions.test(instance)
         # print('instance.Machine_Id',instance.Machine_Id)
         kpi_websocket.kpi_socket(instance.Machine_Id)

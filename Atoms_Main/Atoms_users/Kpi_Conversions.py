@@ -105,10 +105,10 @@ def get_kpi_conversion_fun1(instance):
                 elif str(d_i_o).lower() == "false":
                     d_i_o = "Off"
                 elif str(d_i_o).lower() == "on":
-                    d_i_o = "Off"
+                    d_i_o = "On"
                 elif str(d_i_o).lower() == "off":
                     d_i_o = "Off"
-                print('d_i_o', d_i_o)
+                # print('d_i_o', d_i_o)
                 datapoint_value.append(d_i_o)
                 try:
                     conversion_fun = get_convserion_fun[i]
