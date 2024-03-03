@@ -500,7 +500,7 @@ def get_primary_key(request):
     node_id = request.query_params.get('node_id')
     pro_name=request.query_params.get('property')
     node = Nested_Table.objects.get(Node_Id=node_id,Property=pro_name)
-    print('node',node.id)
+    # print('node',node.id)
 
     return Response({"primary_key_id":node.id })
 
