@@ -572,7 +572,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
 def count_machines(machines):
     current_time_Ist = datetime.now()
-    current_time = current_time_Ist.astimezone(pytz.utc)
+    current_time = current_time_Ist.astimezone(timezone.utc)
 
     machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id','Machine_Name')
     print('machines_query', machine_names_query)
@@ -601,7 +601,7 @@ def count_machines(machines):
 
             last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
             last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
-            utc_timestamp_latest=last_record_time.astimezone(pytz.utc)
+            utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
             # print('last_record_time', last_record_time)
             # print('current_time', current_time)
 
