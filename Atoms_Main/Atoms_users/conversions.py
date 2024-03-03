@@ -253,14 +253,14 @@ def key_value_merge(node_id,keys,io_value_data):
     # print('digital_input_keys listtt',digital_input_keys)
     # print('analog_input_keys listtt',analog_input_keys)
     for di in range(len(io_value_data['Digital_Input'])):
-        print("????????????????",io_value_data['Digital_Input'][di])
-        print("????????????????",type(io_value_data['Digital_Input'][di]))
+        # print("????????????????",io_value_data['Digital_Input'][di])
+        # print("????????????????",type(io_value_data['Digital_Input'][di]))
         if isinstance(io_value_data['Digital_Input'][di], str):
             io_value= "On" if io_value_data['Digital_Input'][di].lower() == "on" else "Off"
         else:
             # Handle the case when it's not a string, for example, by assigning a default value
             io_value = "On" if io_value_data['Digital_Input'][di] else "Off"
-        print("io_value",io_value)
+        # print("io_value",io_value)
 
 
         io_name= keys['digital_input_keys'][di]['name']
