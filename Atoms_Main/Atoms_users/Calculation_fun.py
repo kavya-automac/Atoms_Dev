@@ -65,7 +65,7 @@ def Day(data_dict):
         #     card_raw_data.Name.add(data_dict['get_name'])
         #     card_raw_data.Value.add(data_dict['get_value'])
 
-        CardsRawData.objects.create(
+        new_record_today=CardsRawData.objects.create(
             Timestamp=data_dict['time_stamp'],
             Machine_Id=[data_dict["machine_id"]],  # list many to many
             Name=data_dict['get_name'],  # list machinecard names in list
@@ -73,6 +73,7 @@ def Day(data_dict):
             Title=data_dict['get_title'],
             Mode=data_dict['get_mode']
         )
+        new_record_today.save()
 
 
 def Month(data_dict):
@@ -90,7 +91,7 @@ def Month(data_dict):
 
     else:
         # Create a new record for cumulative data if it doesn't exist
-        CardsRawData.objects.create(
+        new_record_today1 = CardsRawData.objects.create(
             Timestamp=data_dict['time_stamp'],
             Machine_Id=[data_dict["machine_id"]],  # list many to many
             Name=data_dict['get_name'],  # list machinecard names in list
@@ -98,6 +99,7 @@ def Month(data_dict):
             Title=data_dict['get_title'],
             Mode=data_dict['get_mode']
         )
+        new_record_today1.save()
             # CardsRawData.objects.create(
             #     Timestamp=data_dict['time_stamp'],
             #     Machine_Id=[data_dict["machine_id"]],  # list many to many
