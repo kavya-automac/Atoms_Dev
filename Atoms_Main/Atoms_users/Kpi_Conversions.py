@@ -120,7 +120,7 @@ def get_kpi_conversion_fun1(instance):
                 # print('datapoint_value',datapoint_value)
                 switch_dict = {
                     "Live": lambda: value_list.append(Live(data_dict)),
-                    "Average": lambda: value_list.append(Average(data_dict,datapoint)),
+                    "Average": lambda: value_list.append(Average(data_dict,datapoint[i])),
                     "High_Low": lambda: value_list.append(High_Low(data_dict)),
                     'default': lambda: {"status": 'please give correct module'},
                 }
