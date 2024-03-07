@@ -25,29 +25,34 @@ def Average(data_dict,datapoint):
     print('latest_record_today',latest_record_today)
 
     end_of_day = latest_record_today.Timestamp
-    records_today = MachineRawData.objects.filter(Timestamp__range=(start_of_day, end_of_day))
+    records_today = MachineRawData.objects.filter(Timestamp__date=today)
     print('records_today',len(records_today))
     result=[]
 
-    for d in datapoint:
+    # for d in datapoint:
+    print('datapoint',datapoint)
 
 
 
-        datapoints_split = d.split('[')
-        datapoints_split1 = datapoints_split[1].split(']')
-        # print('datapoints_split',datapoints_split)
-        # print('datapoints_split1',datapoints_split1)
-        field = str(datapoints_split[0] + "__" + datapoints_split1[0])
-        # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
-        # Calculate average of analog_input[0] for today's records
-        average_analog_input = records_today.aggregate(avg_analog_input=Avg(F(field)))
-        result.append(average_analog_input['avg_analog_input'])
+    datapoints_split = datapoint.split('[')
+    datapoints_split1 = datapoints_split[1].split(']')
+    # print('datapoints_split',datapoints_split)
+    # print('datapoints_split1',datapoints_split1)
+    field = str(datapoints_split[0] + "__" + datapoints_split1[0])
+    # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
+    # Calculate average of analog_input[0] for today's records
+    average_analog_input = records_today.aggregate(avg_analog_input=Avg(F(field)))
+    result.append(average_analog_input['avg_analog_input'])
 
         # The result will be in average_analog_input['avg_analog_input']
-    # print("Average analog_input[0] for today:", average_analog_input['avg_analog_input'])
+    print("Average :", average_analog_input)
+    print("Average analog_input[0] for today:", average_analog_input['avg_analog_input'])
     # print("Averag res:", result)
-    avg_res=result
-    print("Averag res:", avg_res)
+    avg_res=float(result[0])
+    # avg_data = [float(val) for val in result if val is not None]
+
+    # print("avg_data res:", avg_data)
+    # print("Averag res:", avg_res)
 
 
     return avg_res
