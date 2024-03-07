@@ -191,6 +191,7 @@ def machine_kpis(node_id):
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
+            "Status": lambda: status(i,entire_result_data,kpi_result,"kpis"),
 
             'default': lambda: {"resultant_data": []},
         }
@@ -223,7 +224,7 @@ def machine_kpis_web2(node_id):
 
     for i in kpinode_data:
         kpi_result = {}
-        # print('i',i)
+        print('i',i)
         switch_dict = {
             "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
@@ -267,8 +268,9 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
             switch_dict = {
                 "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
-                "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
-                "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
+                "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
+                "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
+                # "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
 
                 'default': lambda: {"resultant_data": []},
             }
@@ -285,6 +287,7 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
 
 
 def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machine_id=None,start_datetime=None,end_datetime=None,report_type=None):
+    print('linee')
     formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
     if method == "kpis":
@@ -308,7 +311,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Machine_Id=[machine_id],
             Title=report_type,  # Assuming there's a field for KPI ID in the Machine_KPI_Data model
             Timestamp__range=[start_datetime, end_datetime],
-        ).order_by('Timestamp')
+        ).order_by('-Timestamp').distinct('Timestamp')
         # print('kpirawdata',kpirawdata)
     elif method == "dashboard":
         dashrawdata = CardsRawData.objects.filter(
@@ -400,7 +403,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
 def text_card(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):
     formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
-
+    print('text')
     kpi_result_data = []
 
     if method == "kpis":
@@ -410,6 +413,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
             Title=data['Title'],
             Timestamp__date=todays_date
         ).distinct('Timestamp').order_by('-Timestamp')
+        print('textttt kpi')
     elif method == "kpiweb":
         kpirawdata =[CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
@@ -511,6 +515,60 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         # Handle the case when kpirawdata is None (no records found)
         return None
 
+
+def status(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):
+    formatted_datetime = datetime.now().date()
+    todays_date = formatted_datetime.strftime("%Y-%m-%d")
+
+    kpi_result_data = []
+
+    if method == "kpis":
+
+        kpirawdata = CardsRawData.objects.filter(
+            Machine_Id__contains=[data['Machine_Id__Machine_id']],
+            Title=data['Title'],
+            Timestamp__date=todays_date
+        ).order_by('-Timestamp').distinct('Timestamp')
+    elif method == "kpiweb":
+        kpirawdata =[CardsRawData.objects.filter(
+            Machine_Id__contains=[data['Machine_Id__Machine_id']],
+            Title=data['Title'],
+            Timestamp__date=todays_date
+        ).distinct('Timestamp').order_by('-Timestamp').latest('Timestamp')]
+
+    if kpirawdata:
+
+        # print('kpirawdata',kpirawdata)
+        kpi_result['card'] = data['Card_type__Card_Type']
+        kpi_result['title'] = data['Title']
+        kpi_result['ledger'] = data['Ledger']
+        labels = {
+            "units": data['Unit'],
+        }
+        kpi_result["labels"] = labels
+        for res in kpirawdata:
+            print('res in status', res.Timestamp)
+            timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
+
+            # Format the datetime object
+            formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
+            print('.............',res.Value)
+            text_res_data = {"Machine": res.Value}
+
+            kpi_result_data.append(text_res_data)
+
+
+        kpi_result['data'] = kpi_result_data
+        entire_result_data.append(kpi_result)
+        # print('entire_result_data',entire_result_data)
+        # print('kpi_result_data',kpi_result_data)
+
+        kpi_entry = {'resultant_data': entire_result_data}
+        print('kpi_entry', kpi_entry)
+        return kpi_entry
+    else:
+        # Handle the case when kpirawdata is None (no records found)
+        return None
 
 
 # def text_card(data,entire_result_data,kpi_result,method,start_datetime=None,end_datetime=None,report_type=None):
