@@ -1,5 +1,9 @@
 from datetime import datetime
-from Atoms_machines.models import CardsRawData
+from Atoms_machines.models import CardsRawData,MachineRawData
+from datetime import datetime, date
+
+from django.db.models import Avg,F
+
 
 def Live_new_record(data_dict):
     value = data_dict['get_value']
@@ -12,8 +16,42 @@ def Live(data_dict):
     return value
 
 
-def Average(data_dict):
-    pass
+def Average(data_dict,datapoint):
+    today = date.today()
+    first_record_today = MachineRawData.objects.filter(Timestamp__date=today).latest('-Timestamp')
+    start_of_day = first_record_today.Timestamp
+    print('start_of_day',start_of_day)
+    latest_record_today = MachineRawData.objects.filter(Timestamp__date=today).latest('Timestamp')
+    print('latest_record_today',latest_record_today)
+
+    end_of_day = latest_record_today.Timestamp
+    records_today = MachineRawData.objects.filter(Timestamp__range=(start_of_day, end_of_day))
+    print('records_today',len(records_today))
+    result=[]
+
+    for d in datapoint:
+
+
+
+        datapoints_split = d.split('[')
+        datapoints_split1 = datapoints_split[1].split(']')
+        # print('datapoints_split',datapoints_split)
+        # print('datapoints_split1',datapoints_split1)
+        field = str(datapoints_split[0] + "__" + datapoints_split1[0])
+        # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
+        # Calculate average of analog_input[0] for today's records
+        average_analog_input = records_today.aggregate(avg_analog_input=Avg(F(field)))
+        result.append(average_analog_input['avg_analog_input'])
+
+        # The result will be in average_analog_input['avg_analog_input']
+    # print("Average analog_input[0] for today:", average_analog_input['avg_analog_input'])
+    # print("Averag res:", result)
+    avg_res=result
+    print("Averag res:", avg_res)
+
+
+    return avg_res
+
 
 def High_Low(data_dict):
     pass
@@ -42,6 +80,7 @@ def New_Record(data_dict):
 
 
 def Day(data_dict):
+    # print('day datadict.................',data_dict)
     today = datetime.now().date()
     kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']], Title=data_dict['get_title'],
                                                         Timestamp__date=today,Mode=data_dict['get_mode'])
