@@ -7,7 +7,7 @@ from asgiref.sync import async_to_sync
 
 channel_layer = get_channel_layer()
 from Atoms_users.Nested_Queries import  get_node_LR,get_grandparent,get_descendent
-from Atoms_users.api_functions import Line_bar_graph,text_card
+from Atoms_users.api_functions import Line_bar_graph,text_card,status
 from django.apps import apps
 
 # @sync_to_async
@@ -43,6 +43,7 @@ def kpi_socket(machine_id):
             "Bar": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Text": lambda: text_card(i, entire_result_data, kpi_result, "kpiweb"),
             "Pie": lambda:text_card(i, entire_result_data, kpi_result, "kpiweb"),
+            "Status": lambda: status(i, entire_result_data, kpi_result, "kpiweb"),
 
             'default': lambda: {"resultant_data": []},
         }
