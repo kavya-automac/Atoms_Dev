@@ -230,6 +230,7 @@ def machine_kpis_web2(node_id):
             "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"kpis"),
             "Text": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
+            "Status": lambda: status(i, entire_result_data, kpi_result, "kpis"),
 
             'default': lambda: {"resultant_data": []},
         }

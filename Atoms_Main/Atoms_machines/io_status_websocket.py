@@ -124,8 +124,9 @@ def dashboard_web(user_id,dept):
     total_count_result = count_machines(machines)
     dashboard_cards = dashboard_data(dash)
     # print('dashboard_cards', dashboard_cards)
-    dash_web_response ={'total_count_result': total_count_result,
-                         'dashboard_cards': dashboard_cards}
+    statuss = total_count_result[1]
+    dash_web_response ={'total_count_result':total_count_result[0],"machine_status":statuss,
+                                 'dashboard_cards':dashboard_cards}
 
     dashboard_resut = json.dumps(dash_web_response)
 
