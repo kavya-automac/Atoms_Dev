@@ -56,7 +56,7 @@ def kpi_socket(machine_id):
         time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
         # Create the result data dictionary
-        result_data = {"timestamp":time_str}
+        result_data = {"Time":time_str}
         result.update(result_data)
 
         kpiresultdata = json.dumps(result)
