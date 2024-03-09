@@ -2,7 +2,7 @@ from datetime import datetime
 from Atoms_machines.models import CardsRawData,MachineRawData
 from datetime import datetime, date
 
-from django.db.models import Avg,F
+from django.db.models import Avg, F, Count
 
 
 def Live_new_record(data_dict):
@@ -62,7 +62,20 @@ def High_Low(data_dict):
     pass
 
 
+def RunTime(datapoint):
+    today = date.today()
 
+    todays_records = MachineRawData.objects.filter(Timestamp__date=today)
+    print('todays_records runtime', todays_records[0])
+    datapoints_split = datapoint.split('[')
+    datapoints_split1 = datapoints_split[1].split(']')
+    field = str(datapoints_split[0] + "__" + datapoints_split1[0])
+    # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
+    # Calculate average of analog_input[0] for today's records
+    count_datapoint= todays_records.aggregate(count_data=Count(F(field)))
+    print('')
+    print('counttttt',count_datapoint['count_data'])
+    pass
 
 
 
