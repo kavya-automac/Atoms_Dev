@@ -114,7 +114,7 @@ def Machine_Iostatus_web2(node_id):#machine_id
         iostatus_data["node_id"] = node_id
         iostatus_data["machine_id"] = machine_id
         iostatus_data["machine_name"] = machine_name
-        iostatus_data["Time"] = io_value_data['Timestamp']
+        iostatus_data["Timestamp"] = io_value_data['Timestamp']
 
 
         # print('iostatus_data', iostatus_data)
@@ -137,7 +137,7 @@ def Machine_Control(node_id):
         control_data["node_id"] = node_id
         control_data["machine_id"] = machine_id
         control_data["machine_name"] = machine_name
-        control_data["Time"] = io_value_data['Timestamp']
+        control_data["Timestamp"] = io_value_data['Timestamp']
         # print('control_data',control_data)
         return control_data
     else:
@@ -158,7 +158,7 @@ def Machine_Control_web2(node_id):
         control_data["node_id"] = node_id
         control_data["machine_id"] = machine_id
         control_data["machine_name"] = machine_name
-        control_data["Time"] = io_value_data['Timestamp']
+        control_data["Timestamp"] = io_value_data['Timestamp']
         # print('control_data',control_data)
         return control_data
     else:
@@ -431,7 +431,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         # kpi_result_data = []
         for record in kpirawdata:
             # Process each record and create a dictionary
-            record_data = {"name": record.Name, "value": record.Value, "unit": data['Unit'],"Time":record.Timestamp}
+            record_data = {"name": record.Name, "value": record.Value, "unit": data['Unit'],"Timestamp":record.Timestamp}
             kpi_result_data.append(record_data)
 
         # print('kpirawdata', kpirawdata)
@@ -499,7 +499,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
 
             # Format the datetime object
             formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
-            text_res_data = {"Time": formatted_timestamp_str, "value": res.Value}
+            text_res_data = {"Timestamp": formatted_timestamp_str, "value": res.Value}
 
             kpi_result_data.append(text_res_data)
 

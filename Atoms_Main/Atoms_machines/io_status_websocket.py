@@ -36,7 +36,7 @@ def io_websocket(connected_machine_data):
         "node_id": str(node_id.id),
         "machine_id": machine_id,
         "machine_name": node_id.Machine_Name,
-        "Time": machine_data['timestamp']
+        "Timestamp": machine_data['timestamp']
     }
 
     result.update(data)
@@ -83,7 +83,7 @@ def control_websocket(connected_machine_data):
         "node_id": str(node_id.id),
         "machine_id": machine_id,
         "machine_name": node_id.Machine_Name,
-        "Time": machine_data['timestamp']
+        "Timestamp": machine_data['timestamp']
     }
 
     control_result.update(data)
