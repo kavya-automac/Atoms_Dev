@@ -121,7 +121,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
                 time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
                 # Create the result data dictionary
-                result_data = {"timestamp":time_str}
+                result_data = {"Timestamp":time_str}
                 test.update(result_data)
 
                 test_res = json.dumps(test)
