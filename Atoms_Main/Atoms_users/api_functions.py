@@ -318,6 +318,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
         #     if selected_records:
         #         kpirawdata = selected_records
         # print('lennnnnnnnnnn', kpirawdata)# up to here
+        #
 
     elif method == "kpiweb":
         kpirawdata = [CardsRawData.objects.filter(
