@@ -1,5 +1,5 @@
 # import datetime
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import pytz
 from django.contrib.auth import authenticate, login, logout
@@ -291,6 +291,10 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
     print('linee')
     formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
+    print('todays_date',todays_date)
+
+    yesterday_date=formatted_datetime - timedelta(days=2)
+    print('yesterday_date',yesterday_date)
     if method == "kpis":
 
         kpirawdata = CardsRawData.objects.filter(
@@ -298,13 +302,42 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Title=data['Title'],
             Timestamp__date=todays_date
         ).order_by('-Timestamp').distinct('Timestamp')
-        # print('lennnnnnnnnnn',len(kpirawdata))
+        print('lennnnnnnnnnn',kpirawdata)
+        # if kpirawdata is None: #newly added from here
+        #
+        #     yesterday_records = CardsRawData.objects.filter(
+        #         Machine_Id__contains=[data['Machine_Id__Machine_id']],
+        #         Title=data['Title'],
+        #         Timestamp__date=yesterday_date
+        #     ).order_by('-Timestamp')
+        #
+        #     # Get every 600th record from yesterday's data
+        #     selected_records = yesterday_records
+        #
+        #     # If there are selected records, assign them to kpirawdata
+        #     if selected_records:
+        #         kpirawdata = selected_records
+        # print('lennnnnnnnnnn', kpirawdata)# up to here
+
     elif method == "kpiweb":
         kpirawdata = [CardsRawData.objects.filter(
             Machine_Id__contains=[data['Machine_Id__Machine_id']],
             Title=data['Title'],
             Timestamp__date=todays_date
         ).order_by('-Timestamp').latest('Timestamp')]# we will get only one record here due to for loop below kept query in list
+        # if kpirawdata is None: #newly added lines
+        #     yesterday_records = CardsRawData.objects.filter(
+        #         Machine_Id__contains=[data['Machine_Id__Machine_id']],
+        #         Title=data['Title'],
+        #         Timestamp__date=yesterday_date
+        #     ).order_by('-Timestamp')
+        #
+        #     # Get every 600th record from yesterday's data
+        #     selected_records = yesterday_records[::600]
+        #
+        #     # If there are selected records, assign them to kpirawdata
+        #     if selected_records:
+        #         kpirawdata = selected_records #up to here
 
     elif method =="reports":
 
@@ -404,6 +437,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
 def text_card(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):
     formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
+    yesterday_date = formatted_datetime - timedelta(days=2)
     print('text')
     kpi_result_data = []
 
