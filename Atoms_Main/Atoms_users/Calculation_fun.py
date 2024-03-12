@@ -75,6 +75,11 @@ def RunTime(datapoint):
     count_datapoint= todays_records.aggregate(count_data=Count(F(field)))
     print('')
     print('counttttt',count_datapoint['count_data'])
+    on_count = todays_records.filter(**{field: True}).count()
+    off_count = todays_records.filter(**{field: False}).count()
+
+    print(f"Count of 'on' for {field}: {on_count}")
+    print(f"Count of 'off' for {field}: {off_count}")
     pass
 
 
