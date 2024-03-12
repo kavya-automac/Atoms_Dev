@@ -264,14 +264,14 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
     if kpinode_data:
         for i in kpinode_data:
             kpi_result = {}
-            # print('i',i)
+            print('i',i)
             # print('i..........',i['Card_type__Card_Type'])
             switch_dict = {
                 "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
                 "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
-                # "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
+                "History": lambda:Trail_Report(i,entire_result_data, kpi_result,"reports",start_datetime,end_datetime1,report_type),
 
                 'default': lambda: {"resultant_data": []},
             }
@@ -433,6 +433,64 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
     # print('kpi_entry', kpi_entry)
 
     return kpi_entry
+
+def Trail_Report(data,entire_result_data, kpi_result,method,start_datetime,end_datetime1,report_type):
+    # print('start_datetime tr', start_datetime)
+    # print('end_datetime tr', end_datetime1)
+    if method == "reports":
+       if report_type == 'History Report':
+
+            try:
+                node = MachineDetails.objects.get(Machine_id=data['Machine_Id__Machine_id'])
+                node_id=node.pk
+            except MachineDetails.DoesNotExist:
+                error_message = "Please enter a valid node_machine_id."
+                return JsonResponse({"status": error_message}, status=400)
+
+
+            # print('trail report node',node)
+            # print('trail report node_id',node_id)
+            machine_id = node.Machine_id
+            machine_name = node.Machine_Name
+            # print('trail report machine_id', machine_id)
+            if node_id:
+                io_key_data = io_list_data(node_id)
+                # print('io_key_data report ',io_key_data)
+                io_value_data = io_values(machine_id,"Reports",'',start_datetime,end_datetime1)
+                # print('io_value_data report ',io_value_data)
+
+                # print('kpirawdata',kpirawdata)
+                kpi_result['card'] = data['Card_type__Card_Type']
+                kpi_result['title'] = data['Title']
+                kpi_result['ledger'] = data['Ledger']
+                labels = {
+                    "units": data['Unit'],
+                    # "y_label": data['Y_Label']
+                }
+                kpi_result["labels"] = labels
+
+                trail_result=[]
+                for trail in io_value_data:
+                    Trails_data = key_value_merge(node_id, io_key_data, trail)
+
+                    trail_result_output={
+                        "data":Trails_data['digital_input']+Trails_data['digital_output']+Trails_data['analog_input']+
+                        Trails_data['analog_output']+Trails_data['others'],
+                        "timestamp":trail["Timestamp"]
+
+                    }
+
+                    trail_result.append(trail_result_output)
+                kpi_result['data'] = trail_result
+                entire_result_data.append(kpi_result)
+                # print('length...................',len(entire_result_data))
+                # print('length...................',entire_result_data)
+
+                return {"resultant_data":entire_result_data}
+
+            else:
+                return {"status": "please enter valid node_id"}
+
 
 
 def text_card(data, entire_result_data, kpi_result, method, start_datetime=None, end_datetime=None, report_type=None):

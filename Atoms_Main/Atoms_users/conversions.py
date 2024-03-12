@@ -195,7 +195,7 @@ def io_list_data(node_id):#machine_id 1 ,2....
     }
 
 
-def io_values(node_id,type,date=None):#machine_id="MAC_06"
+def io_values(node_id,type,date=None,start_datetime=None,end_datetime1=None):#machine_id="MAC_06"
     if type == "iostatus" or type == "control":
         machine_values_data = MachineRawData.objects.filter(Machine_Id=node_id).order_by('-Timestamp').first()
         last_valies_data_1 = machineValues_serializer(machine_values_data)
@@ -203,10 +203,17 @@ def io_values(node_id,type,date=None):#machine_id="MAC_06"
         machine_values_data = MachineRawData.objects.filter(Machine_Id=node_id, Timestamp__date=date). \
         values('Timestamp','Machine_Id', 'Machine_Location', 'Digital_Input', 'Digital_Output',
         'Analog_Input', 'Analog_Output', 'Other').distinct('Timestamp').order_by('-Timestamp')
+    elif type == "Reports":
+        # print('node_id',node_id)
+        # print('start_datetime',start_datetime)
+        # print('end_datetime',end_datetime1)
+        machine_values_data = MachineRawData.objects.filter(Machine_Id=node_id, Timestamp__range=[start_datetime, end_datetime1]). \
+            values('Timestamp', 'Machine_Id', 'Machine_Location', 'Digital_Input', 'Digital_Output',
+                   'Analog_Input', 'Analog_Output', 'Other').distinct('Timestamp').order_by('-Timestamp')
 
         last_valies_data_1 = machineValues_serializer(machine_values_data,many=True)
 
-    # print('machine_values_data', machine_values_data)
+        # print('machine_values_data', machine_values_data)
 
     last_valies_data = last_valies_data_1.data
     # print("last_valies_data",last_valies_data)
