@@ -62,8 +62,13 @@ def High_Low(data_dict):
     pass
 
 
+def History(data_dict,datapoint):
+
+    pass
 
 
+def History_result(data_dict):
+    pass
 
 
 

@@ -122,6 +122,7 @@ def get_kpi_conversion_fun1(instance):
                     "Live": lambda: value_list.append(Live(data_dict)),
                     "Average": lambda: value_list.append(Average(data_dict,datapoint[i])),
                     "High_Low": lambda: value_list.append(High_Low(data_dict)),
+                    "History": lambda: value_list.append(History(data_dict,datapoint[i])),
                     'default': lambda: {"status": 'please give correct module'},
                 }
                 result = switch_dict.get(conversion_fun, switch_dict['default'])()
@@ -137,6 +138,7 @@ def get_kpi_conversion_fun1(instance):
                     "New_Record": lambda: New_Record(data_dict),
                     "Day": lambda: Day(data_dict),
                     "Month": lambda: Month(data_dict),
+                    "History_result": lambda: History_result(data_dict),
                     'default': lambda: {"status": 'please give correct module'},
                 }
                 store_rawkpi_data = switch_dict.get(mode_data, switch_dict['default'])()
