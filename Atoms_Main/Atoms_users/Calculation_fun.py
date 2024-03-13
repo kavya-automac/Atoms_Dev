@@ -50,12 +50,12 @@ def Average(data_dict,datapoint):
     # print("Averag res:", result)
     avg_res=float(result[0])
     # avg_data = [float(val) for val in result if val is not None]
-
+    rounded_avg_res = round(avg_res, 2)
     # print("avg_data res:", avg_data)
-    # print("Averag res:", avg_res)
+    print("Averag res:", rounded_avg_res)
 
 
-    return avg_res
+    return rounded_avg_res
 
 
 def High_Low(data_dict):
