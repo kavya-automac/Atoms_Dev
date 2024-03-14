@@ -464,8 +464,11 @@ def Trail_Report(data,entire_result_data, kpi_result,method,start_datetime,end_d
                 kpi_result['title'] = data['Title']
                 kpi_result['ledger'] = data['Ledger']
                 labels = {
-                    "units": data['Unit'],
+                    "x_label": data['X_Label'],
+                    "y_label": data['Y_Label']
+                    # "units": data['Unit'],
                     # "y_label": data['Y_Label']
+
                 }
                 kpi_result["labels"] = labels
 
@@ -473,14 +476,31 @@ def Trail_Report(data,entire_result_data, kpi_result,method,start_datetime,end_d
                 for trail in io_value_data:
                     Trails_data = key_value_merge(node_id, io_key_data, trail)
 
-                    trail_result_output={
-                        "data":Trails_data['digital_input']+Trails_data['digital_output']+Trails_data['analog_input']+
-                        Trails_data['analog_output']+Trails_data['others'],
-                        "timestamp":trail["Timestamp"]
+                    # trail_result_output={
+                    #     "data":Trails_data['digital_input']+Trails_data['digital_output']+Trails_data['analog_input']+
+                    #     Trails_data['analog_output']+Trails_data['others'],
+                    #     "timestamp":trail["Timestamp"]
+                    #
+                    # }
+                    trail_result_output = {
+                        "data": Trails_data['digital_input'] + Trails_data['digital_output'] + Trails_data[
+                            'analog_input'] +
+                                Trails_data['analog_output'] + Trails_data['others'],
+                        # "timestamp": trail["Timestamp"]
 
                     }
+                    trail_data_values = []  # List to store 'value' from each item in Trails_data
+                    for item in trail_result_output['data']:
+                        trail_data_values.append(item['value'])
+                    print('trail_data_values',trail_data_values)
+                    trail_result_output = {
+                        "x_axis_data":trail["Timestamp"],
+                         "y_axis_data":trail_data_values
+                    }
+
 
                     trail_result.append(trail_result_output)
+
                 kpi_result['data'] = trail_result
                 entire_result_data.append(kpi_result)
                 # print('length...................',len(entire_result_data))
