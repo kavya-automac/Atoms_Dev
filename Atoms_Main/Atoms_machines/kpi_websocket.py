@@ -43,6 +43,7 @@ def kpi_socket(machine_id):
             "Bar": lambda: Line_bar_graph(i, entire_result_data, kpi_result, "kpiweb"),
             "Text": lambda: text_card(i, entire_result_data, kpi_result, "kpiweb"),
             "Pie": lambda:text_card(i, entire_result_data, kpi_result, "kpiweb"),
+            "RunTime": lambda:text_card(i, entire_result_data, kpi_result, "kpiweb"),
             "Status": lambda: status(i, entire_result_data, kpi_result, "kpiweb"),
 
             'default': lambda: {"resultant_data": []},
