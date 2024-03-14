@@ -79,7 +79,8 @@ def RunTime(datapoint):
 
    print(f"Count of 'on' for {field}: {on_count}")
    print(f"Count of 'off' for {field}: {off_count}")
-   return [on_count, off_count]
+   count_result=[on_count, off_count]
+   return count_result
 
 
 def History(data_dict,datapoint):
