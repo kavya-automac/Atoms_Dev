@@ -9,15 +9,12 @@ import time
 # ------------------------hive broker----------------------------
 
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-       print('Connected successfully on hive')
-       client.subscribe('machine_data_dev')
-       client.subscribe('websocket_data_dev')
-       client.subscribe('Maithri_test')
+def on_connect(client, userdata, flags, reason_code,properties):
 
-    else:
-       print('Bad connection. Code:', rc)
+   print('Connected successfully on hive')
+   client.subscribe('machine_data_dev')
+   client.subscribe('websocket_data_dev')
+   client.subscribe('Maithri_test')
 
 
 def on_message(client, userdata, msg):
@@ -54,7 +51,7 @@ def on_message(client, userdata, msg):
 
 
 
-client = mqtt.Client()
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
 # client.on_disconnect = on_disconnect
@@ -78,14 +75,12 @@ client.connect(
 #
 # # aws connection  MID004-----------------------------------------------
 #
-def on_connect_1(client_1, userdata, flags, rc):
-   if rc == 0:
-       print('Connected successfully on aws')
-       client_1.subscribe('machine_data_dev')
-       client_1.subscribe('websocket_data_dev')
-       client_1.subscribe('Maithri_test')
-   else:
-       print('Bad connection. Code:', rc)
+def on_connect_1(client_1, userdata, flags, reason_code,properties):
+
+   print('Connected successfully on aws')
+   client_1.subscribe('machine_data_dev')
+   client_1.subscribe('websocket_data_dev')
+   client_1.subscribe('Maithri_test')
 
 # def on_disconnect_1(client_1, userdata, rc):
 #     print(f"Disconnected with result code {rc}")
@@ -119,7 +114,7 @@ def on_message_1(client_1, userdata, msg):
 
 
 
-client_1 = mqtt.Client()
+client_1 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client_1.on_connect = on_connect_1
 client_1.on_message = on_message_1
 # client_1.on_disconnect = on_disconnect_1
