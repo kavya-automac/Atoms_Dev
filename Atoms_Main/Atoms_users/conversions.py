@@ -203,7 +203,7 @@ def io_values(node_id,type,date=None,start_datetime=None,end_datetime1=None):#ma
         machine_values_data = MachineRawData.objects.filter(Machine_Id=node_id, Timestamp__date=date). \
         values('Timestamp','Machine_Id', 'Machine_Location', 'Digital_Input', 'Digital_Output',
         'Analog_Input', 'Analog_Output', 'Other').distinct('Timestamp').order_by('-Timestamp')
-        last_valies_data_1 = machineValues_serializer(machine_values_data)
+        last_valies_data_1 = machineValues_serializer(machine_values_data,many=True)
     elif type == "Reports":
         # print('node_id',node_id)
         # print('start_datetime',start_datetime)
