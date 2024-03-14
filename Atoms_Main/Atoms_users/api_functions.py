@@ -1,5 +1,5 @@
 # import datetime
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import pytz
 from django.contrib.auth import authenticate, login, logout
@@ -264,14 +264,14 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
     if kpinode_data:
         for i in kpinode_data:
             kpi_result = {}
-            # print('i',i)
+            print('i',i)
             # print('i..........',i['Card_type__Card_Type'])
             switch_dict = {
                 "Line": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Bar": lambda: Line_bar_graph(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
                 "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
                 "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
-                # "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",user_id,machine_id,start_datetime,end_datetime1,report_type),
+                "History": lambda:Trail_Report(i,entire_result_data, kpi_result,"reports",start_datetime,end_datetime1,report_type),
 
                 'default': lambda: {"resultant_data": []},
             }
