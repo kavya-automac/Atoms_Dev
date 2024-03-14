@@ -62,6 +62,7 @@ def get_kpi_conversion_fun1(instance):
                     "Average": lambda: value_list.append(Average(data_dict,datapoint[i])),
                     "High_Low": lambda: value_list.append(High_Low(data_dict)),
                     "History": lambda: value_list.append(History(data_dict,datapoint[i])),
+                    "RunTime": lambda: value_list.append(RunTime(datapoint[i])),
                     'default': lambda: {"status": 'please give correct module'},
                 }
                 result = switch_dict.get(conversion_fun, switch_dict['default'])()
