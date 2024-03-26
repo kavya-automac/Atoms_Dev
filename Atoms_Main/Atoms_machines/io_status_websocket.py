@@ -2,12 +2,17 @@ import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from asgiref.sync import sync_to_async
+import logging
+
+logger = logging.getLogger("django")
+
 
 
 channel_layer = get_channel_layer()
 
 
 def io_websocket(connected_machine_data):
+    logger.info('...iostatus_websocket...!')
 
     machine_data = json.loads(connected_machine_data)
     machine_id=machine_data['machine_id']
@@ -55,6 +60,8 @@ def io_websocket(connected_machine_data):
 
 
 def control_websocket(connected_machine_data):
+    logger.info('...control_websocket...!')
+
 
     machine_data = json.loads(connected_machine_data)
     machine_id=machine_data['machine_id']
@@ -104,6 +111,8 @@ def control_websocket(connected_machine_data):
 
 @sync_to_async
 def dashboard_web(user_id,dept):
+    logger.info('...dashboard_web...!')
+
     # user_id = 10
     # print('dashboard_web function')
     # user_id = request.headers['user-id']

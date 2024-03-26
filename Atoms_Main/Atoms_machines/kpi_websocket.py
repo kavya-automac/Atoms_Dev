@@ -9,9 +9,16 @@ channel_layer = get_channel_layer()
 from Atoms_users.Nested_Queries import  get_node_LR,get_grandparent,get_descendent
 from Atoms_users.api_functions import Line_bar_graph,text_card,status
 from django.apps import apps
+import logging
+
+logger = logging.getLogger("django")
+
+
 
 # @sync_to_async
 def kpi_socket(machine_id):
+    logger.info('...kpi_socket...!')
+
     MachineDetails = apps.get_model('Atoms_users', 'MachineDetails')
     machine = MachineDetails.objects.get(Machine_id=machine_id)
     MachineCardsList = apps.get_model('Atoms_users', 'MachineCardsList')

@@ -669,7 +669,11 @@ def status(data, entire_result_data, kpi_result, method, start_datetime=None, en
             # Format the datetime object
             formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
             print('.............',res.Value)
-            text_res_data = {"Machine": res.Value}
+            value=res.Value
+            if value[0] == "Off":
+                value[0] = "Idle"
+
+            text_res_data = {"Machine": value}
 
             kpi_result_data.append(text_res_data)
 
@@ -785,21 +789,27 @@ def count_machines(machines):
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
             if time_difference > 6:
+                print("in if------------")
                 machine_status = "Inactive"
-                inactive_count += 1
+                # inactive_count += 1 # uncomment later now inactive_count = 0
+                inactive_count = 0 # uncomment later now inactive_count = 0
                 # print('inactive if', inactive_count)
             else:
+                print("in else------------")
                 machine_status = "Active"
-                active_count += 1
+                active_count = machine_count
+                # active_count += 1
                 # print('active else', active_count)
         else:
-            inactive_count += 1
+            # inactive_count += 1
+            inactive_count = 0
             machine_status = "Inactive"
             # print('inactive else', inactive_count)
         count_card_data = {
             # "title": "count_card",
             "Total Machines": str(machine_count),
-            "Active Machines": str(active_count),
+            # "Active Machines": str(active_count),
+            "Active Machines": str(machine_count),
             "Inactive Machines": str(inactive_count)
 
         }

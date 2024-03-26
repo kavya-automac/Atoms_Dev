@@ -4,20 +4,35 @@ from django.conf import settings
 # from . import multi_topic_file
 import ssl
 from .Multi_topic_file import *
+
 import time
 # from .import io_status_websocket
 # ------------------------hive broker----------------------------
+import logging
+
+logger = logging.getLogger("django")
 
 
 def on_connect(client, userdata, flags, reason_code,properties):
+    logger.info('hive...on_connect...!')
+    logger.info('hive ..on_connect... : %s', reason_code)
+    if reason_code==0:
+        print('Connected successfully on hive')
+        client.subscribe('machine_data_dev')
+        client.subscribe('websocket_data_dev')
+        client.subscribe('Maithri_test')
 
-   print('Connected successfully on hive')
-   client.subscribe('machine_data_dev')
-   client.subscribe('websocket_data_dev')
-   client.subscribe('Maithri_test')
+    else:
+        logger.info('hive ..on_connect...else : %s', reason_code)
+        print(f"Connection failed with reason code {reason_code}. Attempting to reconnect...")
+        client.reconnect()
+
+
+
 
 
 def on_message(client, userdata, msg):
+    logger.info('hive...on_message...!')
     connected_machine_data = msg.payload.decode()  # Assuming the payload is a string
     topic = msg.topic
     if topic == "machine_data_dev":
@@ -77,10 +92,19 @@ client.connect(
 #
 def on_connect_1(client_1, userdata, flags, reason_code,properties):
 
-   print('Connected successfully on aws')
-   client_1.subscribe('machine_data_dev')
-   client_1.subscribe('websocket_data_dev')
-   client_1.subscribe('Maithri_test')
+    logger.info('aws...on_connect...!')
+    logger.info('aws ..on_connect... : %s', reason_code)
+    if reason_code == 0:
+        print('Connected successfully on aws')
+        client_1.subscribe('machine_data_dev')
+        client_1.subscribe('websocket_data_dev')
+        client_1.subscribe('Maithri_test')
+    else:
+        logger.info('aws ..on_connect...else : %s', reason_code)
+        print(f"Connection failed with reason code {reason_code}. Attempting to reconnect...")
+        client_1.reconnect()
+
+
 
 # def on_disconnect_1(client_1, userdata, rc):
 #     print(f"Disconnected with result code {rc}")
@@ -96,6 +120,9 @@ def on_connect_1(client_1, userdata, flags, reason_code,properties):
 
 
 def on_message_1(client_1, userdata, msg):
+    logger.info('aws...on_message...!')
+
+
     connected_machine_data = msg.payload.decode()  # Assuming the payload is a string
     # print('connected_machine_data',connected_machine_data)
     topic = msg.topic

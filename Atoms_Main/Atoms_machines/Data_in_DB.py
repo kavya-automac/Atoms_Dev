@@ -1,6 +1,13 @@
 import json
 # from .models import *
+import logging
+
 from django.apps import apps
+
+
+logger = logging.getLogger("django")
+
+logger.info('data storing file .....!')
 
 def Machine_data_to_db(mqtt_machines_data):
     payload = json.loads(mqtt_machines_data)
@@ -23,6 +30,7 @@ def Machine_data_to_db(mqtt_machines_data):
 
 
     if existing_record is None:
+        logger.info('data storing.....!')
 
         machine_data_storing = MachineRawData(
             # timestamp=timezone.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f'),
