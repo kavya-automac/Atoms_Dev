@@ -815,7 +815,8 @@ def count_machines(machines):
         }
         Machines_and_status={
             "Machine_name":machine_data['Machine_Name'],
-            "Machines_status":machine_status
+            "Machines_status":'Active'
+            # "Machines_status":machine_status
         }
         all_machines_status.append(Machines_and_status)
 
