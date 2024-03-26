@@ -9,6 +9,8 @@ logger = logging.getLogger("django")
 
 
 def get_node_LR(node,pro):#user
+    logger.info('...get node lr fun...!')
+
     # print('..........',node)
     logger.info('nested queriess...!')
     node_left_right=Nested_Table.objects.get(Node_Id=node,Property=pro)
@@ -18,6 +20,8 @@ def get_node_LR(node,pro):#user
     return data
 
 def get_immediate_parent(left_value, right_value):
+    logger.info('...get_immediate_parent...!')
+
 
     immediate_parent = Nested_Table.objects.filter(
         Node_Left__lt=left_value,
@@ -28,6 +32,8 @@ def get_immediate_parent(left_value, right_value):
 
 
 def get_grandparent(left_value, right_value):
+    logger.info('...get_grandparent...!')
+
     im_par=get_immediate_parent(left_value, right_value)
     left=im_par["immediate_parent"]["immediate_left"]
     right=im_par["immediate_parent"]["immediate_right"]
@@ -46,6 +52,8 @@ def get_grandparent(left_value, right_value):
 
 
 def get_descendent(parent_left,parent_right,property,type):
+    logger.info('...get_descendent...!')
+
     descendants = Nested_Table.objects.filter(
         Node_Left__range=(parent_left, parent_right),Property=property
 
@@ -67,6 +75,8 @@ def get_descendent(parent_left,parent_right,property,type):
 
 
 def Parent_nodes(left_value,right_value,root_left_value,root_right_value):
+    logger.info('...Parent_nodes...!')
+
     # left_value , right_value  child[1,2] layers
     #root_left_value, root_right_value   grandparent of user
     ascendants = Nested_Table.objects.filter(
@@ -87,6 +97,8 @@ def Parent_nodes(left_value,right_value,root_left_value,root_right_value):
 
 @sync_to_async
 def user_department(user_id):
+    logger.info('...user_department...!')
+
     user_lr = get_node_LR(user_id, "User")
     department = get_immediate_parent(user_lr['left'], user_lr['right'])
     get_department_node =Nested_Table.objects.get(Node_Left=department['immediate_parent']['immediate_left'],

@@ -11,6 +11,10 @@ from .api_functions import *
 from Atoms_machines.mqtt_code import client
 import json
 import datetime
+import logging
+
+logger = logging.getLogger("django")
+
 # import logging
 # from Atoms_Main.settings import logger
 
