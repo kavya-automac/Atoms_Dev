@@ -178,6 +178,7 @@ def machine_kpis(node_id):
                                     'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
     # print('kpinode_data',kpinode_data)
 
+    result = {"resultant_data": []}  # Initialize result outside the loop
 
     entire_result_data=[]
     # x_axis=[]
