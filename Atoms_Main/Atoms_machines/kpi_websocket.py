@@ -39,7 +39,7 @@ def kpi_socket(machine_id):
     entire_result_data = []
     # x_axis=[]
     # y_axis=[]
-
+    kpiresultdata = ""
     for i in kpinode_data:
         kpi_result = {}
         # print('i', i)
