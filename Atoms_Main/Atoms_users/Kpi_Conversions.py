@@ -81,6 +81,7 @@ def get_kpi_conversion_fun1(instance):
                     "Day": lambda: Day(data_dict),
                     "Month": lambda: Month(data_dict),
                     "History_result": lambda: History_result(data_dict),
+                    # "Alarm_fun": lambda: Alarm_fun(data_dict),
                     'default': lambda: {"status": 'please give correct module'},
                 }
                 store_rawkpi_data = switch_dict.get(mode_data, switch_dict['default'])()

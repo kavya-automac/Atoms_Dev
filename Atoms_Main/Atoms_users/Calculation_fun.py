@@ -90,7 +90,8 @@ def History(data_dict,datapoint):
 
 def History_result(data_dict):
     pass
-
+# def Alarm_fun(data_dict):
+#     pass
 
 
 

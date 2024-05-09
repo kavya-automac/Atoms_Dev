@@ -292,11 +292,11 @@ def key_value_merge(node_id,keys,io_value_data):
     # print('digital_input_keys',digital_input_result)
 
     for do in range(len(io_value_data['Digital_Output'])):
-        if isinstance(io_value_data['Digital_Input'][do], str):
-            io_value = "On" if io_value_data['Digital_Input'][do].lower() == "on" else "Off"
+        if isinstance(io_value_data['Digital_Output'][do], str):
+            io_value = "On" if io_value_data['Digital_Output'][do].lower() == "on" else "Off"
         else:
             # Handle the case when it's not a string, for example, by assigning a default value
-            io_value = "On" if io_value_data['Digital_Input'][do] else "Off"
+            io_value = "On" if io_value_data['Digital_Output'][do] else "Off"
 
         # io_value = "On" if io_value_data['Digital_Output'][do].lower() == "on" else "Off"
         io_name = keys['digital_output_keys'][do]['name']
@@ -306,7 +306,7 @@ def key_value_merge(node_id,keys,io_value_data):
 
 
 
-        io_value_range = keys['digital_input_keys'][do]['iovalue']
+        io_value_range = keys['digital_output_keys'][do]['iovalue']
         # print("----------------------",io_value_range.index(io_value))
         io_color = keys['digital_output_keys'][do]['color'][io_value_range.index(io_value)]
         data = {

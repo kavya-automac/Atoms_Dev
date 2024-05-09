@@ -193,7 +193,7 @@ def machine_kpis(node_id):
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "RunTime": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Status": lambda: status(i,entire_result_data,kpi_result,"kpis"),
-
+            # "Alarm": lambda: alarm(i,entire_result_data,kpi_result,"kpis"),
             'default': lambda: {"resultant_data": []},
         }
 
@@ -233,6 +233,7 @@ def machine_kpis_web2(node_id):
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "RunTime": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Status": lambda: status(i, entire_result_data, kpi_result, "kpis"),
+            # "Alarm": lambda: alarm(i, entire_result_data, kpi_result, "kpis"),
 
             'default': lambda: {"resultant_data": []},
         }
@@ -843,6 +844,52 @@ def dashboard_data(dash):
         # Execute the corresponding function from the switch_dict or the default function
         result = switch_dict.get(k['Card_type__Card_Type'], switch_dict['default'])()
     return result
+
+
+
+
+#
+# def alarm(i,entire_result_data,kpi_result,method):
+#     print('machineid',i.Machine_Id__Machine_id)
+#     kpi_result_data=[]
+#     if method == "kpis" or method == "kpiweb":
+#         machine_id='Kompost_002'
+#         machine_grp=MachineDetails.objects.get(Machine_id=machine_id)
+#         grp = machine_grp['IO_Group_Id']
+#
+#         all_keys=IOList.objects.filter(IO_Group=grp,alarm=True)
+#         print('all_keys',all_keys)
+#         value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,Kpi_Name='Alarm')
+#         print('value',value)
+#         kpi_result['card'] = value['Card_type__Card_Type']
+#         kpi_result['title'] = value['Title']
+#         kpi_result['ledger'] = value['Ledger']
+#         labels = {
+#             "units": value['Unit'],
+#             # "y_label": data['Y_Label']
+#         }
+#         kpi_result["labels"] = labels
+#         if value.lower == "On":
+#             result=dict(zip(value.index(),all_keys.index()))#review
+#             # print('kpirawdata',kpirawdata)
+#             print('res', value.Timestamp)
+#             timestamp_dt = datetime.fromisoformat(str(value.Timestamp))
+#             # Format the datetime object
+#             formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
+#             text_res_data = {"alarm_data": result,"Timestamp": formatted_timestamp_str}
+#
+#             kpi_result_data.append(text_res_data)
+#
+#         kpi_result['data'] = kpi_result_data
+#         entire_result_data.append(kpi_result)
+#         kpi_entry = {'resultant_data': entire_result_data}
+#     return kpi_entry
+
+
+    # "on" index and particular "on" index keys zip and send
+
+
+
 
 
 

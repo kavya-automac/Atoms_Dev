@@ -96,7 +96,7 @@ class IOList(models.Model):
     IO_Range=models.CharField(max_length=100,blank=True)
     IO_Unit=models.CharField(max_length=100,blank=True)
     Control=models.BooleanField(default=False)
-
+    alarm = models.BooleanField(default=False)
     class Meta:
         app_label = 'Atoms_users'
         db_table = 'Users_Schema"."IO_List'
