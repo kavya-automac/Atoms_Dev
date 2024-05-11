@@ -857,10 +857,12 @@ def dashboard_data(dash):
 #         machine_id='Kompost_002'
 #         machine_grp=MachineDetails.objects.get(Machine_id=machine_id)
 #         grp = machine_grp['IO_Group_Id']
+#         # alarm_grp = machine_grp['alarm_grp_id']
+#         alarm_grp = "urban"
 #
 #         all_keys=IOList.objects.filter(IO_Group=grp,alarm=True)
 #         print('all_keys',all_keys)
-#         value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,Kpi_Name='Alarm')
+#         value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,card_type='Alarm')
 #         print('value',value)
 #         kpi_result['card'] = value['Card_type__Card_Type']
 #         kpi_result['title'] = value['Title']
@@ -870,14 +872,18 @@ def dashboard_data(dash):
 #             # "y_label": data['Y_Label']
 #         }
 #         kpi_result["labels"] = labels
+#         rr = []
+#         # here latest record and previous record
 #         if value.lower == "On":
-#             result=dict(zip(value.index(),all_keys.index()))#review
+#             result = dict(zip(value.index(),all_keys.index()))# review
 #             # print('kpirawdata',kpirawdata)
+#             rr.append(result)
 #             print('res', value.Timestamp)
+#
 #             timestamp_dt = datetime.fromisoformat(str(value.Timestamp))
 #             # Format the datetime object
 #             formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
-#             text_res_data = {"alarm_data": result,"Timestamp": formatted_timestamp_str}
+#             text_res_data = {"alarm_data": rr,"Timestamp": formatted_timestamp_str}
 #
 #             kpi_result_data.append(text_res_data)
 #
