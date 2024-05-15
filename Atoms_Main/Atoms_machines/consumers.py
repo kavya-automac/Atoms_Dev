@@ -123,20 +123,20 @@ class KpiConsumer(AsyncWebsocketConsumer):
 
 
                 print('..',latest_time_obj)
-                # if latest_time_obj:
-                #     print('..........................')
-                #     # Manually serialize the relevant fields to a dictionary
-                #     latest_time = {
-                #         'Timestamp': latest_time_obj.Timestamp.strftime(
-                #             '%Y-%m-%d %H:%M:%S') if latest_time_obj.Timestamp else None,
-                #     }
-                if latest_time_obj.Timestamp:
-                    utc_time = latest_time_obj.Timestamp  # This should be in UTC
-                    ist_timezone = pytz.timezone('Asia/Kolkata')
-                    ist_time = utc_time.astimezone(ist_timezone)
+                if latest_time_obj:
+                    print('..........................')
+                    # Manually serialize the relevant fields to a dictionary
                     latest_time = {
-                        'Timestamp': ist_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'Timestamp': latest_time_obj.Timestamp.strftime(
+                            '%Y-%m-%d %H:%M:%S') if latest_time_obj.Timestamp else None,
                     }
+                # if latest_time_obj.Timestamp:
+                #     utc_time = latest_time_obj.Timestamp  # This should be in UTC
+                #     ist_timezone = pytz.timezone('Asia/Kolkata')
+                #     ist_time = utc_time.astimezone(ist_timezone)
+                #     latest_time = {
+                #         'Timestamp': ist_time.strftime('%Y-%m-%d %H:%M:%S'),
+                #     }
                     print('latest_time',latest_time)
                 else:
                     latest_time = None
