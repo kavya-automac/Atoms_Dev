@@ -11,7 +11,7 @@ from Atoms_users.Nested_Queries import user_department
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from asgiref.sync import sync_to_async
-
+from . models import MachineRawData
 channel_layer = get_channel_layer()
 
 
@@ -115,13 +115,29 @@ class KpiConsumer(AsyncWebsocketConsumer):
                 node_id = md.pk
                 print('node_id connect', node_id)
                 test = await machine_kpis_web2(node_id)
-                current_time = datetime.datetime.now()
+               # changed currenttime to latest time
+                latest_time_obj = await sync_to_async(
+                    MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first)()
 
-                # Format the datetime object to include only the time (hours, minutes, seconds)
-                time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+                print('..',latest_time_obj)
+                if latest_time_obj:
+                    print('..........................')
+                    # Manually serialize the relevant fields to a dictionary
+                    latest_time = {
+                        'Timestamp': latest_time_obj.Timestamp.strftime(
+                            '%Y-%m-%d %H:%M:%S') if latest_time_obj.Timestamp else None,
+                    }
+                    print('latest_time',latest_time)
+                else:
+                    latest_time = None
+
+                print('latest_time websockety', latest_time)
+
 
                 # Create the result data dictionary
-                result_data = {"Timestamp":time_str}
+                result_data =latest_time
+                print('result_data',result_data)
                 test.update(result_data)
 
                 test_res = json.dumps(test)

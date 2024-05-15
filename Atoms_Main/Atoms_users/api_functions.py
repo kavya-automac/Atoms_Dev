@@ -306,7 +306,7 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
             Title=data['Title'],
             Timestamp__date=todays_date
         ).order_by('-Timestamp').distinct('Timestamp')
-        print('lennnnnnnnnnn',kpirawdata)
+        # print('lennnnnnnnnnn',kpirawdata)
         # if kpirawdata is None: #newly added from here
         #
         #     yesterday_records = CardsRawData.objects.filter(
@@ -860,36 +860,59 @@ def dashboard_data(dash):
 #         # alarm_grp = machine_grp['alarm_grp_id']
 #         alarm_grp = "urban"
 #
-#         all_keys=IOList.objects.filter(IO_Group=grp,alarm=True)
-#         print('all_keys',all_keys)
-#         value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,card_type='Alarm')
+#         all_keys=IOList.objects.filter(IO_Group=grp,alarm=True).values('IO_name')
+#         print('all_keys',all_keys)#  only keys in list
+#         value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,Card_type__Card_Type='Alarm')
+#
 #         print('value',value)
-#         kpi_result['card'] = value['Card_type__Card_Type']
-#         kpi_result['title'] = value['Title']
-#         kpi_result['ledger'] = value['Ledger']
-#         labels = {
-#             "units": value['Unit'],
-#             # "y_label": data['Y_Label']
-#         }
-#         kpi_result["labels"] = labels
-#         rr = []
-#         # here latest record and previous record
-#         if value.lower == "On":
-#             result = dict(zip(value.index(),all_keys.index()))# review
-#             # print('kpirawdata',kpirawdata)
-#             rr.append(result)
-#             print('res', value.Timestamp)
+#         # kpi_result['card'] = value['Card_type__Card_Type']
+#         # kpi_result['title'] = value['Title']
+#         # kpi_result['ledger'] = value['Ledger']
+#         # labels = {
+#         #     "units": value['Unit'],
+#         #     # "y_label": data['Y_Label']
+#         # }
+#         # kpi_result["labels"] = labels
+#         rr = [] # only values in list , merge keys and values below
+#         print(value.DataPoints)
+#         dpoints=value.DataPoints
 #
-#             timestamp_dt = datetime.fromisoformat(str(value.Timestamp))
-#             # Format the datetime object
-#             formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
-#             text_res_data = {"alarm_data": rr,"Timestamp": formatted_timestamp_str}
+#         #check conditions like if latest_record value is off previous is on
 #
-#             kpi_result_data.append(text_res_data)
+#         for dp in dpoints:
+#             print('dp',dp)
+#             latest_record = MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first()
+#             print('latest_record',latest_record)
+#             latest_v=latest_record.dp
 #
-#         kpi_result['data'] = kpi_result_data
-#         entire_result_data.append(kpi_result)
-#         kpi_entry = {'resultant_data': entire_result_data}
+#             if latest_record and latest_v.lower() == "On":
+#                 previous_record = MachineRawData.objects.filter(Machine_Id=machine_id,
+#                                                                 id__lt=latest_record.id).order_by('-id').first()
+#                 previous_v = previous_record.dp
+#                 if previous_v.lower() == "Off":
+#                     rr.append(latest_v)
+#                     # Do something with the previous record
+#                     print("Previous record:", previous_record)
+#                 else:
+#                    pass
+#             else:# send response as data not available
+#                 # The latest record is either not found or its status is not "off"
+#                 print("Latest record is not 'off' or not found")
+#
+#         kv_result = dict(zip(value.index(),all_keys.index()))# review merge keys and values
+#         # print('kpirawdata',kpirawdata)
+#         print('res', value.Timestamp)
+#
+#         timestamp_dt = datetime.fromisoformat(str(value.Timestamp))
+#         # Format the datetime object
+#         formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
+#         text_res_data = {"alarm_data": kv_result,"Timestamp": formatted_timestamp_str}
+#
+#         kpi_result_data.append(text_res_data)
+#
+#     kpi_result['data'] = kpi_result_data
+#     entire_result_data.append(kpi_result)
+#     kpi_entry = {'resultant_data': entire_result_data}
 #     return kpi_entry
 
 
