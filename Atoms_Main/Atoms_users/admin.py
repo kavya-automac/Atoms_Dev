@@ -57,6 +57,10 @@ class MachineCardsList_Admin(admin.ModelAdmin):
 
 
 
+@admin.register(Alarm_data)
+class Alarm_data_Admin(admin.ModelAdmin):
+    list_display = ['machine_id','TimeStamp','Message']
+
 
 class UserDetailsInline(admin.StackedInline):
     model = User_details
