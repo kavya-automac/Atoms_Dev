@@ -157,5 +157,17 @@ class MachineCardsList(models.Model):  # datapoints for particular kpi
 
 
 
+class Alarm_data(models.Model):
+    machine_id = models.CharField(max_length=100,blank=True)
+    TimeStamp = models.DateTimeField()
+    Message = models.CharField(max_length=500,blank=True)
+
+    class Meta:
+        app_label = 'Atoms_users'
+        db_table = 'Users_Schema"."Alarm_data'
+
+    def __str__(self):
+        return str(self.machine_id)
+
 
 

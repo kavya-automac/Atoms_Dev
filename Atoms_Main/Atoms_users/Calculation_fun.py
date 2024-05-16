@@ -20,17 +20,17 @@ def Average(data_dict,datapoint):
     today = date.today()
     first_record_today = MachineRawData.objects.filter(Timestamp__date=today).latest('-Timestamp')
     start_of_day = first_record_today.Timestamp
-    print('start_of_day',start_of_day)
+    # print('start_of_day',start_of_day)
     latest_record_today = MachineRawData.objects.filter(Timestamp__date=today).latest('Timestamp')
-    print('latest_record_today',latest_record_today)
+    # print('latest_record_today',latest_record_today)
 
     end_of_day = latest_record_today.Timestamp
     records_today = MachineRawData.objects.filter(Timestamp__date=today)
-    print('records_today',len(records_today))
+    # print('records_today',len(records_today))
     result=[]
 
     # for d in datapoint:
-    print('datapoint',datapoint)
+    # print('datapoint',datapoint)
 
 
 
@@ -45,14 +45,14 @@ def Average(data_dict,datapoint):
     result.append(average_analog_input['avg_analog_input'])
 
         # The result will be in average_analog_input['avg_analog_input']
-    print("Average :", average_analog_input)
-    print("Average analog_input[0] for today:", average_analog_input['avg_analog_input'])
+    # print("Average :", average_analog_input)
+    # print("Average analog_input[0] for today:", average_analog_input['avg_analog_input'])
     # print("Averag res:", result)
     avg_res=float(result[0])
     # avg_data = [float(val) for val in result if val is not None]
     rounded_avg_res = round(avg_res, 2)
     # print("avg_data res:", avg_data)
-    print("Averag res:", rounded_avg_res)
+    # print("Averag res:", rounded_avg_res)
 
 
     return rounded_avg_res
@@ -65,20 +65,20 @@ def RunTime(datapoint):
    today = date.today()
 
    todays_records = MachineRawData.objects.filter(Timestamp__date=today)
-   print('todays_records runtime', todays_records[0])
+   # print('todays_records runtime', todays_records[0])
    datapoints_split = datapoint.split('[')
    datapoints_split1 = datapoints_split[1].split(']')
    field = str(datapoints_split[0] + "__" + datapoints_split1[0])
    # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
    # Calculate average of analog_input[0] for today's records
    count_datapoint= todays_records.aggregate(count_data=Count(F(field)))
-   print('')
-   print('counttttt',count_datapoint['count_data'])
+   # print('')
+   # print('counttttt',count_datapoint['count_data'])
    on_count = (todays_records.filter(**{field: True}).count())*5
    off_count = (todays_records.filter(**{field: False}).count())*5
 
-   print(f"Count of 'on' for {field}: {on_count}")
-   print(f"Count of 'off' for {field}: {off_count}")
+   # print(f"Count of 'on' for {field}: {on_count}")
+   # print(f"Count of 'off' for {field}: {off_count}")
    count_result=[on_count, off_count]
    return count_result
 
@@ -87,11 +87,17 @@ def History(data_dict,datapoint):
 
     pass
 
+def alarm1(data_dict):
+    print('alarm1............')
+    pass
 
 def History_result(data_dict):
     pass
-# def Alarm_fun(data_dict):
-#     pass
+
+def Alarm_fun(data_dict):
+    print('alarm funnnn............')
+
+    pass
 
 
 

@@ -194,7 +194,7 @@ def machine_kpis(node_id):
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "RunTime": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Status": lambda: status(i,entire_result_data,kpi_result,"kpis"),
-            # "Alarm": lambda: alarm(i,entire_result_data,kpi_result,"kpis"),
+            "Alarm": lambda: alarm(i,entire_result_data,kpi_result,"kpis"),
             'default': lambda: {"resultant_data": []},
         }
 
@@ -234,7 +234,7 @@ def machine_kpis_web2(node_id):
             "Pie": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "RunTime": lambda: text_card(i,entire_result_data,kpi_result,"kpis"),
             "Status": lambda: status(i, entire_result_data, kpi_result, "kpis"),
-            # "Alarm": lambda: alarm(i, entire_result_data, kpi_result, "kpis"),
+            "Alarm": lambda: alarm(i, entire_result_data, kpi_result, "kpis"),
 
             'default': lambda: {"resultant_data": []},
         }
@@ -292,13 +292,13 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
 
 
 def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machine_id=None,start_datetime=None,end_datetime=None,report_type=None):
-    print('linee')
+    # print('linee')
     formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
-    print('todays_date',todays_date)
+    # print('todays_date',todays_date)
 
     yesterday_date=formatted_datetime - timedelta(days=2)
-    print('yesterday_date',yesterday_date)
+    # print('yesterday_date',yesterday_date)
     if method == "kpis":
 
         kpirawdata = CardsRawData.objects.filter(
@@ -521,7 +521,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
     formatted_datetime = datetime.now().date()
     todays_date = formatted_datetime.strftime("%Y-%m-%d")
     yesterday_date = formatted_datetime - timedelta(days=2)
-    print('text')
+    # print('text')
     kpi_result_data = []
 
     if method == "kpis":
@@ -611,7 +611,7 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         }
         kpi_result["labels"] = labels
         for res in kpirawdata:
-            print('res', res.Timestamp)
+            # print('res', res.Timestamp)
             timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
 
             # Format the datetime object
@@ -665,12 +665,12 @@ def status(data, entire_result_data, kpi_result, method, start_datetime=None, en
         }
         kpi_result["labels"] = labels
         for res in kpirawdata:
-            print('res in status', res.Timestamp)
+            # print('res in status', res.Timestamp)
             timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
 
             # Format the datetime object
             formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
-            print('.............',res.Value)
+            # print('.............',res.Value)
             value=res.Value
             if value[0] == "Off":
                 value[0] = "Idle"
@@ -686,7 +686,7 @@ def status(data, entire_result_data, kpi_result, method, start_datetime=None, en
         # print('kpi_result_data',kpi_result_data)
 
         kpi_entry = {'resultant_data': entire_result_data}
-        print('kpi_entry', kpi_entry)
+        # print('kpi_entry', kpi_entry)
         return kpi_entry
     else:
         # Handle the case when kpirawdata is None (no records found)
@@ -755,7 +755,7 @@ def count_machines(machines):
     current_time = current_time_Ist.astimezone(timezone.utc)
 
     machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id','Machine_Name')
-    print('machines_query', machine_names_query)
+    # print('machines_query', machine_names_query)
     # result = []
     machine_count = 0
     inactive_count = 0
@@ -787,17 +787,17 @@ def count_machines(machines):
 
             time_difference = abs((current_time - utc_timestamp_latest).total_seconds())
             # time_difference = current_time - last_record_time
-            print('time_difference', time_difference)
+            # print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
             if time_difference > 6:
-                print("in if------------")
+                # print("in if------------")
                 machine_status = "Inactive"
                 # inactive_count += 1 # uncomment later now inactive_count = 0
                 inactive_count = 0 # uncomment later now inactive_count = 0
                 # print('inactive if', inactive_count)
             else:
-                print("in else------------")
+                # print("in else------------")
                 machine_status = "Active"
                 active_count = machine_count
                 # active_count += 1
@@ -832,7 +832,7 @@ def dashboard_data(dash):
     for k in dash_node:
 
         dash_result = {}
-        print('k', k['Card_type__Card_Type'])
+        # print('k', k['Card_type__Card_Type'])
         switch_dict = {
             "Line": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
             "Bar": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
@@ -849,71 +849,105 @@ def dashboard_data(dash):
 
 
 
-#
-# def alarm(i,entire_result_data,kpi_result,method):
-#     print('machineid',i.Machine_Id__Machine_id)
-#     kpi_result_data=[]
-#     if method == "kpis" or method == "kpiweb":
-#         machine_id='Kompost_002'
-#         machine_grp=MachineDetails.objects.get(Machine_id=machine_id)
-#         grp = machine_grp['IO_Group_Id']
-#         # alarm_grp = machine_grp['alarm_grp_id']
-#         alarm_grp = "urban"
-#
-#         all_keys=IOList.objects.filter(IO_Group=grp,alarm=True).values('IO_name')
-#         print('all_keys',all_keys)#  only keys in list
-#         value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,Card_type__Card_Type='Alarm')
-#
-#         print('value',value)
-#         # kpi_result['card'] = value['Card_type__Card_Type']
-#         # kpi_result['title'] = value['Title']
-#         # kpi_result['ledger'] = value['Ledger']
-#         # labels = {
-#         #     "units": value['Unit'],
-#         #     # "y_label": data['Y_Label']
-#         # }
-#         # kpi_result["labels"] = labels
-#         rr = [] # only values in list , merge keys and values below
-#         print(value.DataPoints)
-#         dpoints=value.DataPoints
-#
-#         #check conditions like if latest_record value is off previous is on
-#
-#         for dp in dpoints:
-#             print('dp',dp)
-#             latest_record = MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first()
-#             print('latest_record',latest_record)
-#             latest_v=latest_record.dp
-#
-#             if latest_record and latest_v.lower() == "On":
-#                 previous_record = MachineRawData.objects.filter(Machine_Id=machine_id,
-#                                                                 id__lt=latest_record.id).order_by('-id').first()
-#                 previous_v = previous_record.dp
-#                 if previous_v.lower() == "Off":
-#                     rr.append(latest_v)
-#                     # Do something with the previous record
-#                     print("Previous record:", previous_record)
-#                 else:
-#                    pass
-#             else:# send response as data not available
-#                 # The latest record is either not found or its status is not "off"
-#                 print("Latest record is not 'off' or not found")
-#
-#         kv_result = dict(zip(value.index(),all_keys.index()))# review merge keys and values
-#         # print('kpirawdata',kpirawdata)
-#         print('res', value.Timestamp)
-#
-#         timestamp_dt = datetime.fromisoformat(str(value.Timestamp))
-#         # Format the datetime object
-#         formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
-#         text_res_data = {"alarm_data": kv_result,"Timestamp": formatted_timestamp_str}
-#
-#         kpi_result_data.append(text_res_data)
-#
-#     kpi_result['data'] = kpi_result_data
-#     entire_result_data.append(kpi_result)
-#     kpi_entry = {'resultant_data': entire_result_data}
-#     return kpi_entry
+
+def alarm(i,entire_result_data,kpi_result,method):
+    # print('machineid alaram...........',i['Machine_Id__Machine_id'])
+    # print('machineid alaram...........',i)
+    machine_id = i['Machine_Id__Machine_id']
+    kpi_result_data_alarm = []
+    date_today = datetime.now().date()
+    todays_date = date_today.strftime("%Y-%m-%d")
+    value = MachineCardsList.objects.get(Machine_Id__Machine_id=machine_id,
+                                         Card_type__Card_Type='Alarm')  # later filter alaramgrp
+
+    if method == "kpis":
+        alarm_table_date=Alarm_data.objects.filter(machine_id=machine_id,TimeStamp__date=todays_date)
+        alarm_table_date_serializer=alarm_serializer(alarm_table_date,many=True)
+        alarm_serializer_data=alarm_table_date_serializer.data
+        # print('alarm_serializer_data',alarm_serializer_data)
+        kpi_result_data_alarm=list(alarm_serializer_data)
+
+
+    if method == "kpiweb":
+
+        machine_grp=MachineDetails.objects.get(Machine_id=machine_id)
+        # print('machine_grp',machine_grp)
+        grp = machine_grp.IO_Group_Id
+        # print('grp',grp)
+        # alarm_grp = machine_grp['alarm_grp_id']
+        alarm_grp = "urban"
+
+        # all_keys=IOList.objects.filter(IO_Group=grp,alarm=True).values('IO_name')
+        # print('all_keys',all_keys)#  only keys in list
+
+        # print('value',value)
+
+        # print(value.DataPoints)
+        dpoints=value.DataPoints
+        Machine_Status_dp=dpoints[0]
+        Temp_dp=dpoints[1]
+
+        latest_record = MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first()
+        # print('latest_record',latest_record)
+        Machine_Status_val=eval(f'latest_record.{Machine_Status_dp}')
+        Temp_val=eval(f'latest_record.{Temp_dp}')
+        # print('ms', Machine_Status_val)
+        # print('temp', Temp_val)
+        time_data = latest_record.Timestamp
+
+        timestamp_dt = datetime.fromisoformat(str(time_data))
+
+        # Format the datetime object
+        formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        if latest_record and Machine_Status_val == False :
+            previous_record = MachineRawData.objects.filter(Machine_Id=machine_id,
+                                                            id__lt=latest_record.id).order_by('-id').first()
+            # print('previous_record',previous_record)
+            previous_v = eval(f'previous_record.{Machine_Status_dp}')
+            # print('previous_v',previous_v)
+
+            if previous_v == True:
+                response_data={"alarm_message": "Message Off", "Timestamp": formatted_timestamp_str}
+                create_alarm_row=Alarm_data(machine_id=machine_id,TimeStamp=time_data,
+                                            Message="Message Off")
+                create_alarm_row.save()
+                kpi_result_data_alarm.append(response_data)
+
+                # Do something with the previous record
+                # print("Previous record false thing:", previous_record)
+            else:
+               pass
+
+        else:
+            pass
+
+        if  Temp_val <50 or Temp_val>100:
+            # print('temp greater.......................')
+            response_data2 = {"alarm_message": "Temperature High", "Timestamp": formatted_timestamp_str}
+            create_alarm_row = Alarm_data(machine_id=machine_id, TimeStamp=time_data,
+                                          Message="Temperature High")
+            create_alarm_row.save()
+            kpi_result_data_alarm.append(response_data2)
+        else:
+            pass
+
+
+        # print('reee',kpi_result_data_alarm)
+    kpi_result['card'] = value.Card_type.Card_Type
+    kpi_result['title'] = value.Title
+    kpi_result['ledger'] = value.Ledger
+    labels = {
+        "units": value.Unit,
+        # "y_label": data['Y_Label']
+    }
+    kpi_result["labels"] = labels
+
+
+    kpi_result['data'] = kpi_result_data_alarm
+    entire_result_data.append(kpi_result)
+    kpi_entry = {'resultant_data': entire_result_data}
+    return kpi_entry
 
 
     # "on" index and particular "on" index keys zip and send

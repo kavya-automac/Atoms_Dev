@@ -78,3 +78,8 @@ class IO_list_serializer(serializers.ModelSerializer): #iostatus api for keys # 
         # fields = '__all__'
         fields = ('IO_type','IO_name','IO_value','IO_color','IO_Unit','Control')
 
+class alarm_serializer(serializers.ModelSerializer):
+    class Meta:
+        model=Alarm_data
+        fields = ('Message','TimeStamp')
+
