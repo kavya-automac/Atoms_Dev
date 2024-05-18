@@ -861,7 +861,8 @@ def alarm(i,entire_result_data,kpi_result,method):
                                          Card_type__Card_Type='Alarm')  # later filter alaramgrp
 
     if method == "kpis":
-        alarm_table_date=Alarm_data.objects.filter(machine_id=machine_id,TimeStamp__date=todays_date)
+        alarm_table_date=Alarm_data.objects.filter(machine_id=machine_id,TimeStamp__date=todays_date).order_by('TimeStamp').\
+            distinct('TimeStamp')
         alarm_table_date_serializer=alarm_serializer(alarm_table_date,many=True)
         alarm_serializer_data=alarm_table_date_serializer.data
         # print('alarm_serializer_data',alarm_serializer_data)
