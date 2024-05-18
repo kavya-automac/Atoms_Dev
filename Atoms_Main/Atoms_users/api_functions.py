@@ -865,72 +865,83 @@ def alarm(i,entire_result_data,kpi_result,method):
         alarm_table_date_serializer=alarm_serializer(alarm_table_date,many=True)
         alarm_serializer_data=alarm_table_date_serializer.data
         # print('alarm_serializer_data',alarm_serializer_data)
-        kpi_result_data_alarm=list(alarm_serializer_data)
+        kpi_result_data_alarm.append(alarm_serializer_data)
 
 
     if method == "kpiweb":
 
-        machine_grp=MachineDetails.objects.get(Machine_id=machine_id)
+        # machine_grp=MachineDetails.objects.get(Machine_id=machine_id)
         # print('machine_grp',machine_grp)
-        grp = machine_grp.IO_Group_Id
-        # print('grp',grp)
-        # alarm_grp = machine_grp['alarm_grp_id']
-        alarm_grp = "urban"
 
-        # all_keys=IOList.objects.filter(IO_Group=grp,alarm=True).values('IO_name')
-        # print('all_keys',all_keys)#  only keys in list
+        machine_latest_data=Alarm_data.objects.filter(machine_id=machine_id, TimeStamp__date=todays_date)\
+            .order_by('-TimeStamp').latest('TimeStamp')
+        # print('machine_latest_data',machine_latest_data)
+        # print('countttttttttt',machine_latest_data.count())
+        alarm_single_data = alarm_serializer(machine_latest_data)
+        # print()
+        alarm_serializer_data = alarm_single_data.data
+        # print('alarm_serializer_data',alarm_serializer_data)
+        kpi_result_data_alarm.append(alarm_serializer_data)
 
-        # print('value',value)
-
-        # print(value.DataPoints)
-        dpoints=value.DataPoints
-        Machine_Status_dp=dpoints[0]
-        Temp_dp=dpoints[1]
-
-        latest_record = MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first()
-        # print('latest_record',latest_record)
-        Machine_Status_val=eval(f'latest_record.{Machine_Status_dp}')
-        Temp_val=eval(f'latest_record.{Temp_dp}')
-        # print('ms', Machine_Status_val)
-        # print('temp', Temp_val)
-        time_data = latest_record.Timestamp
-
-        timestamp_dt = datetime.fromisoformat(str(time_data))
-
-        # Format the datetime object
-        formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-        if latest_record and Machine_Status_val == False :
-            previous_record = MachineRawData.objects.filter(Machine_Id=machine_id,
-                                                            id__lt=latest_record.id).order_by('-id').first()
-            # print('previous_record',previous_record)
-            previous_v = eval(f'previous_record.{Machine_Status_dp}')
-            # print('previous_v',previous_v)
-
-            if previous_v == True:
-                response_data={"alarm_message": "Message Off", "Timestamp": formatted_timestamp_str}
-                create_alarm_row=Alarm_data(machine_id=machine_id,TimeStamp=time_data,
-                                            Message="Message Off")
-                create_alarm_row.save()
-                kpi_result_data_alarm.append(response_data)
-
-                # Do something with the previous record
-                # print("Previous record false thing:", previous_record)
-            else:
-               pass
-
-        else:
-            pass
-
-        if  Temp_val <50 or Temp_val>100:
-            # print('temp greater.......................')
-            response_data2 = {"alarm_message": "Temperature High", "Timestamp": formatted_timestamp_str}
-            create_alarm_row = Alarm_data(machine_id=machine_id, TimeStamp=time_data,
-                                          Message="Temperature High")
-            create_alarm_row.save()
-            kpi_result_data_alarm.append(response_data2)
-        else:
-            pass
+        # grp = machine_grp.IO_Group_Id
+        # # print('grp',grp)
+        # # alarm_grp = machine_grp['alarm_grp_id']
+        # alarm_grp = "urban"
+        #
+        # # all_keys=IOList.objects.filter(IO_Group=grp,alarm=True).values('IO_name')
+        # # print('all_keys',all_keys)#  only keys in list
+        #
+        # # print('value',value)
+        #
+        # # print(value.DataPoints)
+        # dpoints=value.DataPoints
+        # Machine_Status_dp=dpoints[0]
+        # Temp_dp=dpoints[1]
+        #
+        # latest_record = MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first()
+        # # print('latest_record',latest_record)
+        # Machine_Status_val=eval(f'latest_record.{Machine_Status_dp}')
+        # Temp_val=eval(f'latest_record.{Temp_dp}')
+        # # print('ms', Machine_Status_val)
+        # # print('temp', Temp_val)
+        # time_data = latest_record.Timestamp
+        #
+        # timestamp_dt = datetime.fromisoformat(str(time_data))
+        #
+        # # Format the datetime object
+        # formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+        #
+        # if latest_record and Machine_Status_val == False :
+        #     previous_record = MachineRawData.objects.filter(Machine_Id=machine_id,
+        #                                                     id__lt=latest_record.id).order_by('-id').first()
+        #     # print('previous_record',previous_record)
+        #     previous_v = eval(f'previous_record.{Machine_Status_dp}')
+        #     # print('previous_v',previous_v)
+        #
+        #     if previous_v == True:
+        #         response_data={"alarm_message": "Message Off", "Timestamp": formatted_timestamp_str}
+        #         create_alarm_row=Alarm_data(machine_id=machine_id,TimeStamp=time_data,
+        #                                     Message="Message Off")
+        #         create_alarm_row.save()
+        #         kpi_result_data_alarm.append(response_data)
+        #
+        #         # Do something with the previous record
+        #         # print("Previous record false thing:", previous_record)
+        #     else:
+        #        pass
+        #
+        # else:
+        #     pass
+        #
+        # if  Temp_val <50 or Temp_val>100:
+        #     # print('temp greater.......................')
+        #     response_data2 = {"alarm_message": "Temperature High", "Timestamp": formatted_timestamp_str}
+        #     create_alarm_row = Alarm_data(machine_id=machine_id, TimeStamp=time_data,
+        #                                   Message="Temperature High")
+        #     create_alarm_row.save()
+        #     kpi_result_data_alarm.append(response_data2)
+        # else:
+        #     pass
 
 
         # print('reee',kpi_result_data_alarm)

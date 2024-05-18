@@ -4,6 +4,8 @@ from datetime import datetime, date
 
 from django.db.models import Avg,F,Count
 
+from .all_types_of_alarm import demo_alarm
+
 
 def Live_new_record(data_dict):
     value = data_dict['get_value']
@@ -62,6 +64,7 @@ def High_Low(data_dict):
     pass
 
 def RunTime(datapoint):
+    # print('runtime')
    today = date.today()
 
    todays_records = MachineRawData.objects.filter(Timestamp__date=today)
@@ -87,9 +90,29 @@ def History(data_dict,datapoint):
 
     pass
 
-def alarm1(data_dict):
-    print('alarm1............')
-    pass
+def alarm1(data_dict,datapoint):
+    # print('alarm1............',data_dict)
+    print('alarm1........222....',datapoint)
+    # {'time_stamp': '2024-05-18T12:38:42', 'machine_id': 'AA_001', 'get_name': ['Alarm'], 'get_value': 'Off', 'get_title': 'Alarm', 'get_mode': ['Alarm_
+    # fun']}
+
+    machine_id='AA_001'
+    grp="demo"
+    if grp == "demo":
+
+        latest_record = MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first()
+
+        previous_record = MachineRawData.objects.filter(Machine_Id=machine_id,
+                                                            id__lt=latest_record.id).order_by('-id').first()
+        demo_alarm(data_dict, datapoint, latest_record, previous_record)
+    else:
+        pass
+
+
+
+
+
+
 
 def History_result(data_dict):
     pass
