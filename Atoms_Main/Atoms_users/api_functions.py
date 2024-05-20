@@ -866,7 +866,7 @@ def alarm(i,entire_result_data,kpi_result,method):
         alarm_table_date_serializer=alarm_serializer(alarm_table_date,many=True)
         alarm_serializer_data=alarm_table_date_serializer.data
         # print('alarm_serializer_data kpis',alarm_serializer_data)
-        kpi_result_data_alarm=list(alarm_serializer_data)
+        kpi_result_data_alarm=alarm_serializer_data
         # print('kpi_result_data_alarm',kpi_result_data_alarm)
 
 
@@ -877,14 +877,24 @@ def alarm(i,entire_result_data,kpi_result,method):
 
         machine_latest_data=Alarm_data.objects.filter(machine_id=machine_id, TimeStamp__date=todays_date)\
             .order_by('-TimeStamp').latest('TimeStamp')
-        # print('machine_latest_data',machine_latest_data)
-        # print('countttttttttt',machine_latest_data.count())
+
+
+        # latest_entry = machine_latest_data.latest('TimeStamp')
         alarm_single_data = alarm_serializer(machine_latest_data)
-        # print()
         alarm_serializer_data = alarm_single_data.data
-        print('alarm_serializer_data kpiweb',alarm_serializer_data)
-        kpi_result_data_alarm=list(alarm_serializer_data)
-        print('kpi_result_data_alarm',kpi_result_data_alarm)
+        kpi_result_data_alarm.append({
+            "Message": alarm_serializer_data.get("Message", ""),
+            "TimeStamp": alarm_serializer_data.get("TimeStamp", "")
+        })
+
+        # # print('machine_latest_data',machine_latest_data)
+        # # print('countttttttttt',machine_latest_data.count())
+        # alarm_single_data = alarm_serializer(machine_latest_data)
+        # # print()
+        # alarm_serializer_data = alarm_single_data.data
+        # print('alarm_serializer_data kpiweb',alarm_serializer_data)
+        # kpi_result_data_alarm=alarm_serializer_data
+        print('kpi_result_data_alarm kpiweb',kpi_result_data_alarm)
 
 
 
