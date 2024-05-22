@@ -202,7 +202,8 @@ def io_values(node_id,type,date=None,start_datetime=None,end_datetime1=None):#ma
     elif type == "Trails":
         machine_values_data = MachineRawData.objects.filter(Machine_Id=node_id, Timestamp__date=date). \
         values('Timestamp','Machine_Id', 'Machine_Location', 'Digital_Input', 'Digital_Output',
-        'Analog_Input', 'Analog_Output', 'Other').distinct('Timestamp').order_by('-Timestamp')
+        'Analog_Input', 'Analog_Output', 'Other').distinct('Timestamp').order_by('-Timestamp')[:50]
+        print('machine_values_data..trail',len(machine_values_data))
         last_valies_data_1 = machineValues_serializer(machine_values_data,many=True)
 
     elif type == "Reports":
