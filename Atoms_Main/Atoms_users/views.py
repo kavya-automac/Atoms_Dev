@@ -255,9 +255,9 @@ def Machines_sub_details(request):#node_id= machine_id
 
                 switch_dict = {
                     "5": lambda: JsonResponse(Details(node_id)),
-                    "6": lambda: JsonResponse(machine_kpis(node_id)),
-                    "7": lambda: JsonResponse({"iostatus": Machine_Iostatus(node_id)}),
-                    "8": lambda: JsonResponse({"control": Machine_Control(node_id)}),
+                    "6": lambda: JsonResponse(machine_kpis(node_id)),# not using
+                    "7": lambda: JsonResponse({"iostatus": Machine_Iostatus(node_id)}),# not using
+                    "8": lambda: JsonResponse({"control": Machine_Control(node_id)}),# not using
                     "9": lambda: JsonResponse({"status": 'Settings under development'}),
                     'default': lambda: JsonResponse({"status": 'please give correct module'}),
                 }
