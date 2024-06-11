@@ -276,7 +276,7 @@ def Reports_data(user_id,machine_id,start_datetime,end_datetime1,report_type):
                 "Text": lambda: text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
                 "Pie": lambda:text_card(i,entire_result_data,kpi_result,"reports",start_datetime,end_datetime1,report_type),
                 "History": lambda:Trail_Report(i,entire_result_data, kpi_result,"reports",start_datetime,end_datetime1,report_type),
-
+                "RunTime": lambda: text_card(i, entire_result_data, kpi_result, "reports",start_datetime,end_datetime1,report_type),
                 'default': lambda: {"resultant_data": []},
             }
 
