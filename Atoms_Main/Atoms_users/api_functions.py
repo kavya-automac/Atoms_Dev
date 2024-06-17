@@ -546,10 +546,10 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         ).distinct('Timestamp').order_by('Timestamp')
 
         # kpi_result_data = []
-        for record in kpirawdata:
-            # Process each record and create a dictionary
-            record_data = {"name": record.Name, "value": record.Value, "unit": data['Unit'],"Timestamp":record.Timestamp}
-            kpi_result_data.append(record_data)
+        # for record in kpirawdata1:
+        #     # Process each record and create a dictionary
+        #     record_data = {"name": record.Name, "value": record.Value, "unit": data['Unit'],"Timestamp":record.Timestamp}
+        #     kpi_result_data.append(record_data)
 
         # print('kpirawdata', kpirawdata)
     elif method == "dashboard":
