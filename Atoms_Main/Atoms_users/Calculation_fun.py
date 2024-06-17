@@ -67,7 +67,7 @@ def RunTime(datapoint):
     # print('runtime')
    today = date.today()
 
-   todays_records = MachineRawData.objects.filter(Timestamp__date=today)
+   todays_records = MachineRawData.objects.filter(Timestamp__date=today)  #add distinct timestamp
    # print('todays_records runtime', todays_records[0])
    datapoints_split = datapoint.split('[')
    datapoints_split1 = datapoints_split[1].split(']')
