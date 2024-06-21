@@ -754,7 +754,7 @@ def count_machines(machines):
     current_time_Ist = datetime.now()
     current_time = current_time_Ist.astimezone(timezone.utc)
 
-    machine_names_query = MachineDetails.objects.filter(id__in=machines).values('Machine_id','Machine_Name')
+    machine_names_query = MachineDetails.objects.filter(id__in=machines).values('id','Machine_id','Machine_Name')
     # print('machines_query', machine_names_query)
     # result = []
     machine_count = 0
@@ -817,7 +817,10 @@ def count_machines(machines):
         }
         Machines_and_status={
             "Machine_name":machine_data['Machine_Name'],
-            "Machines_status":'Active'
+            "Machines_status":'Active',
+            "node_id":machine_data['id'],
+            "module":5
+
             # "Machines_status":machine_status
         }
         all_machines_status.append(Machines_and_status)
