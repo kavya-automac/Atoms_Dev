@@ -819,7 +819,7 @@ def count_machines(machines):
             "Machine_name":machine_data['Machine_Name'],
             "Machines_status":'Active',
             "node_id":machine_data['id'],
-            "module":5
+            #"module":5
 
             # "Machines_status":machine_status
         }
