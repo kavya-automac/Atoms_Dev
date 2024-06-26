@@ -774,7 +774,7 @@ def count_machines(machines):
                                                                                                  'Timestamp')
             fetch_latest = to_fetch_lastrecord_data.latest('Timestamp')
 
-            # print('to_fetch_lastrecord_data', fetch_latest)
+            print('to_fetch_lastrecord_data', fetch_latest)
             # print('fetch_latest', fetch_latest)
             last_record_time1 = fetch_latest['Timestamp']
             # print('last_record_time1', last_record_time1)
@@ -782,42 +782,45 @@ def count_machines(machines):
             last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
             last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
             utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
-            # print('last_record_time', last_record_time)
-            # print('current_time', current_time)
+            # print('last_record_time string', last_record_time)
+            print('utc_timestamp_latest', utc_timestamp_latest)
+            print('current_time', current_time)
+
 
             time_difference = abs((current_time - utc_timestamp_latest).total_seconds())
             # time_difference = current_time - last_record_time
-            # print('time_difference', time_difference)
+            print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
             if time_difference > 6:
                 # print("in if------------")
                 machine_status = "Inactive"
-                # inactive_count += 1 # uncomment later now inactive_count = 0
-                inactive_count = 0 # uncomment later now inactive_count = 0
+                inactive_count += 1 # uncomment later now inactive_count = 0
+                # inactive_count = 0 # uncomment later now inactive_count = 0
                 # print('inactive if', inactive_count)
             else:
                 # print("in else------------")
                 machine_status = "Active"
-                active_count = machine_count
-                # active_count += 1
+                # active_count = machine_count
+                active_count += 1
                 # print('active else', active_count)
         else:
-            # inactive_count += 1
-            inactive_count = 0
+            inactive_count += 1
+            # inactive_count = 0
             machine_status = "Inactive"
             # print('inactive else', inactive_count)
         count_card_data = {
             # "title": "count_card",
             "Total Machines": str(machine_count),
             # "Active Machines": str(active_count),
-            "Active Machines": str(machine_count),
+            "Active Machines": str(active_count),
             "Inactive Machines": str(inactive_count)
 
         }
         Machines_and_status={
             "Machine_name":machine_data['Machine_Name'],
-            "Machines_status":'Active',
+            "Machines_status":machine_status,
+            # "Machines_status":'Active',
             "node_id":machine_data['id'],
             #"module":5
 
@@ -897,7 +900,7 @@ def alarm(i,entire_result_data,kpi_result,method):
         # alarm_serializer_data = alarm_single_data.data
         # print('alarm_serializer_data kpiweb',alarm_serializer_data)
         # kpi_result_data_alarm=alarm_serializer_data
-        print('kpi_result_data_alarm kpiweb',kpi_result_data_alarm)
+        # print('kpi_result_data_alarm kpiweb',kpi_result_data_alarm)
 
 
 
