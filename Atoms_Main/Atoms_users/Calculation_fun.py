@@ -92,7 +92,7 @@ def History(data_dict,datapoint):
 
 def alarm1(data_dict,datapoint):
     # print('alarm1............',data_dict)
-    print('alarm1........222....',datapoint)
+    # print('alarm1........222....',datapoint)
     # {'time_stamp': '2024-05-18T12:38:42', 'machine_id': 'AA_001', 'get_name': ['Alarm'], 'get_value': 'Off', 'get_title': 'Alarm', 'get_mode': ['Alarm_
     # fun']}
 
@@ -118,7 +118,7 @@ def History_result(data_dict):
     pass
 
 def Alarm_fun(data_dict):
-    print('alarm funnnn............')
+    # print('alarm funnnn............')
 
     pass
 
