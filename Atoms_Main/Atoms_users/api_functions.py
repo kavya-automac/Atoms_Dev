@@ -792,7 +792,7 @@ def count_machines(machines):
             print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
 
-            if time_difference > 6:
+            if time_difference > 30:
                 # print("in if------------")
                 machine_status = "Inactive"
                 inactive_count += 1 # uncomment later now inactive_count = 0
