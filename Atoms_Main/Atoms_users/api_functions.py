@@ -780,8 +780,8 @@ def count_machines(machines):
             last_record_time1 = fetch_latest['Timestamp']
             print('last_record_time1', last_record_time1)
 
-            last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
-            last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S.%f %Z")
+            last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S")
+            last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S")
             utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
             print('last_record_time string', last_record_time)
             print('utc_timestamp_latest', utc_timestamp_latest)
