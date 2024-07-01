@@ -17,6 +17,7 @@ from django.db.models.functions import Cast
 from asgiref.sync import sync_to_async
 
 
+
 def dropdown(user_id):
 
     # user_id=6
@@ -779,17 +780,22 @@ def count_machines(machines):
             # print('fetch_latest', fetch_latest)
             last_record_time1 = fetch_latest['Timestamp']
             print('last_record_time1', last_record_time1)
+            five_30_hours = timedelta(hours=5, minutes=30)
+            print('five_30_hours',five_30_hours)
+            adjusted_datetime = last_record_time1 - five_30_hours
+            print('adjusted_datetime',adjusted_datetime)
 
-            last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z").split('.')[0]
-            print("last_record_time2 string",last_record_time2)
-            last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S")
-            utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
-            print('last_record_time s to d', last_record_time)
-            print('utc_timestamp_latest', utc_timestamp_latest)
+            # last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z").split('.')[0]
+            # print("last_record_time2 string",last_record_time2)
+            # print("last_record_time2 type ss",type(last_record_time2))
+            # last_record_time = datetime.strptime(last_record_time2, "%Y-%m-%d %H:%M:%S")
+            # utc_timestamp_latest=last_record_time.astimezone(timezone.utc)
+            # print('last_record_time s to d', last_record_time)
+            # print('utc_timestamp_latest', utc_timestamp_latest)
             print('current_time', current_time)
 
 
-            time_difference = abs((current_time - utc_timestamp_latest).total_seconds())
+            time_difference = abs((current_time - adjusted_datetime).total_seconds())
             # time_difference = current_time - last_record_time
             print('time_difference', time_difference)
             # print(' time_difference > timedelta(seconds=30)', time_difference > 60)
