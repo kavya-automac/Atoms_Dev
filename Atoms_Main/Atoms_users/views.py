@@ -306,11 +306,16 @@ def Trail_details(request):#node_id,date
                     # analog_input
                     # analog_output
                     # others
+                    original_timestamp = trail["Timestamp"]
+                    print('original time',original_timestamp)
+                    dt = datetime.datetime.strptime(original_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+                    formatted_timestamp = dt.strftime("%d-%m-%YT%H:%M:%SZ")#"2024-07-08T17:20:25Z
+                    print('formatted_timestamp',formatted_timestamp)
 
                     trail_result_output={
                         "data":Trails_data['digital_input']+Trails_data['digital_output']+Trails_data['analog_input']+
                         Trails_data['analog_output']+Trails_data['others'],
-                        "timestamp":trail["Timestamp"]
+                        "timestamp":formatted_timestamp
 
                     }
                     trail_result.append(trail_result_output)
