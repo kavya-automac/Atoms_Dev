@@ -409,9 +409,16 @@ def Line_bar_graph(data,entire_result_data,kpi_result,method,user_id=None,machin
         # print('try  start_datetime',start_datetime)
 
         # print('jjjj', j)
-        timestamp_str = str(j.Timestamp)
+        # timestamp_str = str(j.Timestamp)
+        timestamp_str = j.Timestamp
+        formatted_timestamp = timestamp_str.strftime("%d-%m-%Y %H:%M:%S")
+        # print('Formatted time:', formatted_timestamp)
+
+
+
+
         # kpi_result_data = {"x_axis_data": timestamp_str, "y_axis_data": j.Value}
-        kpi_result_data = {"x_axis_data": timestamp_str, "y_axis_data": j.Value}
+        kpi_result_data = {"x_axis_data": formatted_timestamp, "y_axis_data": j.Value}
         # print('kpi_result_data',kpi_result_data)
         card_data.append(kpi_result_data)
         # x_axis.append(j.Timestamp)
@@ -498,8 +505,15 @@ def Trail_Report(data,entire_result_data, kpi_result,method,start_datetime,end_d
                     for item in trail_result_output['data']:
                         trail_data_values.append(item['value'])
                     print('trail_data_values',trail_data_values)
+
+                    original_timestamp = trail["Timestamp"]
+                    print('original time', original_timestamp)
+                    dt = datetime.datetime.strptime(original_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+                    formatted_timestamp = dt.strftime("%d-%m-%YT%H:%M:%SZ")  # "2024-07-08T17:20:25Z
+                    print('formatted_timestamp', formatted_timestamp)
+
                     trail_result_output = {
-                        "x_axis_data":trail["Timestamp"],
+                        "x_axis_data":formatted_timestamp,
                          "y_axis_data":trail_data_values
                     }
 
