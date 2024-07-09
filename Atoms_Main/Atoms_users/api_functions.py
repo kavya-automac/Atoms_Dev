@@ -626,11 +626,16 @@ def text_card(data, entire_result_data, kpi_result, method, start_datetime=None,
         }
         kpi_result["labels"] = labels
         for res in kpirawdata:
-            # print('res', res.Timestamp)
-            timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
+            print('res', res.Timestamp)
+            print('res type', type(res.Timestamp))
+            timestamp_dt = res.Timestamp
 
             # Format the datetime object
-            formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
+            # formatted_timestamp_str = timestamp_dt.strftime('Y%-%m-%d %H:%M:%S')
+            # formatted_timestamp_str = timestamp_dt.strftime('d%-%m-%Y %H:%M:%S')
+            formatted_timestamp_str = timestamp_dt.strftime("%d-%m-%Y %H:%M:%S")
+
+            print('formatted_timestamp_str',formatted_timestamp_str)
             text_res_data = {"Timestamp": formatted_timestamp_str, "value": res.Value}
 
             kpi_result_data.append(text_res_data)
@@ -681,10 +686,17 @@ def status(data, entire_result_data, kpi_result, method, start_datetime=None, en
         kpi_result["labels"] = labels
         for res in kpirawdata:
             # print('res in status', res.Timestamp)
-            timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
+            timestamp_dt = res.Timestamp
+
+
+            formatted_timestamp_str = timestamp_dt.strftime("%d-%m-%Y %H:%M:%S")
+
+
+
+            # timestamp_dt = datetime.fromisoformat(str(res.Timestamp))
 
             # Format the datetime object
-            formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
+            # formatted_timestamp_str = timestamp_dt.strftime('%Y-%m-%d %H:%M:%S')
             # print('.............',res.Value)
             value=res.Value
             if value[0] == "Off":
