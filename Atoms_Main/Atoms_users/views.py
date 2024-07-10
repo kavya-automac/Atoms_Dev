@@ -514,3 +514,289 @@ def get_primary_key(request):
     return Response({"primary_key_id":node.id })
 
 
+@api_view(['GET'])
+
+def make_json(request):
+    d = {
+        "atoms": [
+            {
+                "c1": [
+                    {
+                        "machines": [
+                            {"m1": ["k1", "k2"]},
+                            {"m2": ["k3"]}
+                        ]
+                    },
+                    {
+                        "c1_dep": [
+                            {
+                                "users": [
+                                    {"u5": []},
+                                    {"u6": []}
+                                ]
+                            },
+                            {
+                                "dashboard": ["d5"]
+                            },
+                            {
+                                "machines": ["details", "kpi", "Io"]
+                            },
+                            {
+                                "trails": []
+                            },
+                            {
+                                "reports": ["r1", "r2"]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {"pc": []},
+            {"cus": []},
+            {"c2": []},
+            {"p1": []},
+            {"p2": []},
+            {"l1": []},
+            {"l2": []}
+        ]
+    }
+    nodeid = request.query_params.get('node_id')
+
+    op = []
+    node_lr = get_node_LR(nodeid, "Layer")
+    # print(node_lr)
+    layers = get_descendent(node_lr['left'], node_lr['right'], "Layer", "node_lr")
+    machine_descendants = get_descendent(node_lr['left'], node_lr['right'], "Machine", "node_lr")
+    # print('layers', layers)
+    result = {}
+    layers_list = []
+
+    Machines_list = []
+    machine_kpi = []
+
+    for m in machine_descendants['descendents']:
+        print('m', m)
+
+        kpi_value = get_descendent(m['node_left'], m['node_right'], "Kpi", "node")
+        print('kpi_value', kpi_value)
+        machine_name = MachineDetails.objects.filter(pk=m['node_id']).values('Machine_Name')
+        machine_id_pk = Nested_Table.objects.get(Node_Id=m['node_id'], Node_Left=m['node_left'],
+                                                 Node_Right=m['node_right'])
+        print('machine_id_pk', machine_id_pk)
+
+        print('machine_name::::', machine_name)
+        # Machines_list.append(machine_name[0]['Machine_Name'])
+
+        kpi_name = MachineCardsList.objects.filter(pk__in=kpi_value['descendents']).values(
+            'Title',
+            'Card_type_id__Card_Type')
+        print('kpi_name*****', kpi_name)
+        kpi_name222 = MachineCardsList.objects.filter(pk__in=kpi_value['descendents'])
+        print('kpi_name222', kpi_name222)
+        kpi_list = []
+
+        if len(kpi_name) == 0:
+            machine_kpi.append({(machine_name[0]['Machine_Name'] + "-" + str(machine_id_pk.pk)): []})
+        else:
+            for kp in kpi_name:
+                kpi_list.append(kp)
+
+                print('kp......', kp)
+
+            machine_kpi.append({(machine_name[0]['Machine_Name'] + "-" + str(machine_id_pk.pk)): kpi_list})
+
+    print('machine_kpi,,,,,,,,,,,,,', machine_kpi)
+    for i in layers['descendents']:
+        # print("iiiiiiiiiiiiiii",i)
+        Layer_name = Layers.objects.filter(id=i['node_id'])
+        layer_id_pk = Nested_Table.objects.get(Node_Id=i['node_id'], Node_Left=i['node_left'],
+                                               Node_Right=i['node_right'])
+
+        machine_descendants = get_descendent(i['node_left'], i['node_right'], "Machine", "node_lr")
+        print('machine_descendants', machine_descendants)
+        aa = []
+        md = machine_descendants['descendents']
+        print('md before', md)
+
+        for rm in range(len(md) - 1, -1, -1):
+            print('rm....', rm)
+            machine_name_rm = MachineDetails.objects.filter(
+                pk=machine_descendants['descendents'][rm]['node_id']).values('Machine_Name')
+
+            machine_id_pk_rm = Nested_Table.objects.get(Node_Id=machine_descendants['descendents'][rm]['node_id'],
+                                                        Node_Left=machine_descendants['descendents'][rm]['node_left'],
+                                                        Node_Right=machine_descendants['descendents'][rm]['node_right'])
+            print('rm', rm)
+            aa.append(machine_name_rm[0]['Machine_Name'])
+
+        print('aaaaa', aa)
+        # print('md after del',md)
+
+        print(machine_descendants['descendents'])
+
+        # for m in machine_descendants['descendents']:
+        #
+        #     kpi_value=get_descendent(m['node_left'],m['node_right'],"Kpi","node")
+        #     # print('kpi_value',kpi_value)
+        #     machine_name=MachineDetails.objects.filter(pk=m['node_id']).values('Machine_Name')
+        #     machine_id_pk=Nested_Table.objects.get(Node_Id=m['node_id'],Node_Left=m['node_left'],Node_Right=m['node_right'])
+        #     print('machine_id_pk',machine_id_pk)
+        #
+        #     print('machine_name::::',machine_name)
+        #     # Machines_list.append(machine_name[0]['Machine_Name'])
+        #
+        #
+        #
+        #
+        #     kpi_name = MachineCardsList.objects.filter(pk__in=kpi_value['descendents']).values('Kpi_Name',
+        #                                                                                        'Title','Card_type_id__Card_Type')
+        #     print('kpi_name*****',kpi_name)
+        #     for kp in kpi_name:
+        #         print('kp......',kp)
+        #         machine_kpi.append({(machine_name[0]['Machine_Name'] + "-" + str(machine_id_pk.pk)):kpi_name[0]})
+        #
+
+        # print('Machines_list', Machines_list)
+        name_of_layer = Layer_name[0].Layer_Name
+        # print("name_of_layer",name_of_layer)
+        Department_list = []
+        department = get_descendent(i['node_left'], i['node_right'], "Department", "node_lr")
+        department_name = Layers.objects.filter(id=department['descendents'][0]['node_id'])
+        department_pk = Nested_Table.objects.get(Node_Id=department['descendents'][0]['node_id'],
+                                                 Node_Left=department['descendents'][0]['node_left'],
+                                                 Node_Right=department['descendents'][0]['node_right'])
+        # print('department_name',department_name[0].Layer_Name,type(department_name[0]))
+        # print("department",department)
+        Department_list.append(department_name[0].Layer_Name + "-" + str(department_pk.pk))
+
+        Users_list = []
+        user_value = get_descendent(department['descendents'][0]['node_left'],
+                                    department['descendents'][0]['node_right'], "User", "node_lr")
+        for u in user_value['descendents']:
+            # print('uuuuuuuuu',u)
+            # print('uuuuuujennnuuu',len(user_value['descendents']))
+            user_name = User.objects.filter(id=u['node_id'])
+            # print('user_name',user_name)
+            user_pk = Nested_Table.objects.get(Node_Id=u['node_id'],
+                                               Node_Left=u['node_left'],
+                                               Node_Right=u['node_right'])
+            user_get_control = get_descendent(u['node_left'], u['node_right'], "Subpage", "node")
+            # user_name=User_details.objects.filter(pk=k['node_id']).values('user_id__username')
+
+            # user_name=User_details.objects.filter(pk__in=user_get_control['descendents']).values('user_id__username')
+            # print('user_get_control',user_get_control)
+            control_name = Modules.objects.filter(pk__in=user_get_control['descendents']).values('Module_Name')
+
+            # print('control_name',control_name)
+
+            if control_name.exists():
+                Users_list.append(
+                    user_name[0].username + "-" + str(user_pk.pk) + "----" + control_name[0]['Module_Name'])
+            else:
+                Users_list.append(user_name[0].username + "-" + str(user_pk.pk))
+
+            # print("user_pk",user_pk)
+        # print('user_lists',Users_list)
+
+        DMTR_list = []
+        pages_value = get_descendent(department['descendents'][0]['node_left'],
+                                     department['descendents'][0]['node_right'], "Page", "node_lr")
+        # print('pages_value', pages_value)
+        for l in pages_value['descendents']:
+            print('llll', l)
+            module_node_ids = Modules.objects.get(id=l['node_id'])
+            module_name = module_node_ids.Module_Name
+            # print('module_name in DMTR',module_name)
+            page_pk = Nested_Table.objects.get(Node_Id=l['node_id'],
+                                               Node_Left=l['node_left'],
+                                               Node_Right=l['node_right'])
+
+            get_subpages = get_descendent(l['node_left'], l['node_right'], "Subpage", "node")
+            # print('get_subpages', get_subpages)
+
+            subpage_name = Modules.objects.filter(pk__in=get_subpages['descendents']).values('Module_Name')
+            # print('subpage_name', subpage_name)
+
+            # if subpage_name.exists():
+            #     sb_name=[ i['Module_Name'] for i in subpage_name ]
+            #     DMTR_list.append({module_name+ "-" + str(page_pk.pk):sb_name})
+            # # if dashboard_name.exists():
+            # #     DMTR_list.append({module_name + "-" + str(page_pk.pk): dashboard_list})
+            #
+            # else:
+            #     DMTR_list.append({module_name + "-" + str(page_pk.pk): []})
+
+            module_data = module_name.split('-')
+            print("moduledataaaa", module_data)
+            print('DMTR_list', DMTR_list)
+            if module_data[0] == "Dashboard":
+                dashboard_list = []
+
+                print('')
+
+                dashboard = get_descendent(l['node_left'], l['node_right'], "Dashboard", "node_lr")
+
+                print('dashboard', dashboard)
+                for dd in range(len(dashboard['descendents'])):
+                    dashboard_pk = Nested_Table.objects.get(Node_Id=dashboard['descendents'][dd]['node_id'],
+                                                            Node_Left=dashboard['descendents'][dd]['node_left'],
+                                                            Node_Right=dashboard['descendents'][dd]['node_right'])
+                    dashboard_name = MachineCardsList.objects.filter(pk=dashboard['descendents'][dd]['node_id']).values(
+                        'Title')
+                    print('dashboard_name', dashboard_name)
+                    dashboard_list.append(dashboard_name[0]['Title'] + "-" + str(dashboard_pk.pk))
+
+                DMTR_list.append({module_name + "-" + str(page_pk.pk): dashboard_list})
+            if module_data[0] == "Machines":
+                sb_name = [sn['Module_Name'] for sn in subpage_name]
+                DMTR_list.append({module_name + "-" + str(page_pk.pk): sb_name})
+            if module_data[0] == "Trails":
+                print("trails")
+
+                DMTR_list.append({module_name + "-" + str(page_pk.pk): []})
+            if module_data[0] == "Reports":
+                print('reports')
+                report_list = []
+                get_reports = get_descendent(l['node_left'], l['node_right'], "Report", "node_lr")
+                for rr in range(len(get_reports['descendents'])):
+                    report_pk = Nested_Table.objects.get(Node_Id=get_reports['descendents'][rr]['node_id'],
+                                                         Node_Left=get_reports['descendents'][rr]['node_left'],
+                                                         Node_Right=get_reports['descendents'][rr]['node_right'])
+
+                    report_name = MachineCardsList.objects.filter(pk=get_reports['descendents'][rr]['node_id']).values(
+                        'Title')
+                    report_list.append(report_name[0]['Title'] + "-" + str(report_pk.pk))
+                    print('report_list', report_list)
+
+                DMTR_list.append({module_name + "-" + str(page_pk.pk): report_list})
+
+            # print('dashboard_list',dashboard_list)
+            # DMTR_list.append({"Dashboard":dashboard_list})
+            # report_list=[]
+            # get_reports = get_descendent(l['node_left'], l['node_right'], "Report", "node")
+            # print('get_reports', get_reports)
+            # report_name = MachineCardsList.objects.filter(pk__in=get_reports['descendents']).values('Title')
+            # print('report_name', report_name)
+            # report_pk = Nested_Table.objects.get(Node_Id=l['node_id'], Node_Left=l['node_left'],
+            #                                         Node_Right=l['node_right'])
+            #
+            # # report_list.append(report_name[0]['Title'] + "-" + str(report_pk.pk))
+            # # print('report_list',report_list)
+            #
+            # print('report_name', report_name)
+
+        layers_list.append(
+            {(name_of_layer + "-" + str(layer_id_pk.pk)):
+                 {"Department": [{"dept_name": Department_list[0]}, {"users": Users_list}, {"DMTR": DMTR_list}]}
+
+             }
+        )
+    layers_list.append({"machine_kpi": machine_kpi})
+
+    # print('user_value',user_value)
+
+    result["layers"] = layers_list
+
+    return Response({"result": result})
+
+
