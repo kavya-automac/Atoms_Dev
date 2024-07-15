@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.aeb3b175.css",
-    "main.js": "/static/js/main.189418b5.js",
+    "main.js": "/static/js/main.b11ce886.js",
     "static/js/703.3b20716f.chunk.js": "/static/js/703.3b20716f.chunk.js",
     "static/js/513.160f21a1.chunk.js": "/static/js/513.160f21a1.chunk.js",
     "static/media/Desktop.png": "/static/media/Desktop.2ac506bf3483aed5720d.png",
@@ -10,12 +10,12 @@
     "static/media/flag-for-flag-india-svgrepo-com.svg": "/static/media/flag-for-flag-india-svgrepo-com.71759ebba222e1661b3cd38aa828361b.svg",
     "index.html": "/index.html",
     "main.aeb3b175.css.map": "/static/css/main.aeb3b175.css.map",
-    "main.189418b5.js.map": "/static/js/main.189418b5.js.map",
+    "main.b11ce886.js.map": "/static/js/main.b11ce886.js.map",
     "703.3b20716f.chunk.js.map": "/static/js/703.3b20716f.chunk.js.map",
     "513.160f21a1.chunk.js.map": "/static/js/513.160f21a1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.aeb3b175.css",
-    "static/js/main.189418b5.js"
+    "static/js/main.b11ce886.js"
   ]
 }

@@ -27,6 +27,7 @@ urlpatterns = [
     path('app', TemplateView.as_view(template_name='index.html')),
     path('app/dashboard', TemplateView.as_view(template_name='index.html')),
     path('app/machine', TemplateView.as_view(template_name='index.html')),
+    path('app/submachine', TemplateView.as_view(template_name='index.html')),
     path('app/trail', TemplateView.as_view(template_name='index.html')),
     path('app/report', TemplateView.as_view(template_name='index.html')),
     # path('home/settings', TemplateView.as_view(template_name='index.html')),
