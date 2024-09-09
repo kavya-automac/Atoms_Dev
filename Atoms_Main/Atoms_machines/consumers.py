@@ -146,7 +146,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
 
                 # Create the result data dictionary
                 result_data =latest_time
-                print('result_data',result_data)
+                print('result_data...',result_data)
                 test.update(result_data)
 
                 test_res = json.dumps(test)
