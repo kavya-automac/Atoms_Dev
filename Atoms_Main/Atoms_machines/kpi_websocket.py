@@ -68,6 +68,7 @@ def kpi_socket(machine_id):
         # Create the result data dictionary
         result_data = {"Timestamp":time_str}
         result.update(result_data)
+        # print("kpis    ......another timestamp kpiwebsoct file",result_data)
 
         kpiresultdata = json.dumps(result)
     # print('kpiresultdata',kpiresultdata)
