@@ -61,6 +61,7 @@ def kpi_socket(machine_id):
         result = switch_dict.get(i['Card_type__Card_Type'], switch_dict['default'])()
         # Get current datetime
         current_time = datetime.datetime.now()
+        # timestamp.isoformat()....?
 
         # Format the datetime object to include only the time (hours, minutes, seconds)
         time_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
