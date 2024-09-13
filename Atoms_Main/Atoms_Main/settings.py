@@ -36,7 +36,8 @@ SECRET_KEY = 'django-insecure-)re%h1ix@vmx0o3!z16ko^_tj$cm*50sqsv1q0kt7h%9!ohupb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',"65.0.154.172","43.204.19.66","172.31.44.26"]
+ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',
+                 "65.0.154.172","13.200.249.117","172.31.44.26","dev.atomssol.in"]
 
 # Application definition
 
@@ -75,7 +76,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://192.168.29.74:3000',
     'http://192.168.29.30:3000',
-    'http://43.204.19.66:8000',
+    'http://13.200.249.117:8000',
 
 
 
@@ -217,7 +218,7 @@ CHANNEL_LAYERS={
     "default":{
         'BACKEND':"channels_redis.core.RedisChannelLayer",
         "CONFIG":{
-            "hosts":['redis://43.204.19.66'],
+            "hosts":['redis://13.200.249.117'],
         }
     }
 }
