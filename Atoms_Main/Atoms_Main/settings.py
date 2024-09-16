@@ -34,7 +34,7 @@ prev_dir = os.path.abspath(os.path.join(BASE_DIR,'..'))
 SECRET_KEY = 'django-insecure-)re%h1ix@vmx0o3!z16ko^_tj$cm*50sqsv1q0kt7h%9!ohupb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',
                  "65.0.154.172","13.200.249.117","172.31.44.26","dev.atomssol.in"]
@@ -122,6 +122,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Atoms_Main.wsgi.application'
 ASGI_APPLICATION = 'Atoms_Main.asgi.application'
+# gunicorn --bind 0.0.0.0:8000 Atoms_Main.wsgi
 
 
 
@@ -184,10 +185,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# STATIC_URL = 'static/'
+# STATICFILES_DIRS=[
+#     os.path.join(BASE_DIR,'build/static')
+# ]
+
 STATIC_URL = 'static/'
+STATIC_ROOT = '/var/www/Atoms/static/'
 STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'build/static')
 ]
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -271,3 +280,10 @@ LOGGING = {
 # #celery beat-------------
 #
 # CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
+
+
+
+
+# /home/ubuntu/atoms_dev_server/venv/bin/gunicorn --access-logfile - --bind unix:/run/gunicorn.sock --workers=3 Atoms_Main.wsgi:application --chdir /home/ubuntu/atoms_dev_server/Atoms_Dev/Atoms_Main
+# access-logfile -     log file
+# workers=3 3 processe running simultaneously
