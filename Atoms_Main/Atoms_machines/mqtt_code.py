@@ -151,12 +151,12 @@ client_1.on_connect = on_connect_1
 client_1.on_message = on_message_1
 # client_1.on_disconnect = on_disconnect_1
 # client_1.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
-client_1.tls_set(settings.CAPATH, certfile=settings.CERTPATH, keyfile=settings.KEYPATH,
-                    cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
-client_1.connect(
-
-   host=settings.AWSHOST,
-   port=settings.AWSPORT,
-   keepalive=settings.MQTT_KEEPALIVE
-)
+# client_1.tls_set(settings.CAPATH, certfile=settings.CERTPATH, keyfile=settings.KEYPATH,
+#                     cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
+# client_1.connect(
+#
+#    host=settings.AWSHOST,
+#    port=settings.AWSPORT,
+#    keepalive=settings.MQTT_KEEPALIVE
+# )
 
