@@ -287,3 +287,6 @@ LOGGING = {
 # /home/ubuntu/atoms_dev_server/venv/bin/gunicorn --access-logfile - --bind unix:/run/gunicorn.sock --workers=3 Atoms_Main.wsgi:application --chdir /home/ubuntu/atoms_dev_server/Atoms_Dev/Atoms_Main
 # access-logfile -     log file
 # workers=3 3 processe running simultaneously
+
+
+# ExecStart=/home/ubuntu/atoms_dev_server/venv/bin/python /home/ubuntu/atoms_dev_server/venv/bin/daphne -b 0.0.0.0 -p 8000 Atoms_Main.asgi:application --root-path=/home/ubuntu/atoms_dev_server/Atoms_Dev/Atoms_Main
