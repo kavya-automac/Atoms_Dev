@@ -76,11 +76,13 @@ client.on_message = on_message
 #    port=settings.MQTT_PORT,
 #    keepalive=settings.MQTT_KEEPALIVE
 # )
-client.connect(
-   host='broker.hivemq.com',
-   port=1883,
-   keepalive=60
-)
+# client.connect(
+#    host='broker.hivemq.com',
+#    port=1883,
+#    keepalive=60
+# )
+client.connect("broker.hivemq.com", 1883, 60)
+
 
 # client.loop_start()
 
