@@ -9,15 +9,18 @@ import schedule
 import time
 from asgiref.sync import sync_to_async
 from .mqtt_code import client
-from Atoms_users.Nested_Queries import user_department
+
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from asgiref.sync import sync_to_async
-from . models import MachineRawData
-channel_layer = get_channel_layer()
 
+channel_layer = get_channel_layer()
+#
+# from Atoms_users.Nested_Queries import user_department
+# from . models import MachineRawData
 
 class ChatConsumer(AsyncWebsocketConsumer):
+
     async def connect(self):
         connected_status=True
 
@@ -118,6 +121,8 @@ class KpiConsumer(AsyncWebsocketConsumer):
                 print('node_id connect', node_id)
                 test = await machine_kpis_web2(node_id)
                # changed currenttime to latest time
+                from . models import MachineRawData
+
                 latest_time_obj = await sync_to_async(
                     MachineRawData.objects.filter(Machine_Id=machine_id).order_by('-id').first)()
 
@@ -272,6 +277,7 @@ class ControlSocket(AsyncWebsocketConsumer):
 
 
 class DashboardSocket(AsyncWebsocketConsumer):
+
     async def connect(self):
         connected_status=True
         query_string=self.scope['query_string'].decode()
@@ -282,6 +288,8 @@ class DashboardSocket(AsyncWebsocketConsumer):
         # get_department_node = Nested_Table.objects.get(Node_Left=department['immediate_parent']['immediate_left'],
         #                                                Node_Right=department['immediate_parent']['immediate_right'])
         # print('get_department_node',get_department_node)
+        from Atoms_users.Nested_Queries import user_department
+
         dept = await user_department(user_id)
         # print('...........................',dept)
 
@@ -300,6 +308,8 @@ class DashboardSocket(AsyncWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
         user_id = query_string.split('=')[1]
         # print('machineid',user_id)
+        from Atoms_users.Nested_Queries import user_department
+
         dept = await user_department(user_id)
         # print('...........................', dept)
 
@@ -316,6 +326,8 @@ class DashboardSocket(AsyncWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
 
         user_id = query_string.split('=')[1]
+        from Atoms_users.Nested_Queries import user_department
+
         dept = await user_department(user_id)
         # print('...........................', dept)
 
@@ -325,10 +337,13 @@ class DashboardSocket(AsyncWebsocketConsumer):
         })
 
     async def dashboard_web_socket(self):
+        from Atoms_users.Nested_Queries import user_department
+
         while True:
             try:
                 query_string = self.scope['query_string'].decode()
                 user_id = query_string.split('=')[1]
+
                 dept = await user_department(user_id)
                 # print('..................schedule.........', dept)
 
