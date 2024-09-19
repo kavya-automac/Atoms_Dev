@@ -43,6 +43,7 @@ ALLOWED_HOSTS = ['192.168.29.144','127.0.0.1','192.168.29.220',
 
 INSTALLED_APPS = [
     'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,11 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
     'Atoms_users',
     'Atoms_machines',
-
-    'channels',
+    'corsheaders',
     # 'django_celery_results',
     # 'django_celery_beat',
 

@@ -70,18 +70,18 @@ client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
 # client.on_disconnect = on_disconnect
-# client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
-# client.connect(
-#    host=settings.MQTT_SERVER,
-#    port=settings.MQTT_PORT,
-#    keepalive=settings.MQTT_KEEPALIVE
-# )
+client.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+client.connect(
+   host=settings.MQTT_SERVER,
+   port=settings.MQTT_PORT,
+   keepalive=settings.MQTT_KEEPALIVE
+)
 # client.connect(
 #    host='broker.hivemq.com',
 #    port=1883,
 #    keepalive=60
 # )
-client.connect("broker.hivemq.com", 1883, 60)
+# client.connect("broker.hivemq.com", 1883, 60)
 
 
 # client.loop_start()
@@ -152,13 +152,13 @@ client_1 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client_1.on_connect = on_connect_1
 client_1.on_message = on_message_1
 # client_1.on_disconnect = on_disconnect_1
-# client_1.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
-# client_1.tls_set(settings.CAPATH, certfile=settings.CERTPATH, keyfile=settings.KEYPATH,
-#                     cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
-# client_1.connect(
-#
-#    host=settings.AWSHOST,
-#    port=settings.AWSPORT,
-#    keepalive=settings.MQTT_KEEPALIVE
-# )
+client_1.username_pw_set(settings.MQTT_USER, settings.MQTT_PASSWORD)
+client_1.tls_set(settings.CAPATH, certfile=settings.CERTPATH, keyfile=settings.KEYPATH,
+                    cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
+client_1.connect(
+
+   host=settings.AWSHOST,
+   port=settings.AWSPORT,
+   keepalive=settings.MQTT_KEEPALIVE
+)
 

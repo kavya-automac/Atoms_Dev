@@ -12,13 +12,12 @@ import os
 
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from Atoms_machines import routing
+
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Atoms_Main.settings')
 
-
-
+from Atoms_machines import routing
 application = ProtocolTypeRouter({
     'http':get_asgi_application(),
     'websocket':AuthMiddlewareStack(URLRouter(routing.websocket_urlpatterns))
