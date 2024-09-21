@@ -19,9 +19,18 @@ channel_layer = get_channel_layer()
 # from Atoms_users.Nested_Queries import user_department
 # from . models import MachineRawData
 
+import logging
+
+logger = logging.getLogger("django")
+
+
+
+
+
 class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        logger.info('..IOSTATUS WEBSOCKET CONNECTED......')
         connected_status=True
 
         query_string=self.scope['query_string'].decode()
@@ -47,6 +56,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await channel_layer.group_send(str(machine_id)+'_io',
                                            {"type": "chat.message", "text": test_res})
         except Exception as e:
+            logger.info('error in IOSTATUS WEBSOCKETconnection function: %s', e)
             status = json.dumps({"status": e})
 
             channel_layer = get_channel_layer()
@@ -64,6 +74,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #     print("io error - ", e)
 
     async def disconnect(self, close_code):
+        logger.info("IOSTATUS WEBSOCKET DISCONNECTED")
         connected_status = False
 
         query_string = self.scope['query_string'].decode()
@@ -74,6 +85,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(str(machine_id)+'_io', self.channel_name)
 
     async def receive(self, text_data):
+        logger.info("IOSTATUS WEBSOCKET RECEIVE ")
         query_string = self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1]
 
@@ -98,6 +110,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 class KpiConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        logger.info("KPI WEBSOCKET CONNECTED ")
         try:
             connected_status = True
             # client.publish("ws_con","Connected")
@@ -172,9 +185,13 @@ class KpiConsumer(AsyncWebsocketConsumer):
             # self.username=username
             # self.scheduler_task = asyncio.create_task(self.schedule_kpi_socket())
         except Exception as e:
+            logger.info("KPI WEBSOCKET ERROR %s :",e)
+
             print("errorrrrr",e)
 
     async def disconnect(self, close_code):
+        logger.info("KPI WEBSOCKET DISCONNECTED ")
+
         # Cancel the scheduler task when disconnecting
         connected_status = False
         query_string = self.scope['query_string'].decode()
@@ -209,6 +226,8 @@ class KpiConsumer(AsyncWebsocketConsumer):
 
 class ControlSocket(AsyncWebsocketConsumer):
     async def connect(self):
+        logger.info("CONTROL WEBSOCKET CONNECTED ")
+
         connected_status=True
 
         query_string=self.scope['query_string'].decode()
@@ -234,6 +253,8 @@ class ControlSocket(AsyncWebsocketConsumer):
             await channel_layer.group_send(str(machine_id)+'_control',
                                            {"type": "control.message", "text": test_res})
         except Exception as e:
+            logger.info("CONTROL WEBSOCKET ERROR %s ",e)
+
             status = json.dumps({"status": e})
 
             channel_layer = get_channel_layer()
@@ -242,6 +263,8 @@ class ControlSocket(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
+        logger.info("CONTROL WEBSOCKET DISCONNECTED ")
+
         connected_status = False
 
 
@@ -254,6 +277,8 @@ class ControlSocket(AsyncWebsocketConsumer):
 
 
     async def receive(self, text_data):
+        logger.info("CONTROL WEBSOCKET RECEIVE ")
+
         query_string = self.scope['query_string'].decode()
 
         machine_id = query_string.split('=')[1]
@@ -279,6 +304,8 @@ class ControlSocket(AsyncWebsocketConsumer):
 class DashboardSocket(AsyncWebsocketConsumer):
 
     async def connect(self):
+        logger.info("DASHBOARD WEBSOCKET CONNECTED ")
+
         connected_status=True
         query_string=self.scope['query_string'].decode()
         user_id = query_string.split('=')[1]
@@ -302,6 +329,8 @@ class DashboardSocket(AsyncWebsocketConsumer):
         self.scheduler_task = asyncio.create_task(self.dashboard_web_socket())
 
     async def disconnect(self, close_code):
+        logger.info("DASHBOARD WEBSOCKET DISCONNECTED ")
+
         connected_status = False
         # print('ddddddddddddddddddddddddddd')
 
@@ -323,6 +352,8 @@ class DashboardSocket(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(dept+'_dashboard', self.channel_name)
 
     async def receive(self, text_data):
+        logger.info("DASHBOARD WEBSOCKET RECEIVE ")
+
         query_string = self.scope['query_string'].decode()
 
         user_id = query_string.split('=')[1]
