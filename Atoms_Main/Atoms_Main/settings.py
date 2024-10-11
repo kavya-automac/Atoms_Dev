@@ -76,6 +76,9 @@ CORS_ALLOWED_ORIGINS = [
     'https://192.168.29.74:3000',
     'https://192.168.29.30:3000',
     'https://13.200.249.117:8000',
+    'https://dev.atomssol.in',
+    'http://dev.atomssol.in',
+
 
 
 
