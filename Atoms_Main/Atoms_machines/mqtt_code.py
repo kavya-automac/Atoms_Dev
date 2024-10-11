@@ -106,6 +106,7 @@ def on_connect_1(client_1, userdata, flags, reason_code,properties):
         client_1.subscribe('machine_data_dev')
         client_1.subscribe('websocket_data_dev')
         client_1.subscribe('Maithri_test')
+        client_1.subscribe('ws_machine_data')
     else:
         logger.info('aws ..on_connect...else : %s', reason_code)
         print(f"Connection failed with reason code {reason_code}. Attempting to reconnect...")
@@ -145,6 +146,10 @@ def on_message_1(client_1, userdata, msg):
 
         io_status_websocket.io_websocket(connected_machine_data)
         io_status_websocket.control_websocket(connected_machine_data)
+    if topic == "ws_machine_data":
+        from . import io_status_websocket
+
+        io_status_websocket.io_websocket(connected_machine_data)
 
 
 
