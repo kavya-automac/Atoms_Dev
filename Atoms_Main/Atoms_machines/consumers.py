@@ -8,7 +8,7 @@ from . import io_status_websocket
 import schedule
 import time
 from asgiref.sync import sync_to_async
-from .mqtt_code import client
+from .mqtt_code import client_1
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -30,14 +30,16 @@ logger = logging.getLogger("django")
 class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        print('...iosttaus connected')
         logger.info('..IOSTATUS WEBSOCKET CONNECTED......')
         connected_status=True
 
         query_string=self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1].split('&')[0]
 
-        # print('machine_id connect ',machine_id)
-        client.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
+        print('machine_id connect ',machine_id)
+        # client_1.publish("ws_con", json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
+        client_1.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
 
         await self.channel_layer.group_add(str(machine_id)+'_io', self.channel_name)
         # group_name=self.scope["url_route"]["kwargs"]["group_name"]
@@ -79,8 +81,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         query_string = self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1]
-        # print('machineid io websocket',machine_id)
-        client.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
+        print('machineid io websocket disconnected',machine_id)
+        client_1.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
+        print('machineid io websocket disconnected published')
 
         await self.channel_layer.group_discard(str(machine_id)+'_io', self.channel_name)
 
@@ -120,7 +123,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
             machine_id = query_string.split('=')[1].split('&')[0]
             # username = query_string.split('=')[2]
             # print('username',username)
-            client.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id": machine_id, "ws_grp": "kpis"}))
+            client_1.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id": machine_id, "ws_grp": "kpis"}))
 
 
             await self.channel_layer.group_add(str(machine_id)+'_kpi', self.channel_name)
@@ -198,7 +201,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
         machine_id = query_string.split('=')[1].split('&')[0]
         # username = query_string.split('=')[2]
 
-        client.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id": machine_id, "ws_grp": "kpis"}))
+        client_1.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id": machine_id, "ws_grp": "kpis"}))
 
         # if hasattr(self, 'scheduler_task'):# hasattr() function is an inbuilt utility function,\
         #     # which is used to check if an object has the given named attribute and return true if present, else false.
@@ -233,7 +236,7 @@ class ControlSocket(AsyncWebsocketConsumer):
         query_string=self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1]
         # print('machine_id connect ',machine_id)
-        client.publish("control/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"control"}))
+        client_1.publish("control/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"control"}))
 
 
 
@@ -272,7 +275,7 @@ class ControlSocket(AsyncWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1]
         # print('machineid',machine_id)
-        client.publish("control/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"control"}))
+        client_1.publish("control/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"control"}))
 
 
 
