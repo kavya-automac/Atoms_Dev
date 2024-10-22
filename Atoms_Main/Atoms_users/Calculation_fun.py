@@ -86,6 +86,25 @@ def RunTime(datapoint):
    return count_result
 
 
+def Mode_(datapoint):
+    today = date.today()
+
+    todays_records = MachineRawData.objects.filter(Timestamp__date=today)  # add distinct timestamp
+    # print('todays_records runtime', todays_records[0])
+    datapoints_split = datapoint.split('[')
+    datapoints_split1 = datapoints_split[1].split(']')
+    field = str(datapoints_split[0] + "__" + datapoints_split1[0])#other__0
+
+    query_data = (MachineRawData.objects.values(field).annotate(count=Count(field)).order_by('-count').first())
+
+    print('field',field)
+    print('query_data',query_data)
+    mode_data = query_data[field] if query_data else None
+    print("mode_data",mode_data)
+    return mode_data
+
+
+
 def History(data_dict,datapoint):
 
     pass
