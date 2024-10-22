@@ -880,7 +880,7 @@ def dashboard_data(dash):
     )
 
     entire_result_data = []
-    result = {"dashboard_cards": {"resultant_data": []}}  # Initialize the result
+    result = {"resultant_data": []} # Initialize the result
 
     for k in dash_node:
         dash_result = {}
@@ -898,7 +898,7 @@ def dashboard_data(dash):
 
         # Append result_data to resultant_data if it has any content
         if 'resultant_data' in result_data:
-            result["dashboard_cards"]["resultant_data"].extend(result_data["resultant_data"])
+            result["resultant_data"].extend(result_data["resultant_data"])
 
     return result
 
