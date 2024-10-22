@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-)re%h1ix@vmx0o3!z16ko^_tj$cm*50sqsv1q0kt7h%9!ohupb
 DEBUG = False
 
 ALLOWED_HOSTS = ['192.168.29.145','127.0.0.1','192.168.29.220',
-                 "65.0.154.172","13.200.249.117","172.31.44.26","dev.atomssol.in"]
+                 "65.0.154.172","13.200.249.117","172.31.44.26","dev.atomssol.in",'192.168.135.216']
 
 # Application definition
 
@@ -229,7 +229,7 @@ CHANNEL_LAYERS={
     "default":{
         'BACKEND':"channels_redis.core.RedisChannelLayer",
         "CONFIG":{
-            "hosts":['redis://13.200.249.117'],
+            "hosts":['redis://dev.atomssol.in'],
         }
     }
 }

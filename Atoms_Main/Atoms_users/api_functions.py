@@ -865,30 +865,63 @@ def count_machines(machines):
 
     return count_card_data,all_machines_status
 
+# def dashboard_data(dash):
+#     dash_node = MachineCardsList.objects.filter(id__in=dash).values('Machine_Id__Machine_id',
+#                                     'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
+#
+#     entire_result_data = []
+#     for k in dash_node:
+#
+#         dash_result = {}
+#         # print('k', k['Card_type__Card_Type'])
+#         switch_dict = {
+#             "Line": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
+#             "Bar": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
+#             "Text": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
+#             "Pie": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
+#
+#             'default': lambda: {"resultant_data": []},
+#         }
+#
+#         # Execute the corresponding function from the switch_dict or the default function
+#         result = switch_dict.get(k['Card_type__Card_Type'], switch_dict['default'])()
+#     return result
+
+
 def dashboard_data(dash):
     dash_node = MachineCardsList.objects.filter(id__in=dash).values('Machine_Id__Machine_id',
-                                    'Title','X_Label','Y_Label','Ledger','Title','Card_type__Card_Type','Unit','mode')
+                                                                    'Title', 'X_Label', 'Y_Label', 'Ledger', 'Title',
+                                                                    'Card_type__Card_Type', 'Unit', 'mode')
 
     entire_result_data = []
-    for k in dash_node:
 
+    if not dash_node.exists():
+        # Return empty structure if there's no data in dash_node
+        return {"dashboard_cards": {"resultant_data": []}}
+
+    for k in dash_node:
         dash_result = {}
-        # print('k', k['Card_type__Card_Type'])
         switch_dict = {
             "Line": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
             "Bar": lambda: Line_bar_graph(k, entire_result_data, dash_result, "dashboard"),
             "Text": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
             "Pie": lambda: text_card(k, entire_result_data, dash_result, "dashboard"),
-
             'default': lambda: {"resultant_data": []},
         }
 
         # Execute the corresponding function from the switch_dict or the default function
         result = switch_dict.get(k['Card_type__Card_Type'], switch_dict['default'])()
-    return result
 
+        # If result contains data, append it to entire_result_data
+        if result:
+            entire_result_data.append(result)
 
+    # If entire_result_data has any valid results, return it
+    if entire_result_data:
+        return {"dashboard_cards": {"resultant_data": entire_result_data}}
 
+    # If no valid result was found, return an empty structure
+    return {"dashboard_cards": {"resultant_data": []}}
 
 
 def alarm(i,entire_result_data,kpi_result,method):
