@@ -104,6 +104,22 @@ def Mode_(datapoint):
     return mode_data
 
 
+def RunTime_HMS(datapoint):
+    total_sec = RunTime(datapoint)
+    hours = total_sec[0] // 3600
+    minutes = (total_sec[0] % 3600) // 60
+    seconds = total_sec[0] % 60
+
+    hours1 = total_sec[1] // 3600
+    minutes1 = (total_sec[1] % 3600) // 60
+    seconds1 = total_sec[1] % 60
+
+    total_res =[f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}",f"{int(hours1):02}:{int(minutes1):02}:{int(seconds1):02}"]
+    return total_res
+    # return total_res[0],total_res[1]
+
+
+
 
 def History(data_dict,datapoint):
 

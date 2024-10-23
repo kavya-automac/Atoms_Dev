@@ -67,6 +67,9 @@ def get_kpi_conversion_fun1(instance):
                     "RunTime": lambda: value_list.extend(RunTime(datapoint[i])),#machine on off count
                     "alarm1": lambda: value_list.append(alarm1(data_dict,datapoint[i])),# if i==0 or i==1 etc
                     "Mode_": lambda: value_list.append(Mode_(datapoint[i])),# if i==0 or i==1 etc
+
+                    "RunTime_HMS": lambda: value_list.extend(RunTime_HMS(datapoint[i])),# if i==0 or i==1 etc
+
                     'default': lambda: {"status": 'please give correct module'},
                 }
                 result = switch_dict.get(conversion_fun, switch_dict['default'])()
