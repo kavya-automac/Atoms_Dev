@@ -803,7 +803,7 @@ def count_machines(machines):
                                                                                                  'Db_Timestamp')
 
 
-            print('fetch_latest sliceee', fetch_latest)
+            # print('fetch_latest sliceee', fetch_latest)
 
             fetch_latest = to_fetch_lastrecord_data.latest('Db_Timestamp')
 
