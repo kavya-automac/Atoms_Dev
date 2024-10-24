@@ -799,12 +799,12 @@ def count_machines(machines):
 
             # to_fetch_lastrecord_data = MachineDetails.objects.filter(machine_id=machines).values('machine_id','timestamp').latest('timestamp')
             to_fetch_lastrecord_data = MachineRawData.objects.filter(Machine_Id=machines).values('Machine_Id',
-                                                                                                 'Timestamp')
-            fetch_latest = to_fetch_lastrecord_data.latest('Timestamp')
+                                                                                                 'Db_Timestamp')
+            fetch_latest = to_fetch_lastrecord_data.latest('Db_Timestamp')
 
             # print('fetch_latest', fetch_latest)
             # print('fetch_latest', fetch_latest)
-            last_record_time1 = fetch_latest['Timestamp']
+            last_record_time1 = fetch_latest['Db_Timestamp']
             # print('last_record_time1', last_record_time1)
             five_30_hours = timedelta(hours=5, minutes=30)
             # print('five_30_hours',five_30_hours)
