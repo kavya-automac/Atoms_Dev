@@ -5,6 +5,9 @@ from datetime import datetime, date
 from django.db.models import Avg,F,Count
 
 from .all_types_of_alarm import demo_alarm
+import logging
+
+logger = logging.getLogger("django")
 
 
 def Live_new_record(data_dict):
@@ -177,15 +180,38 @@ def New_Record(data_dict):
 def Day(data_dict):
     # print('day datadict.................',data_dict)
     today = datetime.now().date()
-    kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']], Title=data_dict['get_title'],
-                                                        Timestamp__date=today,Mode=data_dict['get_mode'])
-    # print('kpi_data_queryset', kpi_data_queryset)
+    try:
+        logger.info('day function before try... first query!')
+        kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']],
+                                                        Title=data_dict['get_title'],
+                                                        Timestamp__date=today, Mode=data_dict['get_mode']).first()
+
+        logger.info('day function after try... first query!')
+        print('kpi_data_queryset day try', kpi_data_queryset)
+    except Exception as e:
+        logger.info('day exception frst query t: %s', e)
+        kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']], Title=data_dict['get_title'],
+                                                            Timestamp__date=today,Mode=data_dict['get_mode'])
+        print('kpi_data_queryset day', kpi_data_queryset)
+        logger.info('day exception after query t: %s', e)
     # result_get_values=str_list_rawvalue(data_dict)
     # print('data_dict',data_dict['get_value'])
 
-    if kpi_data_queryset.exists():
+    if kpi_data_queryset:
+    # if kpi_data_queryset.exists():
         # Update the existing record(s) for cumulative data
-        kpi_data_queryset.update(Value=data_dict['get_value'], Timestamp=data_dict["time_stamp"])
+        try:
+            logger.info('Day Func update query try before')
+
+            kpi_data_queryset.Value = data_dict['get_value']
+            kpi_data_queryset.Timestamp = data_dict["time_stamp"]
+            kpi_data_queryset.save()
+            logger.info('update query try after')
+            print('update query try after')
+        except Exception as e:
+            logger.info('Day Func update query Exception: %s', e)
+            kpi_data_queryset.update(Value=data_dict['get_value'], Timestamp=data_dict["time_stamp"])
+            print('update query exception after')
 
     else:
         # Create a new record for cumulative data if it doesn't exist
