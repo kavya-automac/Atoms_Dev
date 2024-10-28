@@ -66,26 +66,32 @@ def Average(data_dict,datapoint):
 def High_Low(data_dict):
     pass
 
-def RunTime(datapoint):
-    # print('runtime')
-   today = date.today()
-
-   todays_records = MachineRawData.objects.filter(Timestamp__date=today).distinct("Timestamp")  #add distinct timestamp
-   # print('todays_records runtime', todays_records[0])
-   datapoints_split = datapoint.split('[')
-   datapoints_split1 = datapoints_split[1].split(']')
-   field = str(datapoints_split[0] + "__" + datapoints_split1[0])
-   # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
-   # Calculate average of analog_input[0] for today's records
-   count_datapoint= todays_records.aggregate(count_data=Count(F(field)))
-   # print('')
-   # print('counttttt',count_datapoint['count_data'])
-   on_count = (todays_records.filter(**{field: True}).count())*60
-   off_count = (todays_records.filter(**{field: False}).count())*60
-   # print(f"Count of 'on' for {field}: {on_count}")
-   # print(f"Count of 'off' for {field}: {off_count}")
-   count_result=[on_count, off_count]
-   return count_result
+def RunTime(data_dict,datapoint):
+    print('runtime datapoint',datapoint)
+    print('data_dict datapoint',data_dict)
+    print('data_dict machine',data_dict["machine_id"])
+    today = date.today()
+    print('today.......',today)
+    todays_records = MachineRawData.objects.filter(Timestamp__date=today,Machine_Id=data_dict["machine_id"])  #add distinct timestamp
+    print('count runtime query',todays_records.count())
+    # print('todays_records runtime', todays_records[0])
+    datapoints_split = datapoint.split('[')
+    datapoints_split1 = datapoints_split[1].split(']')
+    field = str(datapoints_split[0] + "__" + datapoints_split1[0])
+    # print('//////////////',datapoints_split[0]+"__"+datapoints_split1[0])
+    # Calculate average of analog_input[0] for today's records
+    count_datapoint= todays_records.aggregate(count_data=Count(F(field)))
+    # print('')
+    # print('counttttt',count_datapoint['count_data'])
+    # on_count = (todays_records.filter(**{field: True}).count())*60
+    on_count = (todays_records.filter(**{field: True}).count())
+    # off_count = (todays_records.filter(**{field: False}).count())*60
+    off_count = (todays_records.filter(**{field: False}).count())
+    # print(f"Count of 'on' for {field}: {on_count}")
+    # print(f"Count of 'off' for {field}: {off_count}")
+    count_result=[on_count, off_count]
+    print('count_result',count_result)
+    return count_result
 
 
 def Mode_(datapoint):
@@ -106,8 +112,11 @@ def Mode_(datapoint):
     return mode_data
 
 
-def RunTime_HMS(datapoint):
-    total_sec = RunTime(datapoint)
+
+
+def RunTime_HMS(data_dict,datapoint):
+    total_sec = RunTime(data_dict,datapoint)
+
     hours = total_sec[0] // 3600
     minutes = (total_sec[0] % 3600) // 60
     seconds = total_sec[0] % 60
@@ -117,6 +126,7 @@ def RunTime_HMS(datapoint):
     seconds1 = total_sec[1] % 60
 
     total_res =[f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}",f"{int(hours1):02}:{int(minutes1):02}:{int(seconds1):02}"]
+    print("total_res",total_res)
     return total_res
     # return total_res[0],total_res[1]
 
