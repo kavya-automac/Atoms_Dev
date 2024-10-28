@@ -22,15 +22,22 @@ def Live(data_dict):
 
 
 def Average(data_dict,datapoint):
-    today = date.today()
-    first_record_today = MachineRawData.objects.filter(Timestamp__date=today).latest('-Timestamp')
+    print("in average")
+    # today = date.today()
+
+    machine_timestamp = data_dict['time_stamp']
+    # print("machine_timestamp mode", machine_timestamp)
+    timestamp_tostring = datetime.strptime(machine_timestamp, "%Y-%m-%dT%H:%M:%S")
+    machine_date_tp = timestamp_tostring.date()
+
+    first_record_today = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"]).latest('-Timestamp')
     start_of_day = first_record_today.Timestamp
     # print('start_of_day',start_of_day)
-    latest_record_today = MachineRawData.objects.filter(Timestamp__date=today).latest('Timestamp')
+    latest_record_today = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"]).latest('Timestamp')
     # print('latest_record_today',latest_record_today)
 
     end_of_day = latest_record_today.Timestamp
-    records_today = MachineRawData.objects.filter(Timestamp__date=today)
+    records_today = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"])
     # print('records_today',len(records_today))
     result=[]
 
@@ -58,6 +65,7 @@ def Average(data_dict,datapoint):
     rounded_avg_res = round(avg_res, 2)
     # print("avg_data res:", avg_data)
     # print("Averag res:", rounded_avg_res)
+    print("average done")
 
 
     return rounded_avg_res
@@ -67,12 +75,19 @@ def High_Low(data_dict):
     pass
 
 def RunTime(data_dict,datapoint):
-    print('runtime datapoint',datapoint)
-    print('data_dict datapoint',data_dict)
-    print('data_dict machine',data_dict["machine_id"])
-    today = date.today()
-    print('today.......',today)
-    todays_records = MachineRawData.objects.filter(Timestamp__date=today,Machine_Id=data_dict["machine_id"])  #add distinct timestamp
+    print(" in RunTime")
+    # print('runtime datapoint',datapoint)
+    # print('data_dict datapoint',data_dict)
+    # print('data_dict machine',data_dict["machine_id"])
+
+    machine_timestamp = data_dict['time_stamp']
+    # print("machine_timestamp mode", machine_timestamp)
+    timestamp_tostring = datetime.strptime(machine_timestamp, "%Y-%m-%dT%H:%M:%S")
+    machine_date_tp = timestamp_tostring.date()
+
+    # today = date.today()
+    # print('today.......',today)
+    todays_records = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"])  #add distinct timestamp if we add distinct aggregate will not work
     print('count runtime query',todays_records.count())
     # print('todays_records runtime', todays_records[0])
     datapoints_split = datapoint.split('[')
@@ -91,13 +106,22 @@ def RunTime(data_dict,datapoint):
     # print(f"Count of 'off' for {field}: {off_count}")
     count_result=[on_count, off_count]
     print('count_result',count_result)
+    print("RunTime dome")
+
     return count_result
 
 
-def Mode_(datapoint):
-    today = date.today()
+def Mode_(data_dict,datapoint):
+    print("in mode_")
+    # today = date.today()
+    machine_timestamp_mode = data_dict['time_stamp']
+    # print("machine_timestamp mode", machine_timestamp_mode)
+    timestamp_tostring = datetime.strptime(machine_timestamp_mode, "%Y-%m-%dT%H:%M:%S")
+    machine_date_tp = timestamp_tostring.date()
+    # print('macine_id in mode_',data_dict["machine_id"])
 
-    todays_records = MachineRawData.objects.filter(Timestamp__date=today)  # add distinct timestamp
+
+    todays_records = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"])  # add distinct timestamp
     # print('todays_records runtime', todays_records[0])
     datapoints_split = datapoint.split('[')
     datapoints_split1 = datapoints_split[1].split(']')
@@ -105,16 +129,18 @@ def Mode_(datapoint):
 
     query_data = (MachineRawData.objects.values(field).annotate(count=Count(field)).order_by('-count').first())
 
-    print('field',field)
-    print('query_data',query_data)
+    # print('field',field)
+    # print('query_data',query_data)
     mode_data = query_data[field] if query_data else None
-    print("mode_data",mode_data)
+    # print("mode_data",mode_data)
+    print("mode_ done")
     return mode_data
 
 
 
 
 def RunTime_HMS(data_dict,datapoint):
+    print(" in RunTime_HMS")
     total_sec = RunTime(data_dict,datapoint)
 
     hours = total_sec[0] // 3600
@@ -127,6 +153,7 @@ def RunTime_HMS(data_dict,datapoint):
 
     total_res =[f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}",f"{int(hours1):02}:{int(minutes1):02}:{int(seconds1):02}"]
     print("total_res",total_res)
+    print("RunTime_HMS done")
     return total_res
     # return total_res[0],total_res[1]
 
