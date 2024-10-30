@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from Atoms_machines.models import CardsRawData,MachineRawData
 from datetime import datetime, date
@@ -6,8 +7,38 @@ from django.db.models import Avg,F,Count
 
 from .all_types_of_alarm import demo_alarm
 import logging
+# from Atoms_Main.settings import DATABASES
+# import psycopg2
+from django.db import connection
+
 
 logger = logging.getLogger("django")
+
+#
+# try:
+#     # Establish the connection
+#     connection = psycopg2.connect(
+#         host=DATABASES["default"]["HOST"],
+#         port=DATABASES["default"]["PORT"],
+#         database=DATABASES["default"]["NAME"],
+#         user=DATABASES["default"]["USER"],
+#         password=DATABASES["default"]["PASSWORD"]
+#     )
+#
+#     # Create a cursor object
+#     cursor = connection.cursor()
+#
+#
+# except Exception as error:
+#     print("Error while connecting to PostgreSQL:", error)
+# finally:
+#     # Close the connection when done
+#     if connection:
+#         cursor.close()
+#         connection.close()
+#         print("PostgreSQL connection is closed")
+#
+
 
 
 def Live_new_record(data_dict):
@@ -21,7 +52,7 @@ def Live(data_dict):
     return value
 
 
-def Average(data_dict,datapoint):
+def Average1(data_dict,datapoint):
     print("in average")
     # today = date.today()
 
@@ -71,10 +102,174 @@ def Average(data_dict,datapoint):
     return rounded_avg_res
 
 
+
+
+
+
+
+
+
+
+
+
+def Average(data_dict,datapoint):
+
+    print("datapoint",datapoint)
+    machine_timestamp = data_dict['time_stamp']
+    # print("machine_timestamp mode", machine_timestamp)
+    timestamp_tostring = datetime.strptime(machine_timestamp, "%Y-%m-%dT%H:%M:%S")
+    machine_date_tp = timestamp_tostring.date()
+    # datapoints_split = datapoint.split('[')
+    # datapoints_split1 = datapoints_split[1].split(']')
+
+    # converted_text = re.sub(r'(\w+)(\[\d+\])', r'"\1"\2', datapoint)
+    # output_str = re.sub(r'\[(\d+)\]', lambda x: f"[{int(x.group(1)) + 1}]", datapoint)
+
+    match = re.match(r"([a-zA-Z_]+)\[(\d+)\]", datapoint)
+    print("..........", match)
+
+    if match:
+        text_part = match.group(1)  # "Analog_input"
+        index_part = int(match.group(2)) + 1  # Increment the index
+        output_str = f'"{text_part}"[{index_part}]'
+        print(output_str)  # Outputs: "Analog_input"[3]
+    else:
+        print("Invalid format")
+
+    print("converted_text", output_str)  # Now using output_str as the converted text
+
+    # Use output_str in the query
+    query = f"""
+            SELECT AVG(field) AS avg_dp
+            FROM (
+                SELECT DISTINCT 
+                    "Timestamp",
+                    {output_str} AS field,
+                    "Machine_Id"
+                FROM 
+                   postgres."Machines_Schema"."MachineRawData" 
+                WHERE 
+                    "Machine_Id" = %s 
+                    AND DATE("Timestamp") = %s
+            ) AS distinct_records;
+        """
+
+    # match = re.match(r"([a-zA-Z_]+)\[(\d+)\]", datapoint)
+    # print("..........",match)
+    #
+    # if match:
+    #     text_part = match.group(1)  # "Analog_input"
+    #     index_part = int(match.group(2)) + 1  # Increment the index
+    #     output_str = f'"{text_part}"[{index_part}]'
+    #     print(output_str)  # Outputs: "Analog_input"[3]
+    # else:
+    #     print("Invalid format")
+    #
+    #
+    # print("converted_text",match)
+    #
+    # query = """
+    #         SELECT AVG(field) AS avg_dp
+    #         FROM (
+    #             SELECT DISTINCT
+    #                 "Timestamp",
+    #                 """+ match+""" AS field,
+    #                 "Machine_Id"
+    #             FROM
+    #                postgres."Machines_Schema"."MachineRawData"
+    #             WHERE
+    #                 "Machine_Id" = %s
+    #                 AND DATE("Timestamp") = %s
+    #         ) AS distinct_records;
+    #     """
+
+    # Execute the raw SQL query
+    with connection.cursor() as cursor:
+        cursor.execute(query, [data_dict["machine_id"], machine_date_tp])
+        avg_dp = cursor.fetchone()[0]  # Fetch the result of the AVG calculation
+    avg_res = round(avg_dp, 2)
+    print("avg_res.........",avg_res)
+
+    return avg_res
+
+#
+# # Example usage
+# machine_id = 'MAPL100024090060'
+# date = '2024-10-27'
+# average_dp = get_avg_dp(machine_id, date)
+# print("Average DP:", average_dp)
+
+
+
+
+
+
+
+
 def High_Low(data_dict):
     pass
 
+
+
+
 def RunTime(data_dict,datapoint):
+    machine_timestamp = data_dict['time_stamp']
+    # print("machine_timestamp mode", machine_timestamp)
+    timestamp_tostring = datetime.strptime(machine_timestamp, "%Y-%m-%dT%H:%M:%S")
+    machine_date_tp = timestamp_tostring.date()
+    print("runtime machine_date_tp",machine_date_tp)
+
+
+    match = re.match(r"([a-zA-Z_]+)\[(\d+)\]", datapoint)
+    print("....runtime.", match)
+
+    if match:
+        text_part = match.group(1)  # "Analog_input"
+        index_part = int(match.group(2)) + 1  # Increment the index
+        output_str = f'"{text_part}"[{index_part}]'
+        print(output_str)  # Outputs: "Analog_input"[3]
+    else:
+        print("Invalid format")
+
+    print("converted_text   runtime ", output_str)  # Now using output_str as the converted text
+
+    query1 = f"""
+        SELECT 
+        COUNT(CASE WHEN status = true THEN 1 END) AS on_count,
+        COUNT(CASE WHEN status = false THEN 1 END) AS off_count
+    FROM 
+        ( 
+        SELECT DISTINCT 
+            "Timestamp", 
+            {output_str} as status,
+            "Machine_Id"
+        FROM 
+            postgres."Machines_Schema"."MachineRawData" 
+        WHERE 
+            "Machine_Id" = %s
+            AND DATE("Timestamp") = %s
+        ) AS distinct_records;
+            """
+
+    with connection.cursor() as cursor:
+        cursor.execute(query1, [data_dict["machine_id"], machine_date_tp])
+        on_off_count = cursor.fetchone()
+    print("on_off_count",on_off_count)
+
+    on_count_res = on_off_count[0] * 60
+    off_count_res = on_off_count[1] * 60
+
+    result = [on_count_res,off_count_res]
+
+    return result
+
+
+
+
+
+
+
+def RunTime1(data_dict,datapoint):
     print(" in RunTime")
     # print('runtime datapoint',datapoint)
     # print('data_dict datapoint',data_dict)
