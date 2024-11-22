@@ -87,6 +87,7 @@ def login_view(request):
 @api_view(['GET'])
 def logout_view(request):
     # print("entering logout")
+    print()
 
 
     # print("loggedout",request.user.username)
