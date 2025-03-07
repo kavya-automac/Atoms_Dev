@@ -69,6 +69,7 @@ def get_kpi_conversion_fun1(instance):
                     "Mode_": lambda: value_list.append(Mode_(data_dict,datapoint[i])),# if i==0 or i==1 etc
 
                     "RunTime_HMS": lambda: value_list.extend(RunTime_HMS(data_dict,datapoint[i])),# if i==0 or i==1 etc
+                    "Maithri_at_nine": lambda: value_list.append(Maithri_at_nine(data_dict, datapoint[i])),
 
                     'default': lambda: {"status": 'please give correct module'},
                 }
@@ -76,9 +77,7 @@ def get_kpi_conversion_fun1(instance):
             data_dict['get_value'] = value_list
             # print('data_dict////////////////////////',data_dict)
             for mode_data in get_mode:
-                # print('data',data)
-                # print('mode_data',mode_data.mode)
-                # get_mode = mode_data
+
                 data_dict['get_mode'] = mode_data
 
                 switch_dict = {
