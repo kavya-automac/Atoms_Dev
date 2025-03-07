@@ -79,10 +79,6 @@ CORS_ALLOWED_ORIGINS = [
     'https://dev.atomssol.in',
     'http://dev.atomssol.in',
 
-
-
-
-
     ]
 
 CORS_ALLOW_CREDENTIALS=True
