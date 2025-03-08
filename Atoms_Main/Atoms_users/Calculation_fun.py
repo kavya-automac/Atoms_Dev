@@ -117,85 +117,143 @@ def Average1(data_dict,datapoint):
     return rounded_avg_res
 
 
+from datetime import datetime, timedelta
+from django.utils.timezone import make_aware
+from django.db.models import Q
+from decimal import Decimal
 
 
+def Maithri_at_nine(data_dict, datapoint):
+    """Fetches the first available 9-10 AM record for today and yesterday,
+    then calculates the difference. Returns 0 if no data is found."""
 
-def Maithri_at_nine(data_dict,datapoint):
-    # #Get current datetime and today's date
-    now = datetime.now()
-    today = now.date()
-    todays_date = datetime.today().date()
-    print('data_dict Maithri_at_nine',data_dict)
-    print('today',today)
+    def get_first_record(date):
+        """Fetches the first record in the 9-10 AM range for the given date."""
+        start_time = make_aware(datetime.combine(date, datetime.min.time()).replace(hour=9, minute=0))
+        end_time = make_aware(datetime.combine(date, datetime.min.time()).replace(hour=10, minute=0))
 
-    # Define the 9-10 AM time range for today
-    start_time = make_aware(datetime.combine(today, datetime.min.time()).replace(hour=9, minute=0))
-    end_time = make_aware(datetime.combine(today, datetime.min.time()).replace(hour=10, minute=0))
-    print(start_time,"and",end_time)
+        return MachineRawData.objects.filter(
+            Timestamp__gte=start_time, Timestamp__lt=end_time,
+            Machine_Id=data_dict['machine_id']
+        ).order_by('Timestamp').first()
 
-    # Get today's first record within 9-10 AM
-    first_record_today = MachineRawData.objects.filter(
-        Q(Timestamp__gte=start_time) & Q(Timestamp__lt=end_time),
-        Machine_Id=data_dict['machine_id'],  # Replace with the actual machine ID
-    ).order_by('Timestamp').first()  # Get earliest record
+    # Extract column and index from datapoint (e.g., "Analog_Input[2]" → col="Analog_Input", index=2)
+    try:
+        col, index = datapoint.split('[')
+        print("col",col)
+        index = int(index[:-1])  # Remove closing bracket and convert to int
+        print("index",index)
+    except Exception as e:
+        print("Invalid datapoint format:", datapoint, "Error:", e)
+        return 0
 
-    print("datapoint",datapoint)
+    # Fetch today's first record (9-10 AM)
+    first_record_today = get_first_record(datetime.today().date())
     print("first_record_today",first_record_today)
-    # print("first_record_analog today",first_record_today.Analog_Output[0])
+
+    if not first_record_today:
+        return 0  # No data for today
+
+    # Extract today's value
+    try:
+        today_value = getattr(first_record_today, col)[index]
+        print("today_value",today_value)
+    except Exception as e:
+        print("Error fetching today's value:", e)
+        return 0
+
+    # Fetch yesterday's first record (9-10 AM)
+    first_record_yesterday = get_first_record(datetime.today().date() - timedelta(days=1))
+    print("first_record_yesterday",first_record_yesterday)
+    if not first_record_yesterday:
+        return 0  # No data for yesterday
+
+    # Extract yesterday's value and compute the difference
+    try:
+        yesterday_value = getattr(first_record_yesterday, col)[index]
+        print("yesterday_value",yesterday_value)
+        print(today_value - Decimal(yesterday_value))
+        return today_value - Decimal(yesterday_value)
+    except Exception as e:
+        print("Error fetching yesterday's value:", e)
+        return 0
 
 
-
-    if first_record_today:
-        datapoints_split = datapoint.split('[')
-        col = datapoints_split[0]
-        index = int(datapoints_split[1][:-1])
-        print('.........', 'col', col, '\\\\', 'index', index)
-        data = getattr(first_record_today, f"{col}")[index]
-        print('datadata', data)
-        print('typee  datadata', type(data))
-        print("if first_record_today")
-        today_value = data  # Fetching Analog_Input[2] value
-    else:
-        return 0  # No record for today in the given time range
-
-    print("data_dict",data_dict)
-    print("todays_date",todays_date)
-
-
-    first_record_previous = CardsRawData.objects.filter(
-        Machine_Id__contains=[data_dict['machine_id']],
-        Title=data_dict['get_title'],
-        Timestamp__date__lt=str(todays_date),  # Get records before today
-        Mode=data_dict['get_mode'][0]
-    ).order_by('-Timestamp').first()  # Get the latest one before today
-    print("first_record_yesterday BF", first_record_previous)
-    # print("first_record_yesterday BF", first_record_previous.Value)
-
-    if first_record_previous:
-        try:
-            yesterday_value = first_record_previous.Value[8]
-            print("yesterday_value",yesterday_value)
-            print(today_value - Decimal(yesterday_value))
-            return today_value - Decimal(yesterday_value)
-        except Exception as e:
-            print("Error:", e)
-
-    return today_value
-
-
-
-    #     print("if first_record_previous")
-    #     try:
-    #         print("first_record_yesterday", first_record_previous.Value)
-    #     except Exception as e:
-    #         print("eeeeeeeeeeeee",e)
-    #
-    #     yesterday_value = first_record_previous.Value[8]  # Fetching Analog_Input[2] value
-    #     print('////////////////////////////////////', today_value - Decimal(yesterday_value))
-    #     return today_value - Decimal(yesterday_value)  # Return the difference
-    # else:
-    #     print("else today_value",today_value)
-    #     return today_value  # No yesterday's record, return today's value as is
+#
+# def Maithri_at_nine(data_dict,datapoint):
+#     # #Get current datetime and today's date
+#     now = datetime.now()
+#     today = now.date()
+#     todays_date = datetime.today().date()
+#     print('data_dict Maithri_at_nine',data_dict)
+#     print('today',today)
+#
+#     # Define the 9-10 AM time range for today
+#     start_time = make_aware(datetime.combine(today, datetime.min.time()).replace(hour=9, minute=0))
+#     end_time = make_aware(datetime.combine(today, datetime.min.time()).replace(hour=10, minute=0))
+#     print(start_time,"and",end_time)
+#
+#     # Get today's first record within 9-10 AM
+#     first_record_today = MachineRawData.objects.filter(
+#         Q(Timestamp__gte=start_time) & Q(Timestamp__lt=end_time),
+#         Machine_Id=data_dict['machine_id'],  # Replace with the actual machine ID
+#     ).order_by('Timestamp').first()  # Get earliest record
+#
+#     print("datapoint",datapoint)
+#     print("first_record_today",first_record_today)
+#     # print("first_record_analog today",first_record_today.Analog_Output[0])
+#
+#     if first_record_today:
+#         datapoints_split = datapoint.split('[')
+#         col = datapoints_split[0]
+#         index = int(datapoints_split[1][:-1])
+#         print('.........', 'col', col, '\\\\', 'index', index)
+#         data = getattr(first_record_today, f"{col}")[index]
+#         print('datadata', data)
+#         print('typee  datadata', type(data))
+#         print("if first_record_today")
+#         today_value = data  # Fetching Analog_Input[2] value
+#     else:
+#         return 0  # No record for today in the given time range
+#
+#     print("data_dict",data_dict)
+#     print("todays_date",todays_date)
+#
+#
+#
+#     # Get yesterday's date
+#     yesterday = datetime.today().date() - timedelta(days=1)
+#
+#     # Define start and end time for 9 AM - 10 AM yesterday
+#     start_time = make_aware(datetime.combine(yesterday, datetime.min.time()).replace(hour=9, minute=0))
+#     end_time = make_aware(datetime.combine(yesterday, datetime.min.time()).replace(hour=10, minute=0))
+#
+#     print(start_time, "and", end_time)
+#
+#     # Get yesterday's first record within 9-10 AM
+#     first_record_yesterday = MachineRawData.objects.filter(
+#         Q(Timestamp__gte=start_time) & Q(Timestamp__lt=end_time),
+#         Machine_Id=data_dict['machine_id'],  # Replace with the actual machine ID
+#     ).order_by('Timestamp').first()
+#
+#     print("first_record_yesterday:", first_record_yesterday)
+#
+#     # If data is found, calculate difference; otherwise, return 0
+#     if first_record_yesterday:
+#         try:
+#             datapoints_split = datapoint.split('[')
+#             col = datapoints_split[0]
+#             index = int(datapoints_split[1][:-1])
+#             print('.........', 'col', col, '\\\\', 'index', index)
+#
+#             yesterday_value = getattr(first_record_yesterday, f"{col}")[index]
+#             return today_value - Decimal(yesterday_value)
+#
+#         except Exception as e:
+#             print("Error:", e)
+#             return 0  # If any error occurs, return 0
+#     else:
+#         return 0  # If no data found for yesterday, return 0
 
 
 
