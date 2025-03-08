@@ -217,9 +217,9 @@ AWSHOST = "a2vvzyfxrtj9zw-ats.iot.ap-south-1.amazonaws.com"
 AWSPORT = 8883
 CLIENTID = "maithri_client"
 THINGNAME = "maithri_client"
-CAPATH = awspath+"/AmazonRootCA1.pem"
-CERTPATH = awspath+"/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-certificate.pem.crt"
-KEYPATH = awspath+"/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-private.pem.key"
+CAPATH = localpath+"/AmazonRootCA1.pem"
+CERTPATH = localpath+"/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-certificate.pem.crt"
+KEYPATH = localpath+"/09ca209df4cc77d7fe5273ee62a21455a54874bdf75651a63323847989b625ec-private.pem.key"
 
 CHANNEL_LAYERS={
     "default":{
