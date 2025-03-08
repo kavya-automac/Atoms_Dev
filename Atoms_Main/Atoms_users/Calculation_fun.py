@@ -117,10 +117,6 @@ def Average1(data_dict,datapoint):
     return rounded_avg_res
 
 
-from datetime import datetime, timedelta
-from django.utils.timezone import make_aware
-from django.db.models import Q
-from decimal import Decimal
 
 
 def Maithri_at_nine(data_dict, datapoint):
