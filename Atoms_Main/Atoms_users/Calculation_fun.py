@@ -141,7 +141,7 @@ def Maithri_at_nine(data_dict,datapoint):
 
     print("datapoint",datapoint)
     print("first_record_today",first_record_today)
-    print("first_record_analog today",first_record_today.Analog_Output[0])
+    # print("first_record_analog today",first_record_today.Analog_Output[0])
 
     datapoints_split = datapoint.split('[')
     col = datapoints_split[0]
