@@ -143,15 +143,16 @@ def Maithri_at_nine(data_dict,datapoint):
     print("first_record_today",first_record_today)
     # print("first_record_analog today",first_record_today.Analog_Output[0])
 
-    datapoints_split = datapoint.split('[')
-    col = datapoints_split[0]
-    index = int(datapoints_split[1][:-1])
-    print('.........','col',col,'\\\\','index',index)
-    data=getattr(first_record_today, f"{col}")[index]
-    print('datadata',data)
-    print('typee  datadata',type(data))
+
 
     if first_record_today:
+        datapoints_split = datapoint.split('[')
+        col = datapoints_split[0]
+        index = int(datapoints_split[1][:-1])
+        print('.........', 'col', col, '\\\\', 'index', index)
+        data = getattr(first_record_today, f"{col}")[index]
+        print('datadata', data)
+        print('typee  datadata', type(data))
         print("if first_record_today")
         today_value = data  # Fetching Analog_Input[2] value
     else:
