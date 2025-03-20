@@ -13,9 +13,9 @@ import logging
 # import psycopg2
 from django.db import connection
 from datetime import datetime, timedelta
-from django.utils.timezone import make_aware
+from django.utils.timezone import make_aware, now
 from django.db.models import Q
-from django.core.cache import cache
+# from django.core.cache import cache
 
 
 
@@ -116,6 +116,60 @@ def Average1(data_dict,datapoint):
 
     return rounded_avg_res
 
+
+
+# def Maithri_at_nine(data_dict, datapoint):
+#     """Fetches the first available 9-10 AM record for today and yesterday,
+#     then calculates the difference. If only today's value is present, returns it.
+#     Returns 0 if no data is found."""
+#
+#     def get_first_record(date):
+#         """Fetches the first record in the 9-10 AM range for the given date."""
+#         start_time = make_aware(datetime.combine(date, datetime.min.time()).replace(hour=9, minute=0))
+#         end_time = make_aware(datetime.combine(date, datetime.min.time()).replace(hour=10, minute=0))
+#
+#         return MachineRawData.objects.filter(
+#             Timestamp__gte=start_time, Timestamp__lt=end_time,
+#             Machine_Id=data_dict['machine_id']
+#         ).order_by('Timestamp').first()
+#
+#     # Extract column and index from datapoint (e.g., "Analog_Input[2]" → col="Analog_Input", index=2)
+#     try:
+#         col, index = datapoint.split('[')
+#         index = int(index.rstrip(']'))  # Convert to integer
+#     except Exception as e:
+#         print(f"Invalid datapoint format: {datapoint}, Error: {e}")
+#         return 0
+#
+#     # Fetch today's first record (9-10 AM)
+#     first_record_today = get_first_record(datetime.today().date())
+#     today_value = None
+#
+#     if first_record_today:
+#         try:
+#             today_value = Decimal(getattr(first_record_today, col)[index])
+#         except Exception as e:
+#             print(f"Error fetching today's value: {e}")
+#             return 0
+#
+#     # Fetch yesterday's first record (9-10 AM)
+#     first_record_yesterday = get_first_record(datetime.today().date() - timedelta(days=1))
+#     yesterday_value = None
+#
+#     if first_record_yesterday:
+#         try:
+#             yesterday_value = Decimal(getattr(first_record_yesterday, col)[index])
+#         except Exception as e:
+#             print(f"Error fetching yesterday's value: {e}")
+#     print("today_value",today_value)
+#     print("yesterday_value",yesterday_value)
+#     # Decision logic
+#     if today_value is not None and yesterday_value is not None:
+#         return today_value - yesterday_value
+#     elif today_value is not None:
+#         return today_value
+#     else:
+#         return 0  # No data for today or yesterday
 
 
 
@@ -514,7 +568,7 @@ def Mode_(data_dict,datapoint):
     # print("machine_timestamp mode", machine_timestamp_mode)
     timestamp_tostring = datetime.strptime(machine_timestamp_mode, "%Y-%m-%dT%H:%M:%S")
     machine_date_tp = timestamp_tostring.date()
-    # print('macine_id in mode_',data_dict["machine_id"])
+    # print('timesamp from machine',machine_date_tp)
 
 
     todays_records = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"])  # add distinct timestamp
@@ -522,11 +576,19 @@ def Mode_(data_dict,datapoint):
     datapoints_split = datapoint.split('[')
     datapoints_split1 = datapoints_split[1].split(']')
     field = str(datapoints_split[0] + "__" + datapoints_split1[0])#other__0
+    today = now().date()
 
-    query_data = (MachineRawData.objects.values(field).annotate(count=Count(field)).order_by('-count').first())
-
+    # query_data = (MachineRawData.objects.values(field).annotate(count=Count(field)).order_by('-count').first())
+    query_data = (
+        MachineRawData.objects
+        .filter(timestamp__date=today, machine_id= data_dict['machine_id'])
+        .values(field)
+        .annotate(count=Count(field))
+        .order_by('-count')
+        .first()
+    )
     # print('field',field)
-    # print('query_data',query_data)
+    print('query_data',query_data)
     mode_data = query_data[field] if query_data else None
     # print("mode_data",mode_data)
     print("mode_ done")
