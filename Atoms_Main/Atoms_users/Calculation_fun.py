@@ -581,7 +581,7 @@ def Mode_(data_dict,datapoint):
     # query_data = (MachineRawData.objects.values(field).annotate(count=Count(field)).order_by('-count').first())
     query_data = (
         MachineRawData.objects
-        .filter(timestamp__date=today, machine_id= data_dict['machine_id'])
+        .filter(Timestamp__date=today, Machine_Id= data_dict['machine_id'])
         .values(field)
         .annotate(count=Count(field))
         .order_by('-count')
