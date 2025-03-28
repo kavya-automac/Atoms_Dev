@@ -86,7 +86,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print('machineid io websocket disconnected published')
 
         await self.channel_layer.group_discard(str(machine_id)+'_io', self.channel_name)
-        await self.close()  # Ensure WebSocket closes properly
+        # await self.close()  # Ensure WebSocket closes properly
 
     async def receive(self, text_data):
         logger.info("IOSTATUS WEBSOCKET RECEIVE ")
@@ -209,7 +209,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
         #     self.scheduler_task.cancel()
 
         await self.channel_layer.group_discard(str(machine_id)+'_kpi', self.channel_name)
-        await self.close()  # Ensure WebSocket closes properly
+        # await self.close()  # Ensure WebSocket closes properly
 
     # async def schedule_kpi_socket(self):
     #     while True:
@@ -279,7 +279,7 @@ class ControlSocket(AsyncWebsocketConsumer):
         # print('machineid',machine_id)
         client_1.publish("control/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"control"}))
 
-        await self.close()  # Ensure WebSocket closes properly
+        # await self.close()  # Ensure WebSocket closes properly
 
     async def receive(self, text_data):
         logger.info("CONTROL WEBSOCKET RECEIVE ")
@@ -355,7 +355,7 @@ class DashboardSocket(AsyncWebsocketConsumer):
 
 
         await self.channel_layer.group_discard(dept+'_dashboard', self.channel_name)
-        await self.close()  # Ensure WebSocket closes properly
+        # await self.close()  # Ensure WebSocket closes properly
 
     async def receive(self, text_data):
         logger.info("DASHBOARD WEBSOCKET RECEIVE ")
