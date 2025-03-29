@@ -25,7 +25,7 @@ logger = logging.getLogger("django")
 
 
 
-
+print("in consumers")
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -37,7 +37,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         query_string=self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1].split('&')[0]
 
-        print('machine_id connect ',machine_id)
+        # print('machine_id connect ',machine_id)
         # client_1.publish("ws_con", json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
         client_1.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
 
@@ -50,7 +50,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             md = await sync_to_async(MachineDetails.objects.get)(Machine_id=machine_id)
             node_id = md.pk
-            print('node_id connect', node_id)
+            # print('node_id connect', node_id)
             test = await Machine_Iostatus_web2(node_id)
             test_res = json.dumps({"iostatus":test})
 
@@ -76,19 +76,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #     print("io error - ", e)
 
     async def disconnect(self, close_code):
+        print("...iosttaus disconnected")
         logger.info("IOSTATUS WEBSOCKET DISCONNECTED")
         connected_status = False
 
         query_string = self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1]
-        print('machineid io websocket disconnected',machine_id)
+        # print('machineid io websocket disconnected',machine_id)
         client_1.publish("ws_con/"+machine_id, json.dumps({"con_status": connected_status, "machine_id":machine_id,"ws_grp":"iostatus"}))
-        print('machineid io websocket disconnected published')
+        # print('machineid io websocket disconnected published')
 
         await self.channel_layer.group_discard(str(machine_id)+'_io', self.channel_name)
         # await self.close()  # Ensure WebSocket closes properly
 
     async def receive(self, text_data):
+        print("...iosttaus receive")
         logger.info("IOSTATUS WEBSOCKET RECEIVE ")
         query_string = self.scope['query_string'].decode()
         machine_id = query_string.split('=')[1]
@@ -114,6 +116,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 class KpiConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        print("in KpiConsumer connect")
         logger.info("KPI WEBSOCKET CONNECTED ")
         try:
             connected_status = True
@@ -135,7 +138,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
             try:
                 md = await sync_to_async(MachineDetails.objects.get)(Machine_id=machine_id)
                 node_id = md.pk
-                print('node_id connect', node_id)
+                # print('node_id connect', node_id)
                 test = await machine_kpis_web2(node_id)
                # changed currenttime to latest time
                 from . models import MachineRawData
@@ -159,16 +162,16 @@ class KpiConsumer(AsyncWebsocketConsumer):
                 #     latest_time = {
                 #         'Timestamp': ist_time.strftime('%Y-%m-%d %H:%M:%S'),
                 #     }
-                    print('latest_time',latest_time)
+                #     print('latest_time',latest_time)
                 else:
                     latest_time = None
 
-                print('latest_time websockety', latest_time)
+                # print('latest_time websockety', latest_time)
 
 
                 # Create the result data dictionary
                 result_data =latest_time
-                print('result_data...',result_data)
+                # print('result_data...',result_data)
                 test.update(result_data)
 
                 test_res = json.dumps(test)
@@ -194,6 +197,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
             print("errorrrrr",e)
 
     async def disconnect(self, close_code):
+        print("in KpiConsumer disconnect")
         logger.info("KPI WEBSOCKET DISCONNECTED ")
 
         # Cancel the scheduler task when disconnecting
@@ -231,6 +235,7 @@ class KpiConsumer(AsyncWebsocketConsumer):
 
 class ControlSocket(AsyncWebsocketConsumer):
     async def connect(self):
+        print("in control connect")
         logger.info("CONTROL WEBSOCKET CONNECTED ")
 
         connected_status=True
@@ -250,7 +255,7 @@ class ControlSocket(AsyncWebsocketConsumer):
         try:
             md = await sync_to_async(MachineDetails.objects.get)(Machine_id=machine_id)
             node_id = md.pk
-            print('node_id connect', node_id)
+            # print('node_id connect', node_id)
             test = await Machine_Control_web2(node_id)
             test_res = json.dumps({"control": test})
 
@@ -268,6 +273,7 @@ class ControlSocket(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
+        print("in control disconnect")
         logger.info("CONTROL WEBSOCKET DISCONNECTED ")
 
         connected_status = False
@@ -282,6 +288,7 @@ class ControlSocket(AsyncWebsocketConsumer):
         # await self.close()  # Ensure WebSocket closes properly
 
     async def receive(self, text_data):
+        print("in control receive")
         logger.info("CONTROL WEBSOCKET RECEIVE ")
 
         query_string = self.scope['query_string'].decode()
@@ -309,6 +316,7 @@ class ControlSocket(AsyncWebsocketConsumer):
 class DashboardSocket(AsyncWebsocketConsumer):
 
     async def connect(self):
+        print("in dashboard connect")
         logger.info("DASHBOARD WEBSOCKET CONNECTED ")
 
         connected_status=True
@@ -334,6 +342,7 @@ class DashboardSocket(AsyncWebsocketConsumer):
         self.scheduler_task = asyncio.create_task(self.dashboard_web_socket())
 
     async def disconnect(self, close_code):
+        print("in dashboard disconnect")
         logger.info("DASHBOARD WEBSOCKET DISCONNECTED ")
 
         connected_status = False
@@ -352,12 +361,22 @@ class DashboardSocket(AsyncWebsocketConsumer):
         if hasattr(self, 'scheduler_task'):  # hasattr() function is an inbuilt utility function,\
             # which is used to check if an object has the given named attribute and return true if present, else false.
             self.scheduler_task.cancel()
+            """
+            task cancel check 
+            """
+            try:
+                await self.scheduler_task  # Ensure the task is fully terminated
+            except asyncio.CancelledError:
+                print("in dashboard disconnectScheduler task cancelled successfully")
+                logger.info("Scheduler task cancelled successfully")
+
 
 
         await self.channel_layer.group_discard(dept+'_dashboard', self.channel_name)
-        # await self.close()  # Ensure WebSocket closes properly
+        await self.close()  # Ensure WebSocket closes properly
 
     async def receive(self, text_data):
+        print("in dashboard receive")
         logger.info("DASHBOARD WEBSOCKET RECEIVE ")
 
         query_string = self.scope['query_string'].decode()
@@ -391,7 +410,12 @@ class DashboardSocket(AsyncWebsocketConsumer):
 
                 await asyncio.sleep(2)
             except asyncio.CancelledError:
+                print("dashboard_web_socket task cancelled")
+                logger.info("dashboard_web_socket task cancelled")
                 break
+            except Exception as e:# new
+                logger.error(f"Error in dashboard_web_socket: {e}")
+                await asyncio.sleep(2)  # Prevent tight loop on error
 
     async def dashboard_message(self, event):
 

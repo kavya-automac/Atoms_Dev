@@ -57,11 +57,13 @@ logger = logging.getLogger("django")
     # Analog_Input[2]
 
 def Live_new_record(data_dict):
+    print("in Live_new_record")
     value = data_dict['get_value']
 
     return value
 
 def Live(data_dict):
+    print("in Live")
     value = data_dict['get_value']
 
     return value
@@ -111,7 +113,7 @@ def Average1(data_dict,datapoint):
     rounded_avg_res = round(avg_res, 2)
     # print("avg_data res:", avg_data)
     # print("Averag res:", rounded_avg_res)
-    print("average done")
+    # print("average done")
 
 
     return rounded_avg_res
@@ -174,6 +176,7 @@ def Average1(data_dict,datapoint):
 
 
 def Maithri_at_nine(data_dict, datapoint):
+    print("in Maithri_at_nine")
     """Fetches the first available 9-10 AM record for today and yesterday,
     then calculates the difference. Returns 0 if no data is found."""
 
@@ -190,16 +193,16 @@ def Maithri_at_nine(data_dict, datapoint):
     # Extract column and index from datapoint (e.g., "Analog_Input[2]" → col="Analog_Input", index=2)
     try:
         col, index = datapoint.split('[')
-        print("col",col)
+        # print("col",col)
         index = int(index[:-1])  # Remove closing bracket and convert to int
-        print("index",index)
+        # print("index",index)
     except Exception as e:
         print("Invalid datapoint format:", datapoint, "Error:", e)
         return 0
 
     # Fetch today's first record (9-10 AM)
     first_record_today = get_first_record(datetime.today().date())
-    print("first_record_today",first_record_today)
+    # print("first_record_today",first_record_today)
 
     if not first_record_today:
         return 0  # No data for today
@@ -207,22 +210,22 @@ def Maithri_at_nine(data_dict, datapoint):
     # Extract today's value
     try:
         today_value = getattr(first_record_today, col)[index]
-        print("today_value",today_value)
+        # print("today_value",today_value)
     except Exception as e:
         print("Error fetching today's value:", e)
         return 0
 
     # Fetch yesterday's first record (9-10 AM)
     first_record_yesterday = get_first_record(datetime.today().date() - timedelta(days=1))
-    print("first_record_yesterday",first_record_yesterday)
+    # print("first_record_yesterday",first_record_yesterday)
     if not first_record_yesterday:
         return 0  # No data for yesterday
 
     # Extract yesterday's value and compute the difference
     try:
         yesterday_value = getattr(first_record_yesterday, col)[index]
-        print("yesterday_value",yesterday_value)
-        print(today_value - Decimal(yesterday_value))
+        # print("yesterday_value",yesterday_value)
+        # print(today_value - Decimal(yesterday_value))
         return today_value - Decimal(yesterday_value)
     except Exception as e:
         print("Error fetching yesterday's value:", e)
@@ -368,8 +371,9 @@ def Maithri_at_nine(data_dict, datapoint):
 
 
 def Average(data_dict,datapoint):
+    print("Average")
 
-    print("datapoint",datapoint)
+    # print("datapoint",datapoint)
     machine_timestamp = data_dict['time_stamp']
     # print("machine_timestamp mode", machine_timestamp)
     timestamp_tostring = datetime.strptime(machine_timestamp, "%Y-%m-%dT%H:%M:%S")
@@ -381,17 +385,17 @@ def Average(data_dict,datapoint):
     # output_str = re.sub(r'\[(\d+)\]', lambda x: f"[{int(x.group(1)) + 1}]", datapoint)
 
     match = re.match(r"([a-zA-Z_]+)\[(\d+)\]", datapoint)
-    print("..........", match)
+    # print("..........", match)
 
     if match:
         text_part = match.group(1)  # "Analog_input"
         index_part = int(match.group(2)) + 1  # Increment the index
         output_str = f'"{text_part}"[{index_part}]'
-        print(output_str)  # Outputs: "Analog_input"[3]
+        # print(output_str)  # Outputs: "Analog_input"[3]
     else:
         print("Invalid format")
 
-    print("converted_text", output_str)  # Now using output_str as the converted text
+    # print("converted_text", output_str)  # Now using output_str as the converted text
 
     # Use output_str in the query
     query = f"""
@@ -443,7 +447,7 @@ def Average(data_dict,datapoint):
         cursor.execute(query, [data_dict["machine_id"], machine_date_tp])
         avg_dp = cursor.fetchone()[0]  # Fetch the result of the AVG calculation
     avg_res = round(avg_dp, 2)
-    print("avg_res.........",avg_res)
+    # print("avg_res.........",avg_res)
 
     return avg_res
 
@@ -468,25 +472,26 @@ def High_Low(data_dict):
 
 
 def RunTime(data_dict,datapoint):
+    print("RunTime")
     machine_timestamp = data_dict['time_stamp']
     # print("machine_timestamp mode", machine_timestamp)
     timestamp_tostring = datetime.strptime(machine_timestamp, "%Y-%m-%dT%H:%M:%S")
     machine_date_tp = timestamp_tostring.date()
-    print("runtime machine_date_tp",machine_date_tp)
+    # print("runtime machine_date_tp",machine_date_tp)
 
 
     match = re.match(r"([a-zA-Z_]+)\[(\d+)\]", datapoint)
-    print("....runtime.", match)
+    # print("....runtime.", match)
 
     if match:
         text_part = match.group(1)  # "Analog_input"
         index_part = int(match.group(2)) + 1  # Increment the index
         output_str = f'"{text_part}"[{index_part}]'
-        print(output_str)  # Outputs: "Analog_input"[3]
+        # print(output_str)  # Outputs: "Analog_input"[3]
     else:
         print("Invalid format")
 
-    print("converted_text   runtime ", output_str)  # Now using output_str as the converted text
+    # print("converted_text   runtime ", output_str)  # Now using output_str as the converted text
 
     query1 = f"""
         SELECT 
@@ -509,7 +514,7 @@ def RunTime(data_dict,datapoint):
     with connection.cursor() as cursor:
         cursor.execute(query1, [data_dict["machine_id"], machine_date_tp])
         on_off_count = cursor.fetchone()
-    print("on_off_count",on_off_count)
+    # print("on_off_count",on_off_count)
 
     on_count_res = on_off_count[0] * 60
     off_count_res = on_off_count[1] * 60
@@ -525,7 +530,7 @@ def RunTime(data_dict,datapoint):
 
 
 def RunTime1(data_dict,datapoint):
-    print(" in RunTime")
+    print(" in RunTime1")
     # print('runtime datapoint',datapoint)
     # print('data_dict datapoint',data_dict)
     # print('data_dict machine',data_dict["machine_id"])
@@ -538,7 +543,7 @@ def RunTime1(data_dict,datapoint):
     # today = date.today()
     # print('today.......',today)
     todays_records = MachineRawData.objects.filter(Timestamp__date=machine_date_tp,Machine_Id=data_dict["machine_id"])  #add distinct timestamp if we add distinct aggregate will not work
-    print('count runtime query',todays_records.count())
+    # print('count runtime query',todays_records.count())
     # print('todays_records runtime', todays_records[0])
     datapoints_split = datapoint.split('[')
     datapoints_split1 = datapoints_split[1].split(']')
@@ -555,8 +560,8 @@ def RunTime1(data_dict,datapoint):
     # print(f"Count of 'on' for {field}: {on_count}")
     # print(f"Count of 'off' for {field}: {off_count}")
     count_result=[on_count, off_count]
-    print('count_result',count_result)
-    print("RunTime dome")
+    # print('count_result',count_result)
+    # print("RunTime dome")
 
     return count_result
 
@@ -588,10 +593,10 @@ def Mode_(data_dict,datapoint):
         .first()
     )
     # print('field',field)
-    print('query_data',query_data)
+    # print('query_data',query_data)
     mode_data = query_data[field] if query_data else None
     # print("mode_data",mode_data)
-    print("mode_ done")
+    # print("mode_ done")
     return mode_data
 
 
@@ -657,6 +662,7 @@ def Alarm_fun(data_dict):
 
 
 def New_Record(data_dict):
+    print("in New_Record")
 
     # print('data_dict......................',data_dict)
     # print('time_stamp......................',data_dict['time_stamp'])
@@ -673,13 +679,14 @@ def New_Record(data_dict):
 
 
 def Day(data_dict):
+    print("in day")
     # print('day datadict.................',data_dict)
     # today = datetime.now().date()
     machine_timestamp = data_dict['time_stamp']
-    print("machine_timestamp day", machine_timestamp)
+    # print("machine_timestamp day", machine_timestamp)
     timestamp_tostring = datetime.strptime(machine_timestamp,"%Y-%m-%dT%H:%M:%S")
     machine_date = timestamp_tostring.date()
-    print("machine_date day",machine_date)
+    # print("machine_date day",machine_date)
 
     kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']], Title=data_dict['get_title'],
                                                         Timestamp__date=machine_date,Mode=data_dict['get_mode'])
@@ -693,7 +700,7 @@ def Day(data_dict):
 
 
         kpi_data_queryset.update(Value=data_dict['get_value'], Timestamp=data_dict["time_stamp"])
-        print('update query exception after')
+        # print('update query exception after')
 
     else:
         # Create a new record for cumulative data if it doesn't exist
@@ -719,6 +726,7 @@ def Day(data_dict):
 
 
 def Month(data_dict):
+    print("in month")
     today = datetime.now().date()
     kpi_data_queryset = CardsRawData.objects.filter(Machine_Id__contains=[data_dict['machine_id']],
                                                     Title=data_dict['get_title'],

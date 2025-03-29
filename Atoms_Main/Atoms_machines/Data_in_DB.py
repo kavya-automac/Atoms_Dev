@@ -10,6 +10,7 @@ logger = logging.getLogger("django")
 logger.info('data storing file .....!')
 
 def Machine_data_to_db(mqtt_machines_data):
+    print("in Machine_data_to_db")
     payload = json.loads(mqtt_machines_data)
 
 

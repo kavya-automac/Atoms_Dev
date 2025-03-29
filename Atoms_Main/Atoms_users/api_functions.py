@@ -793,7 +793,7 @@ def count_machines(machines):
         # print('machine_data', machine_data)
 
         machines = machine_data['Machine_id']
-        print('machines dashboard', machines)
+        # print('machines dashboard', machines)
         machine_count += 1
 
         if MachineRawData.objects.filter(Machine_Id=machines).exists():
@@ -808,14 +808,14 @@ def count_machines(machines):
             fetch_latest = to_fetch_lastrecord_data.latest('Db_Timestamp')
 
             # print('fetch_latest', fetch_latest)
-            print('fetch_latest', fetch_latest)
+            # print('fetch_latest', fetch_latest)
             last_record_time1 = fetch_latest['Db_Timestamp']
             # print('last_record_time1', last_record_time1)
             # five_30_hours = timedelta(hours=5, minutes=30)
             # print('five_30_hours',five_30_hours)
             adjusted_datetime = last_record_time1
             # adjusted_datetime = last_record_time1 - five_30_hours
-            print('adjusted_datetime',adjusted_datetime)
+            # print('adjusted_datetime',adjusted_datetime)
 
             # last_record_time2 = last_record_time1.strftime("%Y-%m-%d %H:%M:%S.%f %Z").split('.')[0]
             # print("last_record_time2 string",last_record_time2)
