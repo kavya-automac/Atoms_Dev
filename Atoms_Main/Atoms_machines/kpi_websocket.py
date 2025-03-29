@@ -17,6 +17,7 @@ logger = logging.getLogger("django")
 
 # @sync_to_async
 def kpi_socket(machine_id):
+    print("in kpi socket")
     logger.info('...kpi_socket...!')
 
     MachineDetails = apps.get_model('Atoms_users', 'MachineDetails')

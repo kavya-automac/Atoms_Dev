@@ -60,6 +60,7 @@ def io_websocket(connected_machine_data):
 
 
 def control_websocket(connected_machine_data):
+    print("in control_websocket")
     logger.info('...control_websocket...!')
 
 
@@ -111,6 +112,7 @@ def control_websocket(connected_machine_data):
 
 @sync_to_async
 def dashboard_web(user_id,dept):
+    print("in dashboard_web single record")
     logger.info('...dashboard_web...!')
 
     # user_id = 10

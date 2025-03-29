@@ -51,6 +51,7 @@ class CardsRawData(models.Model):
 @receiver(post_save,sender=MachineRawData)
 def signal(sender,instance,created,**kwargs):
     if created:
+        print("got a  signal from MachineRawData")
 
         # print("new data arrived")
         # machine=instance.machine_id

@@ -14,6 +14,7 @@ logger = logging.getLogger("django")
 
 
 def on_connect(client, userdata, flags, reason_code,properties):
+    print("in on connect")
     logger.info('hive...on_connect...!')
     logger.info('hive ..on_connect... : %s', reason_code)
     if reason_code==0:
@@ -32,6 +33,7 @@ def on_connect(client, userdata, flags, reason_code,properties):
 
 
 def on_message(client, userdata, msg):
+    print("in on message")
     logger.info('hive...on_message...!')
     connected_machine_data = msg.payload.decode()  # Assuming the payload is a string
     topic = msg.topic
@@ -98,7 +100,7 @@ client.connect(
 # # aws connection  MID004-----------------------------------------------
 #
 def on_connect_1(client_1, userdata, flags, reason_code,properties):
-
+    print("in on_connect_1")
     logger.info('aws...on_connect...!')
     logger.info('aws ..on_connect... : %s', reason_code)
     if reason_code == 0:
@@ -128,6 +130,7 @@ def on_connect_1(client_1, userdata, flags, reason_code,properties):
 
 
 def on_message_1(client_1, userdata, msg):
+    print("in on_message_1")
     logger.info('aws...on_message...!')
 
 
